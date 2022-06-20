@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"bytes"
+	"encoding/gob"
 	"hash"
 
 	"github.com/pkg/errors"
@@ -132,6 +134,26 @@ func (a *AliceDkg) Result(version uint) (*protocol.Message, error) {
 
 	result := a.Output()
 	return EncodeAliceDkgOutput(result, version)
+}
+
+func AliceDkgUnmarshalBinary(data []byte) (*AliceDkg, error) {
+	var buf bytes.Buffer
+	buf.Write(data)
+	dec := gob.NewDecoder(&buf)
+	var aliceDKG AliceDkg
+	if err := dec.Decode(&aliceDKG); err != nil {
+		return nil, err
+	}
+	return &aliceDKG, nil
+}
+
+func AliceDkgMarshalBinary(alice *AliceDkg) ([]byte, error) {
+	var buf bytes.Buffer
+	enc := gob.NewEncoder(&buf)
+	if err := enc.Encode(alice); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }
 
 // NewBobDkg Creates a new protocol that can compute a DKG as Bob.
