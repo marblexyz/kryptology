@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // Pedersen Verifiable Secret Sharing Scheme

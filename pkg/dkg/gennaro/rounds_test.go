@@ -13,8 +13,8 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	v1 "github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	v1 "github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 func TestParticipantRound1Works(t *testing.T) {
@@ -49,7 +49,9 @@ func TestParticipantRound1BadSecret(t *testing.T) {
 	_, _, err = p1.Round1(secret)
 	require.Error(t, err)
 	// secret too big
-	secret = []byte{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7}
+	secret = []byte{
+		7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+	}
 	_, _, err = p1.Round1(secret)
 	require.Error(t, err)
 }
@@ -177,8 +179,10 @@ func TestParticipantRound3Works(t *testing.T) {
 
 	// Test if shares recombine properly
 	s, _ := v1.NewShamir(2, 2, curves.NewField(btcec.S256().N))
-	sk, err := s.Combine(&v1.ShamirShare{Identifier: p1.id, Value: p1.skShare},
-		&v1.ShamirShare{Identifier: p2.id, Value: p2.skShare})
+	sk, err := s.Combine(
+		&v1.ShamirShare{Identifier: p1.id, Value: p1.skShare},
+		&v1.ShamirShare{Identifier: p2.id, Value: p2.skShare},
+	)
 	require.NoError(t, err)
 
 	// Test verification keys are G * sk
@@ -306,8 +310,10 @@ func TestAllGennaroDkgRounds(t *testing.T) {
 	// Test output of all rounds
 	require.Equal(t, publicShares1, publicShares2)
 	s, _ := v1.NewShamir(2, 2, curves.NewField(btcec.S256().N))
-	sk, err := s.Combine(&v1.ShamirShare{Identifier: p1.id, Value: p1.skShare},
-		&v1.ShamirShare{Identifier: p2.id, Value: p2.skShare})
+	sk, err := s.Combine(
+		&v1.ShamirShare{Identifier: p1.id, Value: p1.skShare},
+		&v1.ShamirShare{Identifier: p2.id, Value: p2.skShare},
+	)
 	require.NoError(t, err)
 
 	x, y := btcec.S256().ScalarBaseMult(sk)
@@ -357,14 +363,16 @@ func TestValidIDs(t *testing.T) {
 	}
 	// Run all the tests!
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			err := validIds(test.in)
-			if test.expected == nil {
-				require.NoError(t, err)
-			} else {
-				require.Error(t, err)
-			}
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				err := validIds(test.in)
+				if test.expected == nil {
+					require.NoError(t, err)
+				} else {
+					require.Error(t, err)
+				}
+			},
+		)
 	}
 }
 

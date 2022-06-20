@@ -15,9 +15,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/dkg/gennaro"
-	"github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/dkg/gennaro"
+	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 const threshold = 2
@@ -52,8 +52,10 @@ type DkgResult struct {
 // blind must be a generator and must be synchronized between counterparties.
 // The first participant can set it to `nil` and a secure blinding factor will be
 // generated.
-func NewParticipant(id, counterPartyId uint32, blind *curves.EcPoint,
-	scalar curves.EcScalar, curve elliptic.Curve) (*Participant, error) {
+func NewParticipant(
+	id, counterPartyId uint32, blind *curves.EcPoint,
+	scalar curves.EcScalar, curve elliptic.Curve,
+) (*Participant, error) {
 	// Generate blinding value, if required
 	var err error
 	if blind == nil {
@@ -114,7 +116,9 @@ func (p *Participant) Round2(msg *Round1Message) (*Round2Message, error) {
 			p.counterPartyId: {
 				SecretShare:   msg.SecretShare,
 				BlindingShare: msg.BlindingShare,
-			}})
+			},
+		},
+	)
 	if err != nil {
 		return nil, errors.Wrap(err, "calling embedded.Round2()")
 	}
@@ -129,7 +133,8 @@ func (p *Participant) Finalize(msg *Round2Message) (*DkgResult, error) {
 	pk, share, err := p.embedded.Round3(
 		map[uint32]gennaro.Round2Bcast{
 			p.counterPartyId: msg.Verifiers,
-		})
+		},
+	)
 	if err != nil {
 		return nil, errors.Wrap(err, "calling embedded.Round3()")
 	}

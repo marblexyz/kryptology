@@ -13,7 +13,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 func TestShamirSplitInvalidArgs(t *testing.T) {
@@ -28,7 +28,12 @@ func TestShamirSplitInvalidArgs(t *testing.T) {
 	require.NotNil(t, scheme)
 	_, err = scheme.Split([]byte{})
 	require.NotNil(t, err)
-	_, err = scheme.Split([]byte{0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65})
+	_, err = scheme.Split(
+		[]byte{
+			0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65,
+			0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65,
+		},
+	)
 	require.NotNil(t, err)
 }
 
@@ -44,16 +49,18 @@ func TestShamirCombineDuplicateShare(t *testing.T) {
 	scheme, err := NewShamir(2, 3, field)
 	require.Nil(t, err)
 	require.NotNil(t, scheme)
-	_, err = scheme.Combine([]*ShamirShare{
-		{
-			Identifier: 1,
-			Value:      field.NewElement(big.NewInt(3)),
-		},
-		{
-			Identifier: 1,
-			Value:      field.NewElement(big.NewInt(3)),
-		},
-	}...)
+	_, err = scheme.Combine(
+		[]*ShamirShare{
+			{
+				Identifier: 1,
+				Value:      field.NewElement(big.NewInt(3)),
+			},
+			{
+				Identifier: 1,
+				Value:      field.NewElement(big.NewInt(3)),
+			},
+		}...,
+	)
 	require.NotNil(t, err)
 }
 
@@ -199,7 +206,9 @@ func TestSharesAdd_errors(t *testing.T) {
 	finiteField := curves.NewField(big.NewInt(7))
 	one := NewShamirShare(0, []byte{0x01}, finiteField)
 	two := NewShamirShare(1, []byte{0x02}, finiteField)
-	require.PanicsWithValue(t, "identifiers must match for valid addition", func() {
-		one.Add(two)
-	})
+	require.PanicsWithValue(
+		t, "identifiers must match for valid addition", func() {
+			one.Add(two)
+		},
+	)
 }

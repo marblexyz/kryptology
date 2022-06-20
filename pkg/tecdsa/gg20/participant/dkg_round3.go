@@ -11,16 +11,18 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/paillier"
-	"github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/paillier"
+	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 // DkgRound3 computes dkg round 3 as shown in
 // [spec] fig. 5: DistKeyGenRoun3
-func (dp *DkgParticipant) DkgRound3(d map[uint32]*core.Witness, x map[uint32]*v1.ShamirShare) (paillier.PsfProof, error) {
+func (dp *DkgParticipant) DkgRound3(d map[uint32]*core.Witness, x map[uint32]*v1.ShamirShare) (
+	paillier.PsfProof, error,
+) {
 	if len(d) == 0 || len(x) == 0 {
 		return nil, internal.ErrNilArguments
 	}
@@ -157,7 +159,9 @@ func (dp *DkgParticipant) DkgRound3(d map[uint32]*core.Witness, x map[uint32]*v1
 
 // unmarshalFeldmanVerifiers converts a byte sequence into
 // a number of feldman verifiers
-func unmarshalFeldmanVerifiers(curve elliptic.Curve, msg []byte, verifierSize, threshold int) ([]*v1.ShareVerifier, error) {
+func unmarshalFeldmanVerifiers(curve elliptic.Curve, msg []byte, verifierSize, threshold int) (
+	[]*v1.ShareVerifier, error,
+) {
 	if len(msg)%verifierSize != 0 {
 		return nil, fmt.Errorf("invalid committed verifier shares")
 	}

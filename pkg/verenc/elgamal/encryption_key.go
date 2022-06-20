@@ -15,8 +15,8 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 type encryptionKeyMarshal struct {
@@ -101,7 +101,9 @@ func (ek EncryptionKey) HomomorphicEncrypt(msg curves.Scalar) (*HomomorphicCiphe
 	}, nil
 }
 
-func (ek EncryptionKey) encryptWithRandNonce(msg []byte, msgIsHashed bool, r curves.Scalar, h curves.Point, nonce []byte) (*CipherText, error) {
+func (ek EncryptionKey) encryptWithRandNonce(
+	msg []byte, msgIsHashed bool, r curves.Scalar, h curves.Point, nonce []byte,
+) (*CipherText, error) {
 	// r * Q
 	t := ek.Value.Mul(r)
 	// Derive AEAD encryption key

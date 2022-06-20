@@ -13,8 +13,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves/native/bls12381"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/bls12381"
 )
 
 func genSecretKey(t *testing.T) *SecretKey {
@@ -111,9 +111,24 @@ func TestMarshalLeadingZeroes(t *testing.T) {
 		name string
 		in   []byte
 	}{
-		{"no leading zeroes", []byte{74, 53, 59, 227, 218, 192, 145, 160, 167, 230, 64, 98, 3, 114, 245, 225, 226, 228, 64, 23, 23, 193, 231, 156, 172, 111, 251, 168, 246, 144, 86, 4}},
-		{"one leading zero byte", []byte{00, 53, 59, 227, 218, 192, 145, 160, 167, 230, 64, 98, 3, 114, 245, 225, 226, 228, 64, 23, 23, 193, 231, 156, 172, 111, 251, 168, 246, 144, 86, 4}},
-		{"two leading zeroes", []byte{00, 00, 59, 227, 218, 192, 145, 160, 167, 230, 64, 98, 3, 114, 245, 225, 226, 228, 64, 23, 23, 193, 231, 156, 172, 111, 251, 168, 246, 144, 86, 4}},
+		{
+			"no leading zeroes", []byte{
+				74, 53, 59, 227, 218, 192, 145, 160, 167, 230, 64, 98, 3, 114, 245, 225, 226, 228, 64, 23, 23, 193, 231,
+				156, 172, 111, 251, 168, 246, 144, 86, 4,
+			},
+		},
+		{
+			"one leading zero byte", []byte{
+				00, 53, 59, 227, 218, 192, 145, 160, 167, 230, 64, 98, 3, 114, 245, 225, 226, 228, 64, 23, 23, 193, 231,
+				156, 172, 111, 251, 168, 246, 144, 86, 4,
+			},
+		},
+		{
+			"two leading zeroes", []byte{
+				00, 00, 59, 227, 218, 192, 145, 160, 167, 230, 64, 98, 3, 114, 245, 225, 226, 228, 64, 23, 23, 193, 231,
+				156, 172, 111, 251, 168, 246, 144, 86, 4,
+			},
+		},
 	}
 	// Run all the tests!
 	ss := bls12381.Bls12381FqNew()
@@ -129,40 +144,50 @@ func TestMarshalLeadingZeroes(t *testing.T) {
 		}
 
 		// Test that marshal produces a values of the exected len
-		t.Run(test.name, func(t *testing.T) {
-			if len(bytes) != SecretKeySize {
-				t.Errorf("expected len=%v got len=%v", SecretKeySize, len(bytes))
-			}
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				if len(bytes) != SecretKeySize {
+					t.Errorf("expected len=%v got len=%v", SecretKeySize, len(bytes))
+				}
+			},
+		)
 
 		// Test that we can also unmarhsal correctly
-		t.Run(test.name, func(t *testing.T) {
-			var actual SecretKey
-			err := actual.UnmarshalBinary(bytes)
+		t.Run(
+			test.name, func(t *testing.T) {
+				var actual SecretKey
+				err := actual.UnmarshalBinary(bytes)
 
-			// Test for error
-			if err != nil {
-				t.Errorf("%v", err)
-				return
-			}
+				// Test for error
+				if err != nil {
+					t.Errorf("%v", err)
+					return
+				}
 
-			// Test for correctness
-			if actual.value.Cmp(ss) != 0 {
-				t.Errorf("unmarshaled doens't match original value")
-			}
-		})
+				// Test for correctness
+				if actual.value.Cmp(ss) != 0 {
+					t.Errorf("unmarshaled doens't match original value")
+				}
+			},
+		)
 	}
 }
 
 func TestSecretKey32Bytes(t *testing.T) {
 	seed := make([]byte, 32)
-	expected := []byte{77, 18, 154, 25, 223, 134, 160, 245, 52, 91, 173, 76, 198, 242, 73, 236, 42, 129, 156, 204, 51, 134, 137, 91, 235, 79, 125, 152, 179, 219, 98, 53}
+	expected := []byte{
+		77, 18, 154, 25, 223, 134, 160, 245, 52, 91, 173, 76, 198, 242, 73, 236, 42, 129, 156, 204, 51, 134, 137, 91,
+		235, 79, 125, 152, 179, 219, 98, 53,
+	}
 	assertSecretKeyGen(seed, expected, t)
 }
 
 func TestSecretKey128Bytes(t *testing.T) {
 	seed := make([]byte, 128)
-	expected := []byte{97, 207, 109, 96, 94, 90, 233, 215, 221, 207, 240, 139, 24, 209, 152, 170, 73, 209, 151, 241, 148, 176, 173, 92, 101, 48, 39, 175, 201, 219, 146, 168}
+	expected := []byte{
+		97, 207, 109, 96, 94, 90, 233, 215, 221, 207, 240, 139, 24, 209, 152, 170, 73, 209, 151, 241, 148, 176, 173, 92,
+		101, 48, 39, 175, 201, 219, 146, 168,
+	}
 	assertSecretKeyGen(seed, expected, t)
 }
 

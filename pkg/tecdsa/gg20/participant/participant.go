@@ -13,12 +13,12 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/paillier"
-	"github.com/coinbase/kryptology/pkg/sharing/v1"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/dealer"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/paillier"
+	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
 )
 
 // Participant is a tECDSA player that receives information from a trusted dealer
@@ -62,7 +62,8 @@ func NewSigner(info *dealer.ParticipantData, cosigners []uint32) (*Signer, error
 		info.EcdsaPublicKey.Curve,
 		info.KeyGenType,
 		chosenOnes,
-		info.EncryptKeys)
+		info.EncryptKeys,
+	)
 }
 
 // verifyStateMap verifies the round is the expected round number and
@@ -175,7 +176,9 @@ type state struct {
 // convertToAdditive takes all the publicShares and changes them to their additive form
 // for this participant. Only t shares are needed for this step
 // [spec] §4.figure 4: convertToAdditive
-func (p Participant) convertToAdditive(curve elliptic.Curve, publicSharesMap map[uint32]*dealer.PublicShare) (*Signer, error) {
+func (p Participant) convertToAdditive(curve elliptic.Curve, publicSharesMap map[uint32]*dealer.PublicShare) (
+	*Signer, error,
+) {
 	if publicSharesMap == nil {
 		return nil, fmt.Errorf("public shares cannot be nil")
 	}
@@ -244,12 +247,14 @@ func (p Participant) convertToAdditive(curve elliptic.Curve, publicSharesMap map
 
 // PrepareToSign creates a Signer out of a Participant. The expected co-signers for the signing rounds are
 // expected to be exactly those included in the publicSharesMap
-func (p Participant) PrepareToSign(pubKey *curves.EcPoint,
+func (p Participant) PrepareToSign(
+	pubKey *curves.EcPoint,
 	verify curves.EcdsaVerify,
 	curve elliptic.Curve,
 	keyGenType dealer.KeyGenType,
 	publicSharesMap map[uint32]*dealer.PublicShare,
-	pubKeys map[uint32]*paillier.PublicKey) (*Signer, error) {
+	pubKeys map[uint32]*paillier.PublicKey,
+) (*Signer, error) {
 	if pubKey == nil || verify == nil || curve == nil || keyGenType == nil || len(publicSharesMap) < 1 {
 		return nil, internal.ErrNilArguments
 	}
@@ -280,7 +285,9 @@ func (p Participant) PrepareToSign(pubKey *curves.EcPoint,
 }
 
 // Creates a map of polynomial x-coordinates that are field elements.
-func makeXMap(curve elliptic.Curve, publicSharesMap map[uint32]*dealer.PublicShare) (map[uint32]*curves.Element, error) {
+func makeXMap(curve elliptic.Curve, publicSharesMap map[uint32]*dealer.PublicShare) (
+	map[uint32]*curves.Element, error,
+) {
 	field := curves.NewField(curve.Params().N)
 	x := make(map[uint32]*curves.Element, len(publicSharesMap))
 

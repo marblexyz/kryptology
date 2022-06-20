@@ -12,8 +12,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves/native/pasta/fp"
-	"github.com/coinbase/kryptology/pkg/core/curves/native/pasta/fq"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fp"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fq"
 )
 
 func TestPoseidonHash(t *testing.T) {

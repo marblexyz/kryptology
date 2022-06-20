@@ -19,7 +19,7 @@ import (
 	"github.com/bwesterb/go-ristretto"
 	ed "github.com/bwesterb/go-ristretto/edwards25519"
 
-	"github.com/coinbase/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/internal"
 )
 
 type ScalarEd25519 struct {
@@ -30,7 +30,11 @@ type PointEd25519 struct {
 	value *edwards25519.Point
 }
 
-var scOne, _ = edwards25519.NewScalar().SetCanonicalBytes([]byte{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
+var scOne, _ = edwards25519.NewScalar().SetCanonicalBytes(
+	[]byte{
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	},
+)
 
 func (s *ScalarEd25519) Random(reader io.Reader) Scalar {
 	if reader == nil {
@@ -585,7 +589,12 @@ func (p *PointEd25519) FromAffineUncompressed(inBytes []byte) (Point, error) {
 	if len(inBytes) != 64 {
 		return nil, fmt.Errorf("invalid byte sequence")
 	}
-	if bytes.Equal(inBytes, []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}) {
+	if bytes.Equal(
+		inBytes, []byte{
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		},
+	) {
 		return &PointEd25519{value: edwards25519.NewIdentityPoint()}, nil
 	}
 	x, err := new(field.Element).SetBytes(inBytes[:32])
@@ -753,11 +762,13 @@ func elligatorEncode(r0 *ed.FieldElement) *ed.FieldElement {
 		486662, 0, 0, 0, 0,
 	}
 	// montgomeryANeg is equal to -486662.
-	montgomeryANeg := &ed.FieldElement{2251799813198567,
+	montgomeryANeg := &ed.FieldElement{
+		2251799813198567,
 		2251799813685247,
 		2251799813685247,
 		2251799813685247,
-		2251799813685247}
+		2251799813685247,
+	}
 	t := new(ed.FieldElement)
 	one := new(ed.FieldElement).SetOne()
 	// 2r^2

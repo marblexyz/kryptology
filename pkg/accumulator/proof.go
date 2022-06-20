@@ -14,7 +14,7 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 type proofParamsMarshal struct {
@@ -326,7 +326,9 @@ type MembershipProof struct {
 }
 
 // Finalize computes values in the proof to be verified.
-func (mp *MembershipProof) Finalize(acc *Accumulator, pp *ProofParams, pk *PublicKey, challenge curves.Scalar) (*MembershipProofFinal, error) {
+func (mp *MembershipProof) Finalize(
+	acc *Accumulator, pp *ProofParams, pk *PublicKey, challenge curves.Scalar,
+) (*MembershipProofFinal, error) {
 	// R_σ = s_δ X + c T_σ
 	negTSigma := mp.tSigma
 	negTSigma = negTSigma.Neg()

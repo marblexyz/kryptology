@@ -16,10 +16,10 @@ import (
 	"fmt"
 	"math/big"
 
-	crypto "github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	paillier "github.com/coinbase/kryptology/pkg/paillier"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/dealer"
+	crypto "github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	paillier "github.com/trysuperdrop/kryptology/pkg/paillier"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
 )
 
 // PdlProofParams encapsulates the parameters for ProvePDL in
@@ -126,10 +126,12 @@ func (p PdlProofParams) Prove() (*PdlProof, error) {
 	}
 
 	// 10. Compute e = H(pk,N~,h1,h2,g,q,R,X,c,u,z,v,w)
-	challenge, err := crypto.FiatShamir(p.Pk.N, p.DealerParams.N, p.DealerParams.H1,
+	challenge, err := crypto.FiatShamir(
+		p.Pk.N, p.DealerParams.N, p.DealerParams.H1,
 		p.DealerParams.H2, p.Curve.Params().Gx, p.Curve.Params().Gy,
 		p.Curve.Params().N, p.PointR.X, p.PointR.Y, p.PointX.X, p.PointX.Y, p.C,
-		u.X, u.Y, z, v, w)
+		u.X, u.Y, z, v, w,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -207,7 +209,8 @@ func (p PdlProof) Verify(pv *PdlVerifyParams) error {
 		pv.Pk.N, pv.DealerParams.N, pv.DealerParams.H1, pv.DealerParams.H2,
 		pv.Curve.Params().Gx, pv.Curve.Params().Gy, pv.Curve.Params().N,
 		pv.PointR.X, pv.PointR.Y, pv.PointX.X, pv.PointX.Y, pv.C, uHat.X,
-		uHat.Y, p.z, vHat, wHat)
+		uHat.Y, p.z, vHat, wHat,
+	)
 	if err != nil {
 		return err
 	}

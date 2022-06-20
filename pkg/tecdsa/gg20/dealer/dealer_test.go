@@ -14,9 +14,9 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	tt "github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	v1 "github.com/coinbase/kryptology/pkg/sharing/v1"
+	tt "github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	v1 "github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 type proofParamsTest struct {
@@ -199,74 +199,76 @@ func TestSameResult(t *testing.T) {
 func TestNewDealerShares(t *testing.T) {
 	curve := btcec.S256()
 	for _, secretIsNil := range []bool{true, false} {
-		t.Run(fmt.Sprintf("NewDealerShare should not fail if bool(ikm == nil) is %t", secretIsNil), func(t *testing.T) {
-			var ikm *big.Int
-			var err error
-			if secretIsNil {
-				ikm, err = NewSecret(curve)
+		t.Run(
+			fmt.Sprintf("NewDealerShare should not fail if bool(ikm == nil) is %t", secretIsNil), func(t *testing.T) {
+				var ikm *big.Int
+				var err error
+				if secretIsNil {
+					ikm, err = NewSecret(curve)
+					require.NoError(t, err)
+				}
+				pk, sharesMap, err := NewDealerShares(curve, 2, 3, ikm)
+				if err != nil {
+					t.Errorf("NewDealerShares failed: %v", err)
+					t.FailNow()
+				}
+
+				if pk == nil {
+					t.Errorf("NewDealerShares public key is nil")
+					t.FailNow()
+				}
+
+				if secretIsNil {
+					derivedPublicKey, err := DerivePublicKey(curve, ikm)
+					require.NoError(t, err)
+					require.Equal(t, pk.X, derivedPublicKey.X)
+					require.Equal(t, pk.Y, derivedPublicKey.Y)
+				}
+
+				if len(sharesMap) != 3 {
+					t.Errorf("NewDealerShares didn't produce enough shares")
+					t.FailNow()
+				}
+
+				for _, s := range sharesMap {
+					if s.ShamirShare == nil {
+						t.Errorf("NewDealerShares didn't produce valid sharesMap")
+						t.FailNow()
+					}
+					if s.Point == nil {
+						t.Errorf("NewDealerShares didn't produce valid public sharesMap")
+						t.FailNow()
+					}
+					x, y := curve.ScalarMult(curve.Gx, curve.Gy, s.ShamirShare.Value.Bytes())
+					require.Equal(t, x, s.Point.X)
+					require.Equal(t, y, s.Point.Y)
+				}
+
+				n := curves.NewField(curve.N)
+				combiner, err := v1.NewShamir(2, 3, n)
 				require.NoError(t, err)
-			}
-			pk, sharesMap, err := NewDealerShares(curve, 2, 3, ikm)
-			if err != nil {
-				t.Errorf("NewDealerShares failed: %v", err)
-				t.FailNow()
-			}
 
-			if pk == nil {
-				t.Errorf("NewDealerShares public key is nil")
-				t.FailNow()
-			}
-
-			if secretIsNil {
-				derivedPublicKey, err := DerivePublicKey(curve, ikm)
-				require.NoError(t, err)
-				require.Equal(t, pk.X, derivedPublicKey.X)
-				require.Equal(t, pk.Y, derivedPublicKey.Y)
-			}
-
-			if len(sharesMap) != 3 {
-				t.Errorf("NewDealerShares didn't produce enough shares")
-				t.FailNow()
-			}
-
-			for _, s := range sharesMap {
-				if s.ShamirShare == nil {
-					t.Errorf("NewDealerShares didn't produce valid sharesMap")
-					t.FailNow()
+				sShareArray := make([]*v1.ShamirShare, len(sharesMap))
+				for i, s := range sharesMap {
+					// Skip sharesMap[0] which is always nil
+					if i == 0 && s != nil {
+						t.Errorf("expected sharesMap[0] to be nil")
+						t.FailNow()
+					} else {
+						sShareArray[i-1] = s.ShamirShare
+					}
 				}
-				if s.Point == nil {
-					t.Errorf("NewDealerShares didn't produce valid public sharesMap")
-					t.FailNow()
+				sk, err := combiner.Combine(sShareArray...)
+				if err != nil {
+					t.Errorf("Shares could not be recombined")
 				}
-				x, y := curve.ScalarMult(curve.Gx, curve.Gy, s.ShamirShare.Value.Bytes())
-				require.Equal(t, x, s.Point.X)
-				require.Equal(t, y, s.Point.Y)
-			}
+				pkx, pky := curve.ScalarBaseMult(sk)
+				require.NotNil(t, pkx, pky)
+				require.Equal(t, pkx, pk.X) // nolint
+				require.Equal(t, pky, pk.Y) // nolint
 
-			n := curves.NewField(curve.N)
-			combiner, err := v1.NewShamir(2, 3, n)
-			require.NoError(t, err)
-
-			sShareArray := make([]*v1.ShamirShare, len(sharesMap))
-			for i, s := range sharesMap {
-				// Skip sharesMap[0] which is always nil
-				if i == 0 && s != nil {
-					t.Errorf("expected sharesMap[0] to be nil")
-					t.FailNow()
-				} else {
-					sShareArray[i-1] = s.ShamirShare
-				}
-			}
-			sk, err := combiner.Combine(sShareArray...)
-			if err != nil {
-				t.Errorf("Shares could not be recombined")
-			}
-			pkx, pky := curve.ScalarBaseMult(sk)
-			require.NotNil(t, pkx, pky)
-			require.Equal(t, pkx, pk.X) // nolint
-			require.Equal(t, pky, pk.Y) // nolint
-
-		})
+			},
+		)
 	}
 }
 

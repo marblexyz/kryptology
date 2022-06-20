@@ -9,10 +9,10 @@ package gennaro
 import (
 	"math/big"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 // Round4 computes the public shares used by tECDSA during signing

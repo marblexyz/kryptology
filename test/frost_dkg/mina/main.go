@@ -10,11 +10,11 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	dkg "github.com/coinbase/kryptology/pkg/dkg/frost"
-	"github.com/coinbase/kryptology/pkg/sharing"
-	"github.com/coinbase/kryptology/pkg/signatures/schnorr/mina"
-	"github.com/coinbase/kryptology/pkg/ted25519/frost"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	dkg "github.com/trysuperdrop/kryptology/pkg/dkg/frost"
+	"github.com/trysuperdrop/kryptology/pkg/sharing"
+	"github.com/trysuperdrop/kryptology/pkg/signatures/schnorr/mina"
+	"github.com/trysuperdrop/kryptology/pkg/ted25519/frost"
 )
 
 const LIMIT = 4
@@ -98,11 +98,15 @@ func main() {
 		panic(err)
 	}
 	signers := make(map[uint32]*frost.Signer, 2)
-	signers[1], err = frost.NewSigner(participants[1], 1, uint32(threshold), lcs, []uint32{1, 2}, &mina.MinaTSchnorrHandler{})
+	signers[1], err = frost.NewSigner(
+		participants[1], 1, uint32(threshold), lcs, []uint32{1, 2}, &mina.MinaTSchnorrHandler{},
+	)
 	if err != nil {
 		panic(err)
 	}
-	signers[2], err = frost.NewSigner(participants[2], 2, uint32(threshold), lcs, []uint32{1, 2}, &mina.MinaTSchnorrHandler{})
+	signers[2], err = frost.NewSigner(
+		participants[2], 2, uint32(threshold), lcs, []uint32{1, 2}, &mina.MinaTSchnorrHandler{},
+	)
 	if err != nil {
 		panic(err)
 	}
@@ -157,7 +161,8 @@ func round1(participants map[uint32]*dkg.DkgParticipant) (map[uint32]*dkg.Round1
 	return rnd1Bcast, rnd1P2p
 }
 
-func round2(participants map[uint32]*dkg.DkgParticipant,
+func round2(
+	participants map[uint32]*dkg.DkgParticipant,
 	rnd1Bcast map[uint32]*dkg.Round1Bcast,
 	rnd1P2p map[uint32]dkg.Round1P2PSend,
 ) (curves.Point, map[uint32]*sharing.ShamirShare) {
@@ -209,12 +214,14 @@ func createDkgParticipants(thresh, limit int) map[uint32]*dkg.DkgParticipant {
 }
 
 func printHelp() {
-	fmt.Printf(`
+	fmt.Printf(
+		`
 mina INPUT
 Simulate a DKG using Mina keys
 FLAGS:
   -h, --help						Show this help message and exit
   -n, --limit						The total number of participants
   -t, --treshold					The minimum number of participants needed to sign
-`)
+`,
+	)
 }

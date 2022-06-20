@@ -14,13 +14,13 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	tt "github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/paillier"
-	v1 "github.com/coinbase/kryptology/pkg/sharing/v1"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/dealer"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/proof"
+	tt "github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/paillier"
+	v1 "github.com/trysuperdrop/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/proof"
 )
 
 func setupDkgRound3ParticipantMap(curve elliptic.Curve, t, n int) map[uint32]*DkgParticipant {
@@ -59,7 +59,9 @@ func setupDkgRound3ParticipantMap(curve elliptic.Curve, t, n int) map[uint32]*Dk
 	return participants
 }
 
-func setupDkgRound3Commitments(t *testing.T, participants map[uint32]*DkgParticipant, playerCnt int) map[uint32]*core.Witness {
+func setupDkgRound3Commitments(
+	t *testing.T, participants map[uint32]*DkgParticipant, playerCnt int,
+) map[uint32]*core.Witness {
 	var err error
 	// Setup commitments for each player so they can be passed as inputs
 	// normally received from echo broadcast
@@ -91,25 +93,31 @@ func TestDkgRound3Works(t *testing.T) {
 	decommitments := setupDkgRound3Commitments(t, participants, playerCnt)
 
 	// Actual test
-	res1, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res1, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res1)
-	res2, err := participants[2].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[1],
-		2: participants[2].state.X[1],
-		3: participants[3].state.X[1],
-	})
+	res2, err := participants[2].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[1],
+			2: participants[2].state.X[1],
+			3: participants[3].state.X[1],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res2)
-	res3, err := participants[3].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[2],
-		2: participants[2].state.X[2],
-		3: participants[3].state.X[2],
-	})
+	res3, err := participants[3].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[2],
+			2: participants[2].state.X[2],
+			3: participants[3].state.X[2],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res3)
 	field := curves.NewField(curve.Params().N)
@@ -150,18 +158,22 @@ func TestDkgRound3RepeatCall(t *testing.T) {
 	decommitments := setupDkgRound3Commitments(t, participants, playerCnt)
 
 	// Actual test
-	res1, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res1, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res1)
-	res2, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res2, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.Error(t, err)
 	require.Nil(t, res2)
 }
@@ -178,11 +190,13 @@ func TestDkgRound3InvalidWitnesses(t *testing.T) {
 	decommitments[2].Msg[1] ^= decommitments[1].Msg[1]
 
 	// Actual test
-	res1, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res1, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.Error(t, err)
 	require.Nil(t, res1)
 
@@ -193,11 +207,13 @@ func TestDkgRound3InvalidWitnesses(t *testing.T) {
 	// corrupt 3rd participant
 	decommitments[3].Msg[0] ^= decommitments[1].Msg[0]
 	decommitments[3].Msg[1] ^= decommitments[1].Msg[1]
-	res2, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res2, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.Error(t, err)
 	require.Nil(t, res2)
 }
@@ -215,11 +231,13 @@ func TestDkgRound3InvalidShares(t *testing.T) {
 	participants[2].state.X[0].Value = curves.NewField(curve.Params().N).NewElement(big.NewInt(1))
 
 	// Actual test
-	res1, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res1, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.Error(t, err)
 	require.Nil(t, res1)
 
@@ -229,11 +247,13 @@ func TestDkgRound3InvalidShares(t *testing.T) {
 	// corrupt 3rd participant share
 	participants[3].state.X[0].Value = curves.NewField(curve.Params().N).NewElement(big.NewInt(1))
 
-	res2, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res2, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.Error(t, err)
 	require.Nil(t, res2)
 }
@@ -357,7 +377,9 @@ func TestDkgRound1RepeatCall(t *testing.T) {
 Tests for DKG Round 2
 */
 // Setup DKG Round2 parameters for 3 parties.
-func setupDkgRound2Params(curve elliptic.Curve, threshold, total int) (map[uint32]*DkgParticipant, map[uint32]*DkgRound1Bcast) {
+func setupDkgRound2Params(curve elliptic.Curve, threshold, total int) (
+	map[uint32]*DkgParticipant, map[uint32]*DkgRound1Bcast,
+) {
 	dkgParticipants := make(map[uint32]*DkgParticipant, total)
 	dpOutputs := make(map[uint32]*DkgRound1Bcast, total)
 	feldman, _ := v1.NewFeldman(uint32(threshold), uint32(total), curve)
@@ -677,45 +699,57 @@ func TestDkgRound4Works(t *testing.T) {
 	participants := setupDkgRound3ParticipantMap(curve, playerMin, playerCnt)
 	decommitments := setupDkgRound3Commitments(t, participants, playerCnt)
 
-	res1, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res1, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res1)
-	res2, err := participants[2].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[1],
-		2: participants[2].state.X[1],
-		3: participants[3].state.X[1],
-	})
+	res2, err := participants[2].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[1],
+			2: participants[2].state.X[1],
+			3: participants[3].state.X[1],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res2)
-	res3, err := participants[3].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[2],
-		2: participants[2].state.X[2],
-		3: participants[3].state.X[2],
-	})
+	res3, err := participants[3].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[2],
+			2: participants[2].state.X[2],
+			3: participants[3].state.X[2],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res3)
 
 	// Actual test
-	out1, err := participants[1].DkgRound4(map[uint32]paillier.PsfProof{
-		2: res2,
-		3: res3,
-	})
+	out1, err := participants[1].DkgRound4(
+		map[uint32]paillier.PsfProof{
+			2: res2,
+			3: res3,
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, out1)
-	out2, err := participants[2].DkgRound4(map[uint32]paillier.PsfProof{
-		1: res1,
-		3: res3,
-	})
+	out2, err := participants[2].DkgRound4(
+		map[uint32]paillier.PsfProof{
+			1: res1,
+			3: res3,
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, out2)
-	out3, err := participants[3].DkgRound4(map[uint32]paillier.PsfProof{
-		1: res1,
-		2: res2,
-	})
+	out3, err := participants[3].DkgRound4(
+		map[uint32]paillier.PsfProof{
+			1: res1,
+			2: res2,
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, out3)
 
@@ -748,40 +782,50 @@ func TestDkgRound4RepeatCall(t *testing.T) {
 	participants := setupDkgRound3ParticipantMap(curve, playerMin, playerCnt)
 	decommitments := setupDkgRound3Commitments(t, participants, playerCnt)
 
-	res1, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res1, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res1)
-	res2, err := participants[2].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[1],
-		2: participants[2].state.X[1],
-		3: participants[3].state.X[1],
-	})
+	res2, err := participants[2].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[1],
+			2: participants[2].state.X[1],
+			3: participants[3].state.X[1],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res2)
-	res3, err := participants[3].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[2],
-		2: participants[2].state.X[2],
-		3: participants[3].state.X[2],
-	})
+	res3, err := participants[3].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[2],
+			2: participants[2].state.X[2],
+			3: participants[3].state.X[2],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res3)
 
 	// Actual test
-	out1, err := participants[1].DkgRound4(map[uint32]paillier.PsfProof{
-		2: res2,
-		3: res3,
-	})
+	out1, err := participants[1].DkgRound4(
+		map[uint32]paillier.PsfProof{
+			2: res2,
+			3: res3,
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, out1)
 
-	out2, err := participants[1].DkgRound4(map[uint32]paillier.PsfProof{
-		2: res2,
-		3: res3,
-	})
+	out2, err := participants[1].DkgRound4(
+		map[uint32]paillier.PsfProof{
+			2: res2,
+			3: res3,
+		},
+	)
 	require.NoError(t, err)
 	require.Equal(t, out1, out2)
 }
@@ -794,37 +838,47 @@ func TestDkgRound4NotEnoughProofs(t *testing.T) {
 	participants := setupDkgRound3ParticipantMap(curve, playerMin, playerCnt)
 	decommitments := setupDkgRound3Commitments(t, participants, playerCnt)
 
-	res1, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res1, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res1)
-	res2, err := participants[2].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[1],
-		2: participants[2].state.X[1],
-		3: participants[3].state.X[1],
-	})
+	res2, err := participants[2].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[1],
+			2: participants[2].state.X[1],
+			3: participants[3].state.X[1],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res2)
-	res3, err := participants[3].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[2],
-		2: participants[2].state.X[2],
-		3: participants[3].state.X[2],
-	})
+	res3, err := participants[3].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[2],
+			2: participants[2].state.X[2],
+			3: participants[3].state.X[2],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res3)
 
 	// Actual test
-	out1, err := participants[1].DkgRound4(map[uint32]paillier.PsfProof{
-		2: res2,
-	})
+	out1, err := participants[1].DkgRound4(
+		map[uint32]paillier.PsfProof{
+			2: res2,
+		},
+	)
 	require.Error(t, err)
 	require.Nil(t, out1)
-	out2, err := participants[1].DkgRound4(map[uint32]paillier.PsfProof{
-		3: res3,
-	})
+	out2, err := participants[1].DkgRound4(
+		map[uint32]paillier.PsfProof{
+			3: res3,
+		},
+	)
 	require.Error(t, err)
 	require.Nil(t, out2)
 }
@@ -837,11 +891,13 @@ func TestDkgRound4NoProofs(t *testing.T) {
 	participants := setupDkgRound3ParticipantMap(curve, playerMin, playerCnt)
 	decommitments := setupDkgRound3Commitments(t, participants, playerCnt)
 
-	res1, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res1, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res1)
 
@@ -859,39 +915,49 @@ func TestDkgRound4WrongProofs(t *testing.T) {
 	participants := setupDkgRound3ParticipantMap(curve, playerMin, playerCnt)
 	decommitments := setupDkgRound3Commitments(t, participants, playerCnt)
 
-	res1, err := participants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[0],
-		2: participants[2].state.X[0],
-		3: participants[3].state.X[0],
-	})
+	res1, err := participants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[0],
+			2: participants[2].state.X[0],
+			3: participants[3].state.X[0],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res1)
-	res2, err := participants[2].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[1],
-		2: participants[2].state.X[1],
-		3: participants[3].state.X[1],
-	})
+	res2, err := participants[2].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[1],
+			2: participants[2].state.X[1],
+			3: participants[3].state.X[1],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res2)
-	res3, err := participants[3].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: participants[1].state.X[2],
-		2: participants[2].state.X[2],
-		3: participants[3].state.X[2],
-	})
+	res3, err := participants[3].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: participants[1].state.X[2],
+			2: participants[2].state.X[2],
+			3: participants[3].state.X[2],
+		},
+	)
 	require.NoError(t, err)
 	require.NotNil(t, res3)
 
 	// Actual test
-	out1, err := participants[1].DkgRound4(map[uint32]paillier.PsfProof{
-		2: res2,
-		3: res1,
-	})
+	out1, err := participants[1].DkgRound4(
+		map[uint32]paillier.PsfProof{
+			2: res2,
+			3: res1,
+		},
+	)
 	require.Error(t, err)
 	require.Nil(t, out1)
-	out2, err := participants[1].DkgRound4(map[uint32]paillier.PsfProof{
-		2: res3,
-		3: res3,
-	})
+	out2, err := participants[1].DkgRound4(
+		map[uint32]paillier.PsfProof{
+			2: res3,
+			3: res3,
+		},
+	)
 	require.Error(t, err)
 	require.Nil(t, out2)
 }
@@ -941,25 +1007,31 @@ func TestDkgFullRoundsWorks(t *testing.T) {
 	decommitments[2] = dkgR2Bcast[2].Di
 	decommitments[3] = dkgR2Bcast[3].Di
 
-	dkgR3Out[1], err = dkgParticipants[1].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: dkgParticipants[1].state.X[0],
-		2: dkgParticipants[2].state.X[0],
-		3: dkgParticipants[3].state.X[0],
-	})
+	dkgR3Out[1], err = dkgParticipants[1].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: dkgParticipants[1].state.X[0],
+			2: dkgParticipants[2].state.X[0],
+			3: dkgParticipants[3].state.X[0],
+		},
+	)
 	require.NoError(t, err)
 
-	dkgR3Out[2], err = dkgParticipants[2].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: dkgParticipants[1].state.X[1],
-		2: dkgParticipants[2].state.X[1],
-		3: dkgParticipants[3].state.X[1],
-	})
+	dkgR3Out[2], err = dkgParticipants[2].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: dkgParticipants[1].state.X[1],
+			2: dkgParticipants[2].state.X[1],
+			3: dkgParticipants[3].state.X[1],
+		},
+	)
 	require.NoError(t, err)
 
-	dkgR3Out[3], err = dkgParticipants[3].DkgRound3(decommitments, map[uint32]*v1.ShamirShare{
-		1: dkgParticipants[1].state.X[2],
-		2: dkgParticipants[2].state.X[2],
-		3: dkgParticipants[3].state.X[2],
-	})
+	dkgR3Out[3], err = dkgParticipants[3].DkgRound3(
+		decommitments, map[uint32]*v1.ShamirShare{
+			1: dkgParticipants[1].state.X[2],
+			2: dkgParticipants[2].state.X[2],
+			3: dkgParticipants[3].state.X[2],
+		},
+	)
 	require.NoError(t, err)
 
 	// Run Dkg Round 4
@@ -997,9 +1069,18 @@ func TestDkgFullRoundsWorks(t *testing.T) {
 
 	// Testing validity of paillier public key and secret key
 	// Check every participant receives equal paillier public keys from other parties
-	require.Equal(t, dkgParticipants[1].state.otherParticipantData[2].PublicKey, dkgParticipants[3].state.otherParticipantData[2].PublicKey)
-	require.Equal(t, dkgParticipants[1].state.otherParticipantData[3].PublicKey, dkgParticipants[2].state.otherParticipantData[3].PublicKey)
-	require.Equal(t, dkgParticipants[2].state.otherParticipantData[1].PublicKey, dkgParticipants[3].state.otherParticipantData[1].PublicKey)
+	require.Equal(
+		t, dkgParticipants[1].state.otherParticipantData[2].PublicKey,
+		dkgParticipants[3].state.otherParticipantData[2].PublicKey,
+	)
+	require.Equal(
+		t, dkgParticipants[1].state.otherParticipantData[3].PublicKey,
+		dkgParticipants[2].state.otherParticipantData[3].PublicKey,
+	)
+	require.Equal(
+		t, dkgParticipants[2].state.otherParticipantData[1].PublicKey,
+		dkgParticipants[3].state.otherParticipantData[1].PublicKey,
+	)
 
 	// Testing validity of paillier keys of participant 1
 	pk1 := dkgParticipants[2].state.otherParticipantData[1].PublicKey

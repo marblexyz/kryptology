@@ -15,8 +15,8 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	v1 "github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	v1 "github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 var (
@@ -101,26 +101,37 @@ func TestDkg(t *testing.T) {
 	require.NotNil(t, serverResult)
 
 	// Now run tests
-	t.Run("produce the same public key", func(t *testing.T) {
-		require.Equal(t, clientResult.PublicKey, serverResult.PublicKey)
-	})
-	t.Run("produce identical public shares", func(t *testing.T) {
-		require.True(t, reflect.DeepEqual(clientResult.PublicShares, serverResult.PublicShares))
-	})
-	t.Run("produce distinct secret shares", func(t *testing.T) {
-		require.NotEqual(t, clientResult.SecretShare, serverResult.SecretShare)
-	})
-	t.Run("produce distinct secret shares", func(t *testing.T) {
-		require.NotEqual(t, clientResult.SecretShare, serverResult.SecretShare)
-	})
-	t.Run("shares sum to expected public key", func(t *testing.T) {
-		pubkey, err := reconstructPubkey(
-			clientResult.SecretShare,
-			serverResult.SecretShare,
-			curve)
-		require.NoError(t, err)
-		require.Equal(t, serverResult.PublicKey, pubkey)
-	})
+	t.Run(
+		"produce the same public key", func(t *testing.T) {
+			require.Equal(t, clientResult.PublicKey, serverResult.PublicKey)
+		},
+	)
+	t.Run(
+		"produce identical public shares", func(t *testing.T) {
+			require.True(t, reflect.DeepEqual(clientResult.PublicShares, serverResult.PublicShares))
+		},
+	)
+	t.Run(
+		"produce distinct secret shares", func(t *testing.T) {
+			require.NotEqual(t, clientResult.SecretShare, serverResult.SecretShare)
+		},
+	)
+	t.Run(
+		"produce distinct secret shares", func(t *testing.T) {
+			require.NotEqual(t, clientResult.SecretShare, serverResult.SecretShare)
+		},
+	)
+	t.Run(
+		"shares sum to expected public key", func(t *testing.T) {
+			pubkey, err := reconstructPubkey(
+				clientResult.SecretShare,
+				serverResult.SecretShare,
+				curve,
+			)
+			require.NoError(t, err)
+			require.Equal(t, serverResult.PublicKey, pubkey)
+		},
+	)
 }
 
 // Reconstruct the pubkey from 2 shares

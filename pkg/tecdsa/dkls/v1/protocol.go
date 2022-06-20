@@ -3,7 +3,7 @@
 package v1
 
 import (
-	"github.com/coinbase/kryptology/pkg/core/protocol"
+	"github.com/trysuperdrop/kryptology/pkg/core/protocol"
 )
 
 // Basic protocol interface implementation that calls the next step func in a pre-defined list

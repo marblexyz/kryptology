@@ -9,7 +9,7 @@ package frost
 import (
 	"crypto/sha512"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 type ChallengeDerive interface {
@@ -18,7 +18,9 @@ type ChallengeDerive interface {
 
 type Ed25519ChallengeDeriver struct{}
 
-func (ed Ed25519ChallengeDeriver) DeriveChallenge(msg []byte, pubKey curves.Point, r curves.Point) (curves.Scalar, error) {
+func (ed Ed25519ChallengeDeriver) DeriveChallenge(msg []byte, pubKey curves.Point, r curves.Point) (
+	curves.Scalar, error,
+) {
 	h := sha512.New()
 	_, _ = h.Write(r.ToAffineCompressed())
 	_, _ = h.Write(pubKey.ToAffineCompressed())

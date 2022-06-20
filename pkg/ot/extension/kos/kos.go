@@ -18,8 +18,8 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
 )
 
 const (
@@ -200,7 +200,9 @@ func transposeBooleanMatrix(input [Kappa][cOtExtendedBlockSizeBytes]byte) [lPrim
 
 // Round1Initialize initializes the OT Extension. see page 17, steps 1), 2), 3) and 4) of Protocol 9 of the paper.
 // The input `choice` vector is "packed" (i.e., the underlying abstract vector of `L` bits is represented as a `cOTBlockSizeBytes` bytes).
-func (receiver *Receiver) Round1Initialize(uniqueSessionId [simplest.DigestSize]byte, choice [COtBlockSizeBytes]byte) (*Round1Output, error) {
+func (receiver *Receiver) Round1Initialize(
+	uniqueSessionId [simplest.DigestSize]byte, choice [COtBlockSizeBytes]byte,
+) (*Round1Output, error) {
 	// salt the transcript with the OT-extension session ID
 	receiver.uniqueSessionId = uniqueSessionId
 
@@ -251,7 +253,11 @@ func (receiver *Receiver) Round1Initialize(uniqueSessionId [simplest.DigestSize]
 			return nil, errors.Wrap(err, "writing input digest into hash while computing chiJ in cOT receiver round 1")
 		}
 		chiJ := hash.Sum(nil)
-		wJ := convertBitToBitmask(simplest.ExtractBitFromByteVector(receiver.extendedPackedChoices[:], j)) // extract j^th bit from vector of bytes w.
+		wJ := convertBitToBitmask(
+			simplest.ExtractBitFromByteVector(
+				receiver.extendedPackedChoices[:], j,
+			),
+		) // extract j^th bit from vector of bytes w.
 		psiJTimesChiJ := binaryFieldMul(receiver.psi[j][:], chiJ)
 		for k := 0; k < KappaBytes; k++ {
 			result.WPrime[k] ^= wJ & chiJ[k]
@@ -266,12 +272,16 @@ func (receiver *Receiver) Round1Initialize(uniqueSessionId [simplest.DigestSize]
 // `message` contains the message the receiver ("Bob") sent us. this itself contains Bob's values WPrime, VPrime, and U
 // the output is just the values `Tau` we send back to Bob.
 // as a side effect of this function, our (i.e., the sender's) outputs tA_j from the cOT will be populated.
-func (sender *Sender) Round2Transfer(uniqueSessionId [simplest.DigestSize]byte, input [L][OtWidth]curves.Scalar, round1Output *Round1Output) (*Round2Output, error) {
+func (sender *Sender) Round2Transfer(
+	uniqueSessionId [simplest.DigestSize]byte, input [L][OtWidth]curves.Scalar, round1Output *Round1Output,
+) (*Round2Output, error) {
 	z := [Kappa][cOtExtendedBlockSizeBytes]byte{}
 	hash := sha3.New256() // basically this will contain a hash of the matrix U.
 
 	for i := 0; i < Kappa; i++ {
-		v := make([]byte, cOtExtendedBlockSizeBytes) // will contain alice's expanded PRG output for the row i, namely v_i^{\Nabla_i}.
+		v := make(
+			[]byte, cOtExtendedBlockSizeBytes,
+		) // will contain alice's expanded PRG output for the row i, namely v_i^{\Nabla_i}.
 		shake := sha3.NewCShake256(uniqueSessionId[:], []byte("Coinbase_DKLs_cOT"))
 		if _, err := shake.Write(sender.seedOtResults.OneTimePadDecryptionKey[i][:]); err != nil {
 			return nil, errors.Wrap(err, "sender writing seed OT decryption key into shake in sender round 2 transfer")
@@ -299,7 +309,9 @@ func (sender *Sender) Round2Transfer(uniqueSessionId [simplest.DigestSize]byte, 
 			return nil, errors.Wrap(err, "writing nonce into hash while computing chiJ in cOT sender round 2 transfer")
 		}
 		if _, err := hash.Write(digest); err != nil {
-			return nil, errors.Wrap(err, "writing input digest into hash while computing chiJ in cOT sender round 2 transfer")
+			return nil, errors.Wrap(
+				err, "writing input digest into hash while computing chiJ in cOT sender round 2 transfer",
+			)
 		}
 		chiJ := hash.Sum(nil)
 		zetaJTimesChiJ := binaryFieldMul(zeta[j][:], chiJ)
@@ -322,13 +334,20 @@ func (sender *Sender) Round2Transfer(uniqueSessionId [simplest.DigestSize]byte, 
 		jBytes := [2]byte{}
 		binary.BigEndian.PutUint16(jBytes[:], uint16(j))
 		if _, err := shake.Write(jBytes[:]); err != nil { // write j into hash
-			return nil, errors.Wrap(err, "writing nonce into shake while computing OutputAdditiveShares in cOT sender round 2 transfer")
+			return nil, errors.Wrap(
+				err, "writing nonce into shake while computing OutputAdditiveShares in cOT sender round 2 transfer",
+			)
 		}
 		if _, err := shake.Write(zeta[j][:]); err != nil {
-			return nil, errors.Wrap(err, "writing input zeta_j into shake while computing OutputAdditiveShares in cOT sender round 2 transfer")
+			return nil, errors.Wrap(
+				err,
+				"writing input zeta_j into shake while computing OutputAdditiveShares in cOT sender round 2 transfer",
+			)
 		}
 		if _, err := shake.Read(column[:]); err != nil {
-			return nil, errors.Wrap(err, "reading shake into column while computing OutputAdditiveShares in cOT sender round 2 transfer")
+			return nil, errors.Wrap(
+				err, "reading shake into column while computing OutputAdditiveShares in cOT sender round 2 transfer",
+			)
 		}
 		var err error
 		for k := 0; k < OtWidth; k++ {
@@ -347,7 +366,9 @@ func (sender *Sender) Round2Transfer(uniqueSessionId [simplest.DigestSize]byte, 
 			return nil, errors.Wrap(err, "writing nonce into shake while computing tau in cOT sender round 2 transfer")
 		}
 		if _, err := shake.Write(zeta[j][:]); err != nil {
-			return nil, errors.Wrap(err, "writing input zeta_j into shake while computing tau in cOT sender round 2 transfer")
+			return nil, errors.Wrap(
+				err, "writing input zeta_j into shake while computing tau in cOT sender round 2 transfer",
+			)
 		}
 		if _, err := shake.Read(column[:]); err != nil {
 			return nil, errors.Wrap(err, "reading shake into column while computing tau in cOT sender round 2 transfer")
@@ -375,7 +396,9 @@ func (receiver *Receiver) Round3Transfer(round2Output *Round2Output) error {
 			return errors.Wrap(err, "writing nonce into shake while computing tB in cOT receiver round 3 transfer")
 		}
 		if _, err := shake.Write(receiver.psi[j][:]); err != nil {
-			return errors.Wrap(err, "writing input zeta_j into shake while computing tB in cOT receiver round 3 transfer")
+			return errors.Wrap(
+				err, "writing input zeta_j into shake while computing tB in cOT receiver round 3 transfer",
+			)
 		}
 		if _, err := shake.Read(column[:]); err != nil {
 			return errors.Wrap(err, "reading shake into column while computing tB in cOT receiver round 3 transfer")

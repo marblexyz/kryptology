@@ -3,9 +3,9 @@ package p256
 import (
 	"sync"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves/native"
-	"github.com/coinbase/kryptology/pkg/core/curves/native/p256/fp"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/p256/fp"
 )
 
 var (
@@ -37,10 +37,26 @@ func p256PointParamsInit() {
 	//gy := fp.P256FpNew().SetBigInt(params.Gy)
 
 	p256PointParams = native.EllipticPointParams{
-		A:       fp.P256FpNew().SetRaw(&[native.FieldLimbs]uint64{0xfffffffffffffffc, 0x00000003ffffffff, 0x0000000000000000, 0xfffffffc00000004}),
-		B:       fp.P256FpNew().SetRaw(&[native.FieldLimbs]uint64{0xd89cdf6229c4bddf, 0xacf005cd78843090, 0xe5a220abf7212ed6, 0xdc30061d04874834}),
-		Gx:      fp.P256FpNew().SetRaw(&[native.FieldLimbs]uint64{0x79e730d418a9143c, 0x75ba95fc5fedb601, 0x79fb732b77622510, 0x18905f76a53755c6}),
-		Gy:      fp.P256FpNew().SetRaw(&[native.FieldLimbs]uint64{0xddf25357ce95560a, 0x8b4ab8e4ba19e45c, 0xd2e88688dd21f325, 0x8571ff1825885d85}),
+		A: fp.P256FpNew().SetRaw(
+			&[native.FieldLimbs]uint64{
+				0xfffffffffffffffc, 0x00000003ffffffff, 0x0000000000000000, 0xfffffffc00000004,
+			},
+		),
+		B: fp.P256FpNew().SetRaw(
+			&[native.FieldLimbs]uint64{
+				0xd89cdf6229c4bddf, 0xacf005cd78843090, 0xe5a220abf7212ed6, 0xdc30061d04874834,
+			},
+		),
+		Gx: fp.P256FpNew().SetRaw(
+			&[native.FieldLimbs]uint64{
+				0x79e730d418a9143c, 0x75ba95fc5fedb601, 0x79fb732b77622510, 0x18905f76a53755c6,
+			},
+		),
+		Gy: fp.P256FpNew().SetRaw(
+			&[native.FieldLimbs]uint64{
+				0xddf25357ce95560a, 0x8b4ab8e4ba19e45c, 0xd2e88688dd21f325, 0x8571ff1825885d85,
+			},
+		),
 		BitSize: 256,
 		Name:    "P256",
 	}

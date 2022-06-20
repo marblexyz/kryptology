@@ -11,9 +11,9 @@ import (
 	"crypto/elliptic"
 	"fmt"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 // Participant is a DKG player that contains information needed to perform DKG rounds
@@ -37,7 +37,9 @@ type Participant struct {
 // `generator` is the blinding factor generator used by pedersen's verifiable secret sharing
 // `otherParticipants` is the integer value identifiers for the other participants
 // `id` and `otherParticipants` must be the set of integers 1,2,....,n
-func NewParticipant(id, threshold uint32, generator *curves.EcPoint, scalar curves.EcScalar, otherParticipants ...uint32) (*Participant, error) {
+func NewParticipant(
+	id, threshold uint32, generator *curves.EcPoint, scalar curves.EcScalar, otherParticipants ...uint32,
+) (*Participant, error) {
 	if generator == nil || len(otherParticipants) == 0 {
 		return nil, internal.ErrNilArguments
 	}

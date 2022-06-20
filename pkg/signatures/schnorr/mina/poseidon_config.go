@@ -7,7 +7,7 @@
 package mina
 
 import (
-	"github.com/coinbase/kryptology/pkg/core/curves/native/pasta/fp"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fp"
 )
 
 // SBox is the type of exponentiation to perform

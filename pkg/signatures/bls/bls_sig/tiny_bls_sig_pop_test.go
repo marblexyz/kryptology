@@ -12,7 +12,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/coinbase/kryptology/pkg/core/curves/native/bls12381"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/bls12381"
 )
 
 const numAggregateG1 = 10
@@ -21,7 +21,12 @@ func TestGetPublicKeyG2(t *testing.T) {
 	sk := genSecretKey(t)
 	pk := genPublicKeyVt(sk, t)
 	actual := marshalStruct(pk, t)
-	expected := []byte{175, 76, 33, 103, 184, 172, 12, 111, 24, 87, 84, 61, 243, 82, 99, 76, 131, 95, 171, 237, 145, 143, 7, 93, 205, 148, 104, 29, 153, 103, 187, 206, 112, 223, 252, 198, 102, 41, 38, 244, 228, 223, 102, 16, 216, 152, 231, 250, 7, 111, 90, 98, 194, 244, 101, 251, 69, 130, 11, 209, 41, 210, 133, 105, 217, 179, 190, 1, 6, 155, 135, 2, 168, 249, 253, 41, 59, 87, 8, 49, 231, 198, 142, 30, 186, 44, 175, 17, 198, 63, 210, 176, 237, 171, 11, 127}
+	expected := []byte{
+		175, 76, 33, 103, 184, 172, 12, 111, 24, 87, 84, 61, 243, 82, 99, 76, 131, 95, 171, 237, 145, 143, 7, 93, 205,
+		148, 104, 29, 153, 103, 187, 206, 112, 223, 252, 198, 102, 41, 38, 244, 228, 223, 102, 16, 216, 152, 231, 250,
+		7, 111, 90, 98, 194, 244, 101, 251, 69, 130, 11, 209, 41, 210, 133, 105, 217, 179, 190, 1, 6, 155, 135, 2, 168,
+		249, 253, 41, 59, 87, 8, 49, 231, 198, 142, 30, 186, 44, 175, 17, 198, 63, 210, 176, 237, 171, 11, 127,
+	}
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("Expected GetPublicKeyVt to pass but failed.")
 	}
@@ -667,8 +672,10 @@ func TestFastAggregateVerifyG1Fails(t *testing.T) {
 }
 
 func TestCustomPopDstG1Works(t *testing.T) {
-	bls, _ := NewSigPopVtWithDst("BLS_SIG_BLS12381G1_XMD:SHA-256_SSWU_RO_POP_TEST",
-		"BLS_POP_BLS12381G1_XMD:SHA-256_SSWU_RO_POP_TEST")
+	bls, _ := NewSigPopVtWithDst(
+		"BLS_SIG_BLS12381G1_XMD:SHA-256_SSWU_RO_POP_TEST",
+		"BLS_POP_BLS12381G1_XMD:SHA-256_SSWU_RO_POP_TEST",
+	)
 	msg := make([]byte, 20)
 	ikm := make([]byte, 32)
 	pk, sk, err := bls.KeygenWithSeed(ikm)

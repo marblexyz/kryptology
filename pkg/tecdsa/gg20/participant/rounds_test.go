@@ -16,12 +16,12 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	tt "github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/paillier"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/dealer"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/proof"
+	tt "github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/paillier"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/proof"
 )
 
 var (
@@ -112,8 +112,10 @@ func genPrimesArray(count int) []struct{ p, q *big.Int } {
 }
 
 // Creates a set of signers that are usable for testing
-func setupSignersMap(t *testing.T, curve elliptic.Curve, playerThreshold, playerCnt int,
-	addRound1 bool, verify curves.EcdsaVerify, useDistributed bool) (*curves.EcPoint, map[uint32]*Signer) {
+func setupSignersMap(
+	t *testing.T, curve elliptic.Curve, playerThreshold, playerCnt int,
+	addRound1 bool, verify curves.EcdsaVerify, useDistributed bool,
+) (*curves.EcPoint, map[uint32]*Signer) {
 
 	if playerThreshold > playerCnt {
 		t.Errorf("threshold cannot be larger than count")
@@ -220,21 +222,25 @@ func TestSignerSignRound1Works(t *testing.T) {
 			require.NotNil(t, signer.state.ri)
 
 			if signerIOut.Proof != nil {
-				err = signerIOut.Proof.Verify(&proof.Proof1Params{
-					Curve:        curve,
-					Pk:           &signer.sk.PublicKey,
-					DealerParams: dealerParams,
-					C:            signerIOut.Ctxt,
-				})
+				err = signerIOut.Proof.Verify(
+					&proof.Proof1Params{
+						Curve:        curve,
+						Pk:           &signer.sk.PublicKey,
+						DealerParams: dealerParams,
+						C:            signerIOut.Ctxt,
+					},
+				)
 				require.NoError(t, err)
 			} else {
 				for id, pf := range p2p {
-					err = pf.Verify(&proof.Proof1Params{
-						Curve:        curve,
-						Pk:           &signer.sk.PublicKey,
-						DealerParams: signer.state.keyGenType.GetProofParams(id),
-						C:            signerIOut.Ctxt,
-					})
+					err = pf.Verify(
+						&proof.Proof1Params{
+							Curve:        curve,
+							Pk:           &signer.sk.PublicKey,
+							DealerParams: signer.state.keyGenType.GetProofParams(id),
+							C:            signerIOut.Ctxt,
+						},
+					)
 					require.NoError(t, err)
 				}
 			}
@@ -302,39 +308,47 @@ func TestSignerSignRound2Works(t *testing.T) {
 		}
 
 		// Check that the return values can be finalized without error
-		_, err = p2pi[2].Proof2.Finalize(&proof.ResponseVerifyParams{
-			Curve:        curve,
-			DealerParams: signer.state.keyGenType.GetProofParams(2),
-			Sk:           signers[2].sk,
-			C1:           signers[2].state.ci,
-		})
+		_, err = p2pi[2].Proof2.Finalize(
+			&proof.ResponseVerifyParams{
+				Curve:        curve,
+				DealerParams: signer.state.keyGenType.GetProofParams(2),
+				Sk:           signers[2].sk,
+				C1:           signers[2].state.ci,
+			},
+		)
 		require.NoError(t, err)
 
-		_, err = p2pi[3].Proof2.Finalize(&proof.ResponseVerifyParams{
-			Curve:        curve,
-			DealerParams: signer.state.keyGenType.GetProofParams(3),
-			Sk:           signers[3].sk,
-			C1:           signers[3].state.ci,
-		})
+		_, err = p2pi[3].Proof2.Finalize(
+			&proof.ResponseVerifyParams{
+				Curve:        curve,
+				DealerParams: signer.state.keyGenType.GetProofParams(3),
+				Sk:           signers[3].sk,
+				C1:           signers[3].state.ci,
+			},
+		)
 		require.NoError(t, err)
 
-		_, err = p2pi[2].Proof3.FinalizeWc(&proof.ResponseVerifyParams{
-			Curve:        curve,
-			DealerParams: signer.state.keyGenType.GetProofParams(2),
-			Sk:           signers[2].sk,
-			C1:           signers[2].state.ci,
-			// pubkey of the proof creator which in this case is signer = signers[0]
-			B: signer.publicSharesMap[1].Point,
-		})
+		_, err = p2pi[2].Proof3.FinalizeWc(
+			&proof.ResponseVerifyParams{
+				Curve:        curve,
+				DealerParams: signer.state.keyGenType.GetProofParams(2),
+				Sk:           signers[2].sk,
+				C1:           signers[2].state.ci,
+				// pubkey of the proof creator which in this case is signer = signers[0]
+				B: signer.publicSharesMap[1].Point,
+			},
+		)
 		require.NoError(t, err)
 
-		_, err = p2pi[3].Proof3.FinalizeWc(&proof.ResponseVerifyParams{
-			Curve:        curve,
-			DealerParams: signer.state.keyGenType.GetProofParams(3),
-			Sk:           signers[3].sk,
-			C1:           signers[3].state.ci,
-			B:            signer.publicSharesMap[1].Point,
-		})
+		_, err = p2pi[3].Proof3.FinalizeWc(
+			&proof.ResponseVerifyParams{
+				Curve:        curve,
+				DealerParams: signer.state.keyGenType.GetProofParams(3),
+				Sk:           signers[3].sk,
+				C1:           signers[3].state.ci,
+				B:            signer.publicSharesMap[1].Point,
+			},
+		)
 		require.NoError(t, err)
 	}
 }
@@ -399,7 +413,8 @@ func TestSignRound3(t *testing.T) {
 			for j := range signers {
 				s.state.betaj[j] = core.One
 				s.state.vuj[j] = core.One
-				p2p[j] = &P2PSend{&responseProofMock{th13een, th13een},
+				p2p[j] = &P2PSend{
+					&responseProofMock{th13een, th13een},
 					&responseProofMock{th13een, th13een},
 				}
 			}
@@ -407,11 +422,13 @@ func TestSignRound3(t *testing.T) {
 			// Test that invalid signing rounds states are rejected
 			invalid := []uint{0, 1, 2, 5}
 			for _, round := range invalid {
-				t.Run("invalid signing round states are rejected", func(t *testing.T) {
-					s.Round = round
-					_, err := s.SignRound3(p2p)
-					require.Error(t, err)
-				})
+				t.Run(
+					"invalid signing round states are rejected", func(t *testing.T) {
+						s.Round = round
+						_, err := s.SignRound3(p2p)
+						require.Error(t, err)
+					},
+				)
 			}
 
 			// Sign
@@ -426,26 +443,34 @@ func TestSignRound3(t *testing.T) {
 				t.FailNow()
 			}
 
-			t.Run("state vars are set", func(t *testing.T) {
-				require.NotNil(t, s.state.deltai)
-				require.NotNil(t, s.state.sigmai)
-			})
+			t.Run(
+				"state vars are set", func(t *testing.T) {
+					require.NotNil(t, s.state.deltai)
+					require.NotNil(t, s.state.sigmai)
+				},
+			)
 
-			t.Run("return value matches state", func(t *testing.T) {
-				require.Equal(t, bcast.deltaElement, s.state.deltai)
-			})
+			t.Run(
+				"return value matches state", func(t *testing.T) {
+					require.Equal(t, bcast.deltaElement, s.state.deltai)
+				},
+			)
 
-			t.Run("round variable is updated", func(t *testing.T) {
-				if s.Round != 4 {
-					t.Errorf("round variable != 4")
-				}
-			})
+			t.Run(
+				"round variable is updated", func(t *testing.T) {
+					if s.Round != 4 {
+						t.Errorf("round variable != 4")
+					}
+				},
+			)
 
-			t.Run("round variable is updated", func(t *testing.T) {
-				if s.Round != 4 {
-					t.Errorf("round variable != 4")
-				}
-			})
+			t.Run(
+				"round variable is updated", func(t *testing.T) {
+					if s.Round != 4 {
+						t.Errorf("round variable != 4")
+					}
+				},
+			)
 		}
 	}
 }
@@ -474,11 +499,13 @@ func TestSignRound4(t *testing.T) {
 		// Test that invalid signing rounds states are rejected
 		invalid := []uint{0, 1, 2, 3, 5, 6}
 		for _, round := range invalid {
-			t.Run("invalid signing round states are rejected", func(t *testing.T) {
-				s.Round = round
-				_, err := s.SignRound4(ones)
-				require.Error(t, err)
-			})
+			t.Run(
+				"invalid signing round states are rejected", func(t *testing.T) {
+					s.Round = round
+					_, err := s.SignRound4(ones)
+					require.Error(t, err)
+				},
+			)
 		}
 
 		// Sign
@@ -494,9 +521,11 @@ func TestSignRound4(t *testing.T) {
 			t.Errorf("bcast should not be nil")
 		}
 
-		t.Run("state vars are set", func(t *testing.T) {
-			require.NotNil(t, s.state.delta)
-		})
+		t.Run(
+			"state vars are set", func(t *testing.T) {
+				require.NotNil(t, s.state.delta)
+			},
+		)
 	}
 }
 
@@ -678,10 +707,12 @@ func fullroundstest3Signers(t *testing.T, curve elliptic.Curve, msg []byte, veri
 			r1P2pIn[2] = r1P2P[2][1]
 			r1P2pIn[3] = r1P2P[3][1]
 		}
-		p2p[1], err = signers[1].SignRound2(map[uint32]*Round1Bcast{
-			2: signerOut[2],
-			3: signerOut[3],
-		}, r1P2pIn)
+		p2p[1], err = signers[1].SignRound2(
+			map[uint32]*Round1Bcast{
+				2: signerOut[2],
+				3: signerOut[3],
+			}, r1P2pIn,
+		)
 		require.NoError(t, err)
 
 		err = signers[2].setCosigners([]uint32{1, 3})
@@ -691,10 +722,12 @@ func fullroundstest3Signers(t *testing.T, curve elliptic.Curve, msg []byte, veri
 			r1P2pIn[1] = r1P2P[1][2]
 			r1P2pIn[3] = r1P2P[3][2]
 		}
-		p2p[2], err = signers[2].SignRound2(map[uint32]*Round1Bcast{
-			1: signerOut[1],
-			3: signerOut[3],
-		}, r1P2pIn)
+		p2p[2], err = signers[2].SignRound2(
+			map[uint32]*Round1Bcast{
+				1: signerOut[1],
+				3: signerOut[3],
+			}, r1P2pIn,
+		)
 		require.NoError(t, err)
 
 		err = signers[3].setCosigners([]uint32{1, 2})
@@ -704,10 +737,12 @@ func fullroundstest3Signers(t *testing.T, curve elliptic.Curve, msg []byte, veri
 			r1P2pIn[1] = r1P2P[1][3]
 			r1P2pIn[2] = r1P2P[2][3]
 		}
-		p2p[3], err = signers[3].SignRound2(map[uint32]*Round1Bcast{
-			1: signerOut[1],
-			2: signerOut[2],
-		}, r1P2pIn)
+		p2p[3], err = signers[3].SignRound2(
+			map[uint32]*Round1Bcast{
+				1: signerOut[1],
+				2: signerOut[2],
+			}, r1P2pIn,
+		)
 		require.NoError(t, err)
 
 		// Sign Round 3
@@ -735,13 +770,25 @@ func fullroundstest3Signers(t *testing.T, curve elliptic.Curve, msg []byte, veri
 		// Sign Round 5
 		round5Bcast := make(map[uint32]*Round5Bcast, playerMin)
 		r5P2p := make(map[uint32]map[uint32]*Round5P2PSend, playerMin)
-		round5Bcast[1], r5P2p[1], err = signers[1].SignRound5(map[uint32]*Round4Bcast{2: round4Bcast[2], 3: round4Bcast[3]})
+		round5Bcast[1], r5P2p[1], err = signers[1].SignRound5(
+			map[uint32]*Round4Bcast{
+				2: round4Bcast[2], 3: round4Bcast[3],
+			},
+		)
 		require.NoError(t, err)
 
-		round5Bcast[2], r5P2p[2], err = signers[2].SignRound5(map[uint32]*Round4Bcast{1: round4Bcast[1], 3: round4Bcast[3]})
+		round5Bcast[2], r5P2p[2], err = signers[2].SignRound5(
+			map[uint32]*Round4Bcast{
+				1: round4Bcast[1], 3: round4Bcast[3],
+			},
+		)
 		require.NoError(t, err)
 
-		round5Bcast[3], r5P2p[3], err = signers[3].SignRound5(map[uint32]*Round4Bcast{1: round4Bcast[1], 2: round4Bcast[2]})
+		round5Bcast[3], r5P2p[3], err = signers[3].SignRound5(
+			map[uint32]*Round4Bcast{
+				1: round4Bcast[1], 2: round4Bcast[2],
+			},
+		)
 		require.NoError(t, err)
 
 		Rbark, err := signers[1].state.Rbark.Add(signers[2].state.Rbark)
@@ -765,55 +812,73 @@ func fullroundstest3Signers(t *testing.T, curve elliptic.Curve, msg []byte, veri
 		if useDistributed {
 			// Check failure cases, first with nil input
 			// then with missing participant data
-			_, err = signers[1].SignRound6Full(msg, map[uint32]*Round5Bcast{2: round5Bcast[2], 3: round5Bcast[3]}, r6P2pin)
+			_, err = signers[1].SignRound6Full(
+				msg, map[uint32]*Round5Bcast{2: round5Bcast[2], 3: round5Bcast[3]}, r6P2pin,
+			)
 			require.Error(t, err)
 
 			r6P2pin = make(map[uint32]*Round5P2PSend, playerMin)
-			_, err = signers[1].SignRound6Full(msg, map[uint32]*Round5Bcast{2: round5Bcast[2], 3: round5Bcast[3]}, r6P2pin)
+			_, err = signers[1].SignRound6Full(
+				msg, map[uint32]*Round5Bcast{2: round5Bcast[2], 3: round5Bcast[3]}, r6P2pin,
+			)
 
 			require.Error(t, err)
 
 			r6P2pin[2] = r5P2p[2][1]
-			_, err = signers[1].SignRound6Full(msg, map[uint32]*Round5Bcast{2: round5Bcast[2], 3: round5Bcast[3]}, r6P2pin)
+			_, err = signers[1].SignRound6Full(
+				msg, map[uint32]*Round5Bcast{2: round5Bcast[2], 3: round5Bcast[3]}, r6P2pin,
+			)
 			require.Error(t, err)
 
 			r6P2pin[3] = r5P2p[3][1]
 		}
 		round6FullBcast := make([]*Round6FullBcast, playerMin)
-		round6FullBcast[0], err = signers[1].SignRound6Full(msg, map[uint32]*Round5Bcast{2: round5Bcast[2], 3: round5Bcast[3]}, r6P2pin)
+		round6FullBcast[0], err = signers[1].SignRound6Full(
+			msg, map[uint32]*Round5Bcast{2: round5Bcast[2], 3: round5Bcast[3]}, r6P2pin,
+		)
 		require.Nil(t, err)
 		if useDistributed {
 			r6P2pin = make(map[uint32]*Round5P2PSend, playerMin)
 			r6P2pin[1] = r5P2p[1][2]
 			r6P2pin[3] = r5P2p[3][2]
 		}
-		round6FullBcast[1], err = signers[2].SignRound6Full(msg, map[uint32]*Round5Bcast{1: round5Bcast[1], 3: round5Bcast[3]}, r6P2pin)
+		round6FullBcast[1], err = signers[2].SignRound6Full(
+			msg, map[uint32]*Round5Bcast{1: round5Bcast[1], 3: round5Bcast[3]}, r6P2pin,
+		)
 		require.Nil(t, err)
 		if useDistributed {
 			r6P2pin = make(map[uint32]*Round5P2PSend, playerMin)
 			r6P2pin[1] = r5P2p[1][3]
 			r6P2pin[2] = r5P2p[2][3]
 		}
-		round6FullBcast[2], err = signers[3].SignRound6Full(msg, map[uint32]*Round5Bcast{1: round5Bcast[1], 2: round5Bcast[2]}, r6P2pin)
+		round6FullBcast[2], err = signers[3].SignRound6Full(
+			msg, map[uint32]*Round5Bcast{1: round5Bcast[1], 2: round5Bcast[2]}, r6P2pin,
+		)
 		require.Nil(t, err)
 		require.NoError(t, err)
 
 		sigs := make([]*curves.EcdsaSignature, 3)
-		sigs[0], err = signers[1].SignOutput(map[uint32]*Round6FullBcast{
-			2: round6FullBcast[1],
-			3: round6FullBcast[2],
-		})
+		sigs[0], err = signers[1].SignOutput(
+			map[uint32]*Round6FullBcast{
+				2: round6FullBcast[1],
+				3: round6FullBcast[2],
+			},
+		)
 		require.NoError(t, err)
 
-		sigs[1], err = signers[2].SignOutput(map[uint32]*Round6FullBcast{
-			1: round6FullBcast[0],
-			3: round6FullBcast[2],
-		})
+		sigs[1], err = signers[2].SignOutput(
+			map[uint32]*Round6FullBcast{
+				1: round6FullBcast[0],
+				3: round6FullBcast[2],
+			},
+		)
 		require.NoError(t, err)
-		sigs[2], err = signers[3].SignOutput(map[uint32]*Round6FullBcast{
-			1: round6FullBcast[0],
-			2: round6FullBcast[1],
-		})
+		sigs[2], err = signers[3].SignOutput(
+			map[uint32]*Round6FullBcast{
+				1: round6FullBcast[0],
+				2: round6FullBcast[1],
+			},
+		)
 		require.NoError(t, err)
 	}
 }

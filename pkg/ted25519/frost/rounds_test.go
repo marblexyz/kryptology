@@ -11,9 +11,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	dkg "github.com/coinbase/kryptology/pkg/dkg/frost"
-	"github.com/coinbase/kryptology/pkg/sharing"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	dkg "github.com/trysuperdrop/kryptology/pkg/dkg/frost"
+	"github.com/trysuperdrop/kryptology/pkg/sharing"
 )
 
 var (
@@ -366,7 +366,9 @@ func TestFullRoundsWorks(t *testing.T) {
 	require.NoError(t, err)
 	signers := make(map[uint32]*Signer, threshold)
 	for _, id := range signerIds {
-		signers[id], err = NewSigner(participants[id], id, uint32(threshold), lCoeffs, signerIds, &Ed25519ChallengeDeriver{})
+		signers[id], err = NewSigner(
+			participants[id], id, uint32(threshold), lCoeffs, signerIds, &Ed25519ChallengeDeriver{},
+		)
 		require.NoError(t, err)
 		require.NotNil(t, signers[id].skShare)
 	}

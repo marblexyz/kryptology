@@ -20,11 +20,11 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
-	"github.com/coinbase/kryptology/pkg/ot/extension/kos"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/dkg"
-	"github.com/coinbase/kryptology/pkg/zkp/schnorr"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
 )
 
 const multiplicationCount = 2
@@ -216,10 +216,14 @@ func (alice *Alice) Round3Sign(message []byte, round2Output *SignRound2Output) (
 	phi := alice.curve.Scalar.Random(rand.Reader)
 	kAInv := alice.curve.Scalar.One().Div(kA)
 
-	if round3Output.MultiplyRound2Outputs[0], err = multiplySenders[0].Round2Multiply(phi.Add(kAInv), round2Output.KosRound1Outputs[0]); err != nil {
+	if round3Output.MultiplyRound2Outputs[0], err = multiplySenders[0].Round2Multiply(
+		phi.Add(kAInv), round2Output.KosRound1Outputs[0],
+	); err != nil {
 		return nil, errors.Wrap(err, "error in round 2 multiply 0 within alice round 4 sign")
 	}
-	if round3Output.MultiplyRound2Outputs[1], err = multiplySenders[1].Round2Multiply(alice.secretKeyShare.Mul(kAInv), round2Output.KosRound1Outputs[1]); err != nil {
+	if round3Output.MultiplyRound2Outputs[1], err = multiplySenders[1].Round2Multiply(
+		alice.secretKeyShare.Mul(kAInv), round2Output.KosRound1Outputs[1],
+	); err != nil {
 		return nil, errors.Wrap(err, "error in round 2 multiply 1 within alice round 4 sign")
 	}
 
@@ -351,7 +355,9 @@ func (bob *Bob) Round4Final(message []byte, round3Output *SignRound3Output) erro
 	if err != nil {
 		return errors.Wrap(err, "invalid curve")
 	}
-	if !ecdsa.Verify(&ecdsa.PublicKey{Curve: ellipticCurve, X: x, Y: y}, digestBytes, bob.Signature.R, bob.Signature.S) {
+	if !ecdsa.Verify(
+		&ecdsa.PublicKey{Curve: ellipticCurve, X: x, Y: y}, digestBytes, bob.Signature.R, bob.Signature.S,
+	) {
 		return fmt.Errorf("final signature failed to verify")
 	}
 	return nil

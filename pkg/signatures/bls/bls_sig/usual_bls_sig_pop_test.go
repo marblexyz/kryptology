@@ -12,7 +12,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/coinbase/kryptology/pkg/core/curves/native/bls12381"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/bls12381"
 )
 
 const numAggregateG2 = 10
@@ -21,7 +21,10 @@ func TestGetPublicKeyG1(t *testing.T) {
 	sk := genSecretKey(t)
 	pk := genPublicKey(sk, t)
 	actual := marshalStruct(pk, t)
-	expected := []byte{166, 149, 173, 50, 93, 252, 126, 17, 145, 251, 201, 241, 134, 245, 142, 255, 66, 166, 52, 2, 151, 49, 177, 131, 128, 255, 137, 191, 66, 196, 100, 164, 44, 184, 202, 85, 178, 0, 240, 81, 245, 127, 30, 24, 147, 198, 135, 89}
+	expected := []byte{
+		166, 149, 173, 50, 93, 252, 126, 17, 145, 251, 201, 241, 134, 245, 142, 255, 66, 166, 52, 2, 151, 49, 177, 131,
+		128, 255, 137, 191, 66, 196, 100, 164, 44, 184, 202, 85, 178, 0, 240, 81, 245, 127, 30, 24, 147, 198, 135, 89,
+	}
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("Expected GetPublicKey to pass but failed.")
 	}
@@ -664,8 +667,10 @@ func TestFastAggregateVerifyG2Fails(t *testing.T) {
 }
 
 func TestCustomPopDstG2Works(t *testing.T) {
-	bls, _ := NewSigPopWithDst("BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_TEST",
-		"BLS_POP_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_TEST")
+	bls, _ := NewSigPopWithDst(
+		"BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_TEST",
+		"BLS_POP_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_TEST",
+	)
 	msg := make([]byte, 20)
 	ikm := make([]byte, 32)
 	pk, sk, err := bls.KeygenWithSeed(ikm)

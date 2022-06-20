@@ -11,8 +11,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/sharing"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/sharing"
 )
 
 var (
@@ -52,12 +52,16 @@ func TestDkgRound1BadSecret(t *testing.T) {
 	_, _, err = p1.Round1(secret)
 	require.Error(t, err)
 	// secret too big
-	secret = []byte{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7}
+	secret = []byte{
+		7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+	}
 	_, _, err = p1.Round1(secret)
 	require.Error(t, err)
 }
 
-func PrepareRound2Input(t *testing.T) (*DkgParticipant, *DkgParticipant, *Round1Bcast, *Round1Bcast, Round1P2PSend, Round1P2PSend) {
+func PrepareRound2Input(t *testing.T) (
+	*DkgParticipant, *DkgParticipant, *Round1Bcast, *Round1Bcast, Round1P2PSend, Round1P2PSend,
+) {
 	// Prepare round 1 output of 2 participants
 	p1, err := NewDkgParticipant(1, 2, Ctx, testCurve, 2)
 	require.NoError(t, err)
@@ -159,8 +163,10 @@ func TestFullDkgRoundsWorks(t *testing.T) {
 	round2Out2, _ := p2.Round2(bcast, p2p2)
 	require.Equal(t, round2Out1.VerificationKey, round2Out2.VerificationKey)
 	s, _ := sharing.NewShamir(2, 2, testCurve)
-	sk, err := s.Combine(&sharing.ShamirShare{Id: p1.Id, Value: p1.SkShare.Bytes()},
-		&sharing.ShamirShare{Id: p2.Id, Value: p2.SkShare.Bytes()})
+	sk, err := s.Combine(
+		&sharing.ShamirShare{Id: p1.Id, Value: p1.SkShare.Bytes()},
+		&sharing.ShamirShare{Id: p2.Id, Value: p2.SkShare.Bytes()},
+	)
 	require.NoError(t, err)
 
 	vk := testCurve.ScalarBaseMult(sk)

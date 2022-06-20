@@ -15,10 +15,10 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
-	"github.com/coinbase/kryptology/pkg/ot/extension/kos"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
 )
 
 // GenerationAndDeal produces private key material for alice and bob which they can later use in signing.
@@ -43,7 +43,9 @@ func GenerateAndDeal(curve *curves.Curve) (*dkg.AliceOutput, *dkg.BobOutput, err
 	return alice, bob, nil
 }
 
-func produceKeyShares(curve *curves.Curve) (aliceSecretShare curves.Scalar, bobSecretShare curves.Scalar, publicKey curves.Point) {
+func produceKeyShares(curve *curves.Curve) (
+	aliceSecretShare curves.Scalar, bobSecretShare curves.Scalar, publicKey curves.Point,
+) {
 	aliceSecretShare = curve.Scalar.Random(rand.Reader)
 	bobSecretShare = curve.Scalar.Random(rand.Reader)
 	publicKey = curve.ScalarBaseMult(aliceSecretShare.Mul(bobSecretShare))

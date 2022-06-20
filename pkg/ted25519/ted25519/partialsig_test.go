@@ -12,7 +12,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 func TestPartialSignNormalSignature(t *testing.T) {
@@ -50,7 +50,9 @@ func TestNewPartialSignature(t *testing.T) {
 	require.Equal(t, r, sig.R())
 	require.Equal(t, sigBytes, sig.Bytes())
 
-	require.PanicsWithValue(t, "ted25519: invalid partial signature length: 3", func() {
-		NewPartialSignature(1, []byte("sig"))
-	})
+	require.PanicsWithValue(
+		t, "ted25519: invalid partial signature length: 3", func() {
+			NewPartialSignature(1, []byte("sig"))
+		},
+	)
 }

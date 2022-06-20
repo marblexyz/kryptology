@@ -6,9 +6,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/dealer"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/sign"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dealer"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/sign"
 )
 
 func Test_DealerCanGenerateKeysThatSign(t *testing.T) {
@@ -45,5 +45,7 @@ func Test_DealerGeneratesDifferentResultsEachTime(t *testing.T) {
 	require.NotEqual(t, aliceOutput1.SecretKeyShare, aliceOutput2.SecretKeyShare)
 	require.NotEqual(t, bobOutput1.SecretKeyShare, bobOutput2.SecretKeyShare)
 	require.NotEqualValues(t, aliceOutput1.SeedOtResult.RandomChoiceBits, aliceOutput2.SeedOtResult.RandomChoiceBits)
-	require.NotEqualValues(t, bobOutput1.SeedOtResult.OneTimePadEncryptionKeys, bobOutput2.SeedOtResult.OneTimePadEncryptionKeys)
+	require.NotEqualValues(
+		t, bobOutput1.SeedOtResult.OneTimePadEncryptionKeys, bobOutput2.SeedOtResult.OneTimePadEncryptionKeys,
+	)
 }

@@ -15,7 +15,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	bls "github.com/coinbase/kryptology/pkg/signatures/bls/bls_sig"
+	bls "github.com/trysuperdrop/kryptology/pkg/signatures/bls/bls_sig"
 )
 
 type signOp struct {
@@ -108,7 +108,8 @@ func publicKeys() {
 
 func sign(number int) {
 	tests := []string{
-		"", "aaa", "aaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+		"", "aaa", "aaaaaa",
+		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 	}
 
 	var err error

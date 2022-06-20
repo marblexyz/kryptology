@@ -4,7 +4,7 @@ import (
 	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // RangeVerifier is the struct used to verify RangeProofs
@@ -39,7 +39,9 @@ func NewRangeVerifier(maxVectorLength int, rangeDomain, ippDomain []byte, curve 
 // n is the power that specifies the upper bound of the range, ie. 2^n
 // g, h, u are unique points used as generators for the blinding factor
 // transcript is a merlin transcript to be used for the fiat shamir heuristic
-func (verifier *RangeVerifier) Verify(proof *RangeProof, capV, g, h, u curves.Point, n int, transcript *merlin.Transcript) (bool, error) {
+func (verifier *RangeVerifier) Verify(
+	proof *RangeProof, capV, g, h, u curves.Point, n int, transcript *merlin.Transcript,
+) (bool, error) {
 	// Length of vectors must be less than the number of generators generated
 	if n > len(verifier.generators.G) {
 		return false, errors.New("ipp vector length must be less than maxVectorLength")
@@ -88,7 +90,9 @@ func (verifier *RangeVerifier) Verify(proof *RangeProof, capV, g, h, u curves.Po
 		return false, errors.Wrap(err, "rangeproof verify")
 	}
 
-	ippVerified, err := verifier.ippVerifier.VerifyFromRangeProof(proofG, hPrime, capPhmu, u.Mul(w), proof.tHat, proof.ipp, transcript)
+	ippVerified, err := verifier.ippVerifier.VerifyFromRangeProof(
+		proofG, hPrime, capPhmu, u.Mul(w), proof.tHat, proof.ipp, transcript,
+	)
 	if err != nil {
 		return false, errors.Wrap(err, "rangeproof verify")
 	}
@@ -131,7 +135,9 @@ func gethPrime(h []curves.Point, y curves.Scalar, curve curves.Curve) ([]curves.
 // Obtain P used for IPP verification
 // See L67 on pg20
 // Note P on L66 includes blinding factor hmu, this method removes that factor
-func getPhmu(proofG, proofHPrime []curves.Point, h, capA, capS curves.Point, x, y, z, mu curves.Scalar, n int, curve curves.Curve) (curves.Point, error) {
+func getPhmu(
+	proofG, proofHPrime []curves.Point, h, capA, capS curves.Point, x, y, z, mu curves.Scalar, n int, curve curves.Curve,
+) (curves.Point, error) {
 	// h'^(z*y^n + z^2*2^n)
 	zyn := multiplyScalarToScalarVector(z, getknVector(y, n, curve))
 	zsquaretwon := multiplyScalarToScalarVector(z.Square(), get2nVector(n, curve))

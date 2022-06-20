@@ -12,8 +12,8 @@ import (
 
 	"github.com/gtank/merlin"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/signatures/common"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/signatures/common"
 )
 
 // PokSignature a.k.a. Proof of Knowledge of a Signature
@@ -35,10 +35,12 @@ type PokSignature struct {
 }
 
 // NewPokSignature creates the initial proof data before a Fiat-Shamir calculation
-func NewPokSignature(sig *Signature,
+func NewPokSignature(
+	sig *Signature,
 	generators *MessageGenerators,
 	msgs []common.ProofMessage,
-	reader io.Reader) (*PokSignature, error) {
+	reader io.Reader,
+) (*PokSignature, error) {
 
 	if len(msgs) != generators.length {
 		return nil, fmt.Errorf("mismatch messages and generators")

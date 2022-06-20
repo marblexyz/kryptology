@@ -14,10 +14,10 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/paillier"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/dealer"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/paillier"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
 )
 
 func BenchmarkDealingProofParams(b *testing.B) {
@@ -39,61 +39,79 @@ func BenchmarkDealingShares(b *testing.B) {
 	}
 
 	curve := btcec.S256()
-	b.Run("Secp256k1 - 2 of 2", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			err := benchDealShares(curve, 2, 2)
-			require.NoError(b, err)
-		}
-	})
-	b.Run("Secp256k1 - 2 of 3", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			err := benchDealShares(curve, 2, 3)
-			require.NoError(b, err)
-		}
-	})
-	b.Run("Secp256k1 - 3 of 5", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			err := benchDealShares(curve, 3, 5)
-			require.NoError(b, err)
-		}
-	})
-	b.Run("Secp256k1 - 4 of 7", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			err := benchDealShares(curve, 4, 7)
-			require.NoError(b, err)
-		}
-	})
-	b.Run("Secp256k1 - 5 of 9", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			err := benchDealShares(curve, 5, 9)
-			require.NoError(b, err)
-		}
-	})
+	b.Run(
+		"Secp256k1 - 2 of 2", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				err := benchDealShares(curve, 2, 2)
+				require.NoError(b, err)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 2 of 3", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				err := benchDealShares(curve, 2, 3)
+				require.NoError(b, err)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 3 of 5", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				err := benchDealShares(curve, 3, 5)
+				require.NoError(b, err)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 4 of 7", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				err := benchDealShares(curve, 4, 7)
+				require.NoError(b, err)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 5 of 9", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				err := benchDealShares(curve, 5, 9)
+				require.NoError(b, err)
+			}
+		},
+	)
 
-	b.Run("Secp256k1 - 10 of 19", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			err := benchDealShares(curve, 10, 19)
-			require.NoError(b, err)
-		}
-	})
-	b.Run("Secp256k1 - 25 of 49", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			err := benchDealShares(curve, 25, 49)
-			require.NoError(b, err)
-		}
-	})
-	b.Run("Secp256k1 - 50 of 99", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			err := benchDealShares(curve, 50, 99)
-			require.NoError(b, err)
-		}
-	})
-	b.Run("Secp256k1 - 100 of 199", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			err := benchDealShares(curve, 100, 199)
-			require.NoError(b, err)
-		}
-	})
+	b.Run(
+		"Secp256k1 - 10 of 19", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				err := benchDealShares(curve, 10, 19)
+				require.NoError(b, err)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 25 of 49", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				err := benchDealShares(curve, 25, 49)
+				require.NoError(b, err)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 50 of 99", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				err := benchDealShares(curve, 50, 99)
+				require.NoError(b, err)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 100 of 199", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				err := benchDealShares(curve, 100, 199)
+				require.NoError(b, err)
+			}
+		},
+	)
 }
 
 func benchDealShares(curve elliptic.Curve, threshold, count uint32) error {
@@ -125,78 +143,107 @@ func BenchmarkSigning(b *testing.B) {
 	require.NoError(b, err)
 	hashBytes := hash.Bytes()
 
-	b.Run("Secp256k1 - 2 of 2", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			require.NoError(b,
-				benchSign(b, hashBytes, curve, k256Verifier, 2, 2),
-			)
-		}
-	})
-	b.Run("Secp256k1 - 2 of 3", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			require.NoError(b,
-				benchSign(b, hashBytes, curve, k256Verifier, 2, 3),
-			)
-		}
-	})
-	b.Run("Secp256k1 - 3 of 5", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			require.NoError(b,
-				benchSign(b, hashBytes, curve, k256Verifier, 3, 5),
-			)
-		}
-	})
-	b.Run("Secp256k1 - 4 of 7", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			require.NoError(b,
-				benchSign(b, hashBytes, curve, k256Verifier, 4, 7),
-			)
-		}
-	})
-	b.Run("Secp256k1 - 5 of 9", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			require.NoError(b,
-				benchSign(b, hashBytes, curve, k256Verifier, 5, 9),
-			)
-		}
-	})
+	b.Run(
+		"Secp256k1 - 2 of 2", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				require.NoError(
+					b,
+					benchSign(b, hashBytes, curve, k256Verifier, 2, 2),
+				)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 2 of 3", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				require.NoError(
+					b,
+					benchSign(b, hashBytes, curve, k256Verifier, 2, 3),
+				)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 3 of 5", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				require.NoError(
+					b,
+					benchSign(b, hashBytes, curve, k256Verifier, 3, 5),
+				)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 4 of 7", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				require.NoError(
+					b,
+					benchSign(b, hashBytes, curve, k256Verifier, 4, 7),
+				)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 5 of 9", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				require.NoError(
+					b,
+					benchSign(b, hashBytes, curve, k256Verifier, 5, 9),
+				)
+			}
+		},
+	)
 
 	// Skip long-running tests in `-short` mode
 	if testing.Short() {
 		b.SkipNow()
 	}
 
-	b.Run("Secp256k1 - 10 of 19", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			require.NoError(b,
-				benchSign(b, hashBytes, curve, k256Verifier, 10, 19),
-			)
-		}
-	})
-	b.Run("Secp256k1 - 25 of 49", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			require.NoError(b,
-				benchSign(b, hashBytes, curve, k256Verifier, 25, 49),
-			)
-		}
-	})
-	b.Run("Secp256k1 - 50 of 99", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			require.NoError(b,
-				benchSign(b, hashBytes, curve, k256Verifier, 50, 99),
-			)
-		}
-	})
-	b.Run("Secp256k1 - 100 of 199", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			require.NoError(b,
-				benchSign(b, hashBytes, curve, k256Verifier, 100, 199),
-			)
-		}
-	})
+	b.Run(
+		"Secp256k1 - 10 of 19", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				require.NoError(
+					b,
+					benchSign(b, hashBytes, curve, k256Verifier, 10, 19),
+				)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 25 of 49", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				require.NoError(
+					b,
+					benchSign(b, hashBytes, curve, k256Verifier, 25, 49),
+				)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 50 of 99", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				require.NoError(
+					b,
+					benchSign(b, hashBytes, curve, k256Verifier, 50, 99),
+				)
+			}
+		},
+	)
+	b.Run(
+		"Secp256k1 - 100 of 199", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				require.NoError(
+					b,
+					benchSign(b, hashBytes, curve, k256Verifier, 100, 199),
+				)
+			}
+		},
+	)
 }
 
-func benchSign(b *testing.B, hash []byte, curve elliptic.Curve, verify curves.EcdsaVerify, threshold, count uint32) error {
+func benchSign(
+	b *testing.B, hash []byte, curve elliptic.Curve, verify curves.EcdsaVerify, threshold, count uint32,
+) error {
 	// Setup signers
 	b.StopTimer()
 
@@ -407,7 +454,8 @@ func sign2p(b *testing.B, bw *msgCounter, setup *signingSetup) {
 		setup.curve,
 		setup.proofParams,
 		setup.pubSharesMap,
-		setup.pubkeys)
+		setup.pubkeys,
+	)
 	require.NoError(b, err)
 
 	p2 := Participant{*setup.sharesMap[2], setup.privkeys[2]}
@@ -417,7 +465,8 @@ func sign2p(b *testing.B, bw *msgCounter, setup *signingSetup) {
 		setup.curve,
 		setup.proofParams,
 		setup.pubSharesMap,
-		setup.pubkeys)
+		setup.pubkeys,
+	)
 	require.NoError(b, err)
 
 	//
@@ -430,13 +479,15 @@ func sign2p(b *testing.B, bw *msgCounter, setup *signingSetup) {
 	require.NoError(b, err)
 
 	// Count R1 msgs
-	require.NoError(b,
+	require.NoError(
+		b,
 		bw.Count(
 			r1_s1_bcast,
 			r1_s1_p2p,
 			r1_s2_bcast,
 			r1_s2_p2p,
-		))
+		),
+	)
 	b.Log()
 	b.Logf("R1 %#v", bw)
 
@@ -456,11 +507,13 @@ func sign2p(b *testing.B, bw *msgCounter, setup *signingSetup) {
 	require.NoError(b, err)
 
 	// Count R2 msgs
-	require.NoError(b,
+	require.NoError(
+		b,
 		bw.Count(
 			r2_s1_p2p,
 			r2_s2_p2p,
-		))
+		),
+	)
 	b.Logf("R2 %#v", bw)
 
 	//
@@ -477,30 +530,36 @@ func sign2p(b *testing.B, bw *msgCounter, setup *signingSetup) {
 	require.NoError(b, err)
 
 	// Count R3 msgs
-	require.NoError(b,
+	require.NoError(
+		b,
 		bw.Count(
 			r3_s1_bcast,
 			r3_s2_bcast,
-		))
+		),
+	)
 	b.Logf("R3 %#v", bw)
 
 	//
 	// Sign Round 4
 	//
 	r4_s1_bcast, err := s1.SignRound4(
-		map[uint32]*Round3Bcast{2: r3_s2_bcast})
+		map[uint32]*Round3Bcast{2: r3_s2_bcast},
+	)
 	require.NoError(b, err)
 
 	r4_s2_bcast, err := s2.SignRound4(
-		map[uint32]*Round3Bcast{1: r3_s1_bcast})
+		map[uint32]*Round3Bcast{1: r3_s1_bcast},
+	)
 	require.NoError(b, err)
 
 	// Count R4 msgs
-	require.NoError(b,
+	require.NoError(
+		b,
 		bw.Count(
 			r4_s1_bcast,
 			r4_s2_bcast,
-		))
+		),
+	)
 	b.Logf("R4 %#v", bw)
 
 	//
@@ -517,36 +576,42 @@ func sign2p(b *testing.B, bw *msgCounter, setup *signingSetup) {
 	require.NoError(b, err)
 
 	// Count R5 msgs
-	require.NoError(b,
+	require.NoError(
+		b,
 		bw.Count(
 			r5_s1_bcast,
 			r5_s1_p2p,
 			r5_s2_bcast,
 			r5_s2_p2p,
-		))
+		),
+	)
 	b.Logf("R5 %#v", bw)
 
 	//
 	// Sign Round 6
 	//
-	r6_s1_bcast, err := s1.SignRound6Full(msgHash,
+	r6_s1_bcast, err := s1.SignRound6Full(
+		msgHash,
 		map[uint32]*Round5Bcast{2: r5_s2_bcast},
 		map[uint32]*Round5P2PSend{2: r5_s2_p2p[1]},
 	)
 	require.NoError(b, err)
 
-	r6_s2_bcast, err := s2.SignRound6Full(msgHash,
+	r6_s2_bcast, err := s2.SignRound6Full(
+		msgHash,
 		map[uint32]*Round5Bcast{1: r5_s1_bcast},
 		map[uint32]*Round5P2PSend{1: r5_s1_p2p[2]},
 	)
 	require.NoError(b, err)
 
 	// Count R6 msgs
-	require.NoError(b,
+	require.NoError(
+		b,
 		bw.Count(
 			r6_s1_bcast,
 			r6_s2_bcast,
-		))
+		),
+	)
 	b.Logf("R6 %#v", bw)
 
 	//

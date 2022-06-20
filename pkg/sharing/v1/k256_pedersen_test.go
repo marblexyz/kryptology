@@ -13,7 +13,7 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	core "github.com/coinbase/kryptology/pkg/core/curves"
+	core "github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 var (
@@ -36,7 +36,12 @@ func TestK256PedersenSplitInvalidArgs(t *testing.T) {
 	_, err = scheme.Split([]byte{})
 	require.NotNil(t, err)
 	// test that split doesn't work on secrets bigger than the modulus
-	_, err = scheme.Split([]byte{0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65})
+	_, err = scheme.Split(
+		[]byte{
+			0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65,
+			0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65, 0x65,
+		},
+	)
 	require.NotNil(t, err)
 }
 
@@ -52,16 +57,18 @@ func TestK256PedersenCombineDuplicateShare(t *testing.T) {
 	scheme, err := NewPedersen(2, 3, k256BasePoint)
 	require.Nil(t, err)
 	require.NotNil(t, scheme)
-	_, err = scheme.Combine([]*ShamirShare{
-		{
-			Identifier: 1,
-			Value:      field.NewElement(big.NewInt(3)),
-		},
-		{
-			Identifier: 1,
-			Value:      field.NewElement(big.NewInt(3)),
-		},
-	}...)
+	_, err = scheme.Combine(
+		[]*ShamirShare{
+			{
+				Identifier: 1,
+				Value:      field.NewElement(big.NewInt(3)),
+			},
+			{
+				Identifier: 1,
+				Value:      field.NewElement(big.NewInt(3)),
+			},
+		}...,
+	)
 	require.NotNil(t, err)
 }
 
@@ -145,7 +152,9 @@ func TestK256PedersenAllCombinations(t *testing.T) {
 				require.NotNil(t, rSecret)
 				require.Equal(t, rSecret, secret)
 
-				bSecret, err := scheme.Combine(result.BlindingShares[i], result.BlindingShares[j], result.BlindingShares[k])
+				bSecret, err := scheme.Combine(
+					result.BlindingShares[i], result.BlindingShares[j], result.BlindingShares[k],
+				)
 				require.Nil(t, err)
 				require.NotNil(t, bSecret)
 				require.Equal(t, bSecret, result.Blinding.Bytes())

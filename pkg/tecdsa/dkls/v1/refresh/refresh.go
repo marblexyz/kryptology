@@ -19,11 +19,11 @@ import (
 	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
-	"github.com/coinbase/kryptology/pkg/ot/extension/kos"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/dkg"
-	"github.com/coinbase/kryptology/pkg/zkp/schnorr"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
 )
 
 // Alice struct encoding Alice's state during one execution of the overall signing algorithm.
@@ -120,7 +120,9 @@ func (bob *Bob) Round2RefreshProduceSeedAndMultiplyAndStartOT(aliceSeed curves.S
 	}, nil
 }
 
-func (alice *Alice) Round3RefreshMultiplyRound2Ot(input *RefreshRound2Output) ([]simplest.ReceiversMaskedChoices, error) {
+func (alice *Alice) Round3RefreshMultiplyRound2Ot(input *RefreshRound2Output) (
+	[]simplest.ReceiversMaskedChoices, error,
+) {
 	alice.transcript.AppendMessage([]byte("bob refresh seed"), input.BobMultiplier.Bytes())
 	k, err := alice.curve.NewScalar().SetBytes(
 		alice.transcript.ExtractBytes([]byte("secret key share multiplier"), simplest.DigestSize),
@@ -144,7 +146,9 @@ func (alice *Alice) Round3RefreshMultiplyRound2Ot(input *RefreshRound2Output) ([
 	return alice.receiver.Round2VerifySchnorrAndPadTransfer(input.SeedOTRound1Output)
 }
 
-func (bob *Bob) Round4RefreshRound3Ot(compressedReceiversMaskedChoice []simplest.ReceiversMaskedChoices) ([]simplest.OtChallenge, error) {
+func (bob *Bob) Round4RefreshRound3Ot(compressedReceiversMaskedChoice []simplest.ReceiversMaskedChoices) (
+	[]simplest.OtChallenge, error,
+) {
 	return bob.sender.Round3PadTransfer(compressedReceiversMaskedChoice)
 }
 
@@ -152,7 +156,9 @@ func (alice *Alice) Round5RefreshRound4Ot(challenge []simplest.OtChallenge) ([]s
 	return alice.receiver.Round4RespondToChallenge(challenge)
 }
 
-func (bob *Bob) Round6RefreshRound5Ot(challengeResponses []simplest.OtChallengeResponse) ([]simplest.ChallengeOpening, error) {
+func (bob *Bob) Round6RefreshRound5Ot(challengeResponses []simplest.OtChallengeResponse) (
+	[]simplest.ChallengeOpening, error,
+) {
 	return bob.sender.Round5Verify(challengeResponses)
 }
 

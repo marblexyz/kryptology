@@ -11,9 +11,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/proof"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/proof"
 )
 
 // Round6FullBcast are the values to be broadcast to the other players
@@ -53,7 +53,9 @@ func (r6b *Round6FullBcast) UnmarshalJSON(data []byte) error {
 // SignRound6Full performs the round 6 signing operation according to
 // Trusted Dealer Mode: see [spec] fig 7: SignRound6
 // DKG Mode: see [spec] fig 8: SignRound6
-func (signer *Signer) SignRound6Full(hash []byte, in map[uint32]*Round5Bcast, p2p map[uint32]*Round5P2PSend) (*Round6FullBcast, error) {
+func (signer *Signer) SignRound6Full(
+	hash []byte, in map[uint32]*Round5Bcast, p2p map[uint32]*Round5P2PSend,
+) (*Round6FullBcast, error) {
 	if err := signer.verifyStateMap(6, in); err != nil {
 		return nil, err
 	}

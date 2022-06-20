@@ -12,8 +12,8 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	"github.com/coinbase/kryptology/internal"
-	mod "github.com/coinbase/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/internal"
+	mod "github.com/trysuperdrop/kryptology/pkg/core"
 )
 
 type decryptionKeyMarshal struct {
@@ -91,7 +91,9 @@ func (dk DecryptionKey) Decrypt(domain []byte, cipherText *CipherText) ([]*big.I
 		return nil, internal.ErrNilArguments
 	}
 	if len(cipherText.e) > len(dk.x1) {
-		return nil, fmt.Errorf("number of messages %d is more than supported by this key %d", len(cipherText.e), len(dk.x1))
+		return nil, fmt.Errorf(
+			"number of messages %d is more than supported by this key %d", len(cipherText.e), len(dk.x1),
+		)
 	}
 	if cipherText.u.Cmp(mod.Zero) == 0 || cipherText.v.Cmp(mod.Zero) == 0 {
 		return nil, internal.ErrZeroValue

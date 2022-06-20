@@ -16,7 +16,7 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 type structMarshal struct {
@@ -103,7 +103,9 @@ func (acc *Accumulator) Remove(key *SecretKey, e Element) (*Accumulator, error) 
 
 // Update performs a batch addition and deletion as described on page 7, section 3 in
 // https://eprint.iacr.org/2020/777.pdf
-func (acc *Accumulator) Update(key *SecretKey, additions []Element, deletions []Element) (*Accumulator, []Coefficient, error) {
+func (acc *Accumulator) Update(key *SecretKey, additions []Element, deletions []Element) (
+	*Accumulator, []Coefficient, error,
+) {
 	if acc.value == nil || acc.value.IsIdentity() || key.value == nil {
 		return nil, nil, fmt.Errorf("accumulator and secret key should not be nil")
 	}

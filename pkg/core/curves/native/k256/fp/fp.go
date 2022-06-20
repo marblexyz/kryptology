@@ -10,7 +10,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/coinbase/kryptology/pkg/core/curves/native"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
 )
 
 var k256FpInitonce sync.Once
@@ -26,13 +26,24 @@ func K256FpNew() *native.Field {
 
 func k256FpParamsInit() {
 	k256FpParams = native.FieldParams{
-		R:       [native.FieldLimbs]uint64{0x00000001000003d1, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000},
-		R2:      [native.FieldLimbs]uint64{0x000007a2000e90a1, 0x0000000000000001, 0x0000000000000000, 0x0000000000000000},
-		R3:      [native.FieldLimbs]uint64{0x002bb1e33795f671, 0x0000000100000b73, 0x0000000000000000, 0x0000000000000000},
-		Modulus: [native.FieldLimbs]uint64{0xfffffffefffffc2f, 0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff},
-		BiModulus: new(big.Int).SetBytes([]byte{
-			0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xfc, 0x2f,
-		}),
+		R: [native.FieldLimbs]uint64{
+			0x00000001000003d1, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+		},
+		R2: [native.FieldLimbs]uint64{
+			0x000007a2000e90a1, 0x0000000000000001, 0x0000000000000000, 0x0000000000000000,
+		},
+		R3: [native.FieldLimbs]uint64{
+			0x002bb1e33795f671, 0x0000000100000b73, 0x0000000000000000, 0x0000000000000000,
+		},
+		Modulus: [native.FieldLimbs]uint64{
+			0xfffffffefffffc2f, 0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff,
+		},
+		BiModulus: new(big.Int).SetBytes(
+			[]byte{
+				0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+				0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xfc, 0x2f,
+			},
+		),
 	}
 }
 
@@ -67,17 +78,26 @@ func (f k256FpArithmetic) Square(out, arg *[native.FieldLimbs]uint64) {
 
 // Mul performs modular multiplication
 func (f k256FpArithmetic) Mul(out, arg1, arg2 *[native.FieldLimbs]uint64) {
-	Mul((*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1), (*MontgomeryDomainFieldElement)(arg2))
+	Mul(
+		(*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1),
+		(*MontgomeryDomainFieldElement)(arg2),
+	)
 }
 
 // Add performs modular addition
 func (f k256FpArithmetic) Add(out, arg1, arg2 *[native.FieldLimbs]uint64) {
-	Add((*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1), (*MontgomeryDomainFieldElement)(arg2))
+	Add(
+		(*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1),
+		(*MontgomeryDomainFieldElement)(arg2),
+	)
 }
 
 // Sub performs modular subtraction
 func (f k256FpArithmetic) Sub(out, arg1, arg2 *[native.FieldLimbs]uint64) {
-	Sub((*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1), (*MontgomeryDomainFieldElement)(arg2))
+	Sub(
+		(*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1),
+		(*MontgomeryDomainFieldElement)(arg2),
+	)
 }
 
 // Sqrt performs modular square root
@@ -87,12 +107,14 @@ func (f k256FpArithmetic) Sqrt(wasSquare *int, out, arg *[native.FieldLimbs]uint
 	// 0x3fffffffffffffffffffffffffffffffffffffffffffffffffffffffbfffff0c
 	var s, t [native.FieldLimbs]uint64
 	params := getK256FpParams()
-	native.Pow(&s, arg, &[native.FieldLimbs]uint64{
-		0xffffffffbfffff0c,
-		0xffffffffffffffff,
-		0xffffffffffffffff,
-		0x3fffffffffffffff,
-	}, params, f)
+	native.Pow(
+		&s, arg, &[native.FieldLimbs]uint64{
+			0xffffffffbfffff0c,
+			0xffffffffffffffff,
+			0xffffffffffffffff,
+			0x3fffffffffffffff,
+		}, params, f,
+	)
 	f.Square(&t, &s)
 	tv1 := &native.Field{Value: t, Params: params, Arithmetic: f}
 	tv2 := &native.Field{Value: *arg, Params: params, Arithmetic: f}

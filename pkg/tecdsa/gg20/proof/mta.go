@@ -13,10 +13,10 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/paillier"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/dealer"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/paillier"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
 )
 
 // ResponseProofParams encapsulates the values over which a range proof (2) is computed.
@@ -122,13 +122,15 @@ type range2ProofJSON struct {
 
 // MarshalJSON converts Range1Proof into JSON
 func (r Range1Proof) MarshalJSON() ([]byte, error) {
-	return json.Marshal(range1ProofJSON{
-		Z:  r.z,
-		E:  r.e,
-		S:  r.s,
-		S1: r.s1,
-		S2: r.s2,
-	})
+	return json.Marshal(
+		range1ProofJSON{
+			Z:  r.z,
+			E:  r.e,
+			S:  r.s,
+			S1: r.s1,
+			S2: r.s2,
+		},
+	)
 }
 
 // UnmarshalJSON converts json into a Range1Proof
@@ -407,7 +409,10 @@ func genProof1(in Proof1Params, rp *randProof1Params) (*Range1Proof, error) {
 	}
 
 	// 9: e = H(g, q, Pk, N~, h_1, h_2, c, z, u, w)
-	bytes, err := core.FiatShamir(in.Curve.Params().Gx, in.Curve.Params().Gy, in.Curve.Params().N, in.Pk.N, in.DealerParams.N, in.DealerParams.H1, in.DealerParams.H2, in.C, z, u, w)
+	bytes, err := core.FiatShamir(
+		in.Curve.Params().Gx, in.Curve.Params().Gy, in.Curve.Params().N, in.Pk.N, in.DealerParams.N, in.DealerParams.H1,
+		in.DealerParams.H2, in.C, z, u, w,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -473,7 +478,10 @@ func (pi Range1Proof) Verify(pp *Proof1Params) error {
 	}
 
 	// 5: Compute e = H(g,q,Pk,N~,h_1,h_2,c,z,uHat,wHat)
-	bytes, err := core.FiatShamir(params.Gx, params.Gy, params.N, pp.Pk.N, pp.DealerParams.N, pp.DealerParams.H1, pp.DealerParams.H2, pp.C, pi.z, uHat, wHat)
+	bytes, err := core.FiatShamir(
+		params.Gx, params.Gy, params.N, pp.Pk.N, pp.DealerParams.N, pp.DealerParams.H1, pp.DealerParams.H2, pp.C, pi.z,
+		uHat, wHat,
+	)
 	if err != nil {
 		return err
 	}
@@ -513,7 +521,9 @@ func (pi Range1Proof) uHatConstruct(pp *Proof1Params) (*big.Int, error) {
 func (pi Range1Proof) wHatConstruct(pp *Proof1Params) (*big.Int, error) {
 	// 4: \hat{w} = h_1^{s_1}*h_2^{s_2}*z^{-e} mod N~
 
-	a, err := pedersen(pp.DealerParams.H1, pp.DealerParams.H2, pi.s1, pi.s2, pp.DealerParams.N) // a = h_1^{s_1}*h_2^{s_2} mod N~
+	a, err := pedersen(
+		pp.DealerParams.H1, pp.DealerParams.H2, pi.s1, pi.s2, pp.DealerParams.N,
+	) // a = h_1^{s_1}*h_2^{s_2} mod N~
 	if err != nil {
 		return nil, err
 	}
@@ -626,13 +636,19 @@ func genProof2(pp proof2Params, rp *randProof2Params, wc bool) (*Range2Proof, er
 	var challenge []byte
 	if wc {
 		// g || q || Pk || N ̃ || h1 || h2 || X || C1 || C2 || u || z || z' || t || v || w
-		challenge, err = core.FiatShamir(curveParams.Gx, curveParams.Gy, curveParams.N, pp.pk.N, pp.dealerParams.N, pp.dealerParams.H1, pp.dealerParams.H2, pp.X.X, pp.X.Y, pp.c1, pp.c2, u.X, u.Y, z, zTick, t, v, w)
+		challenge, err = core.FiatShamir(
+			curveParams.Gx, curveParams.Gy, curveParams.N, pp.pk.N, pp.dealerParams.N, pp.dealerParams.H1,
+			pp.dealerParams.H2, pp.X.X, pp.X.Y, pp.c1, pp.c2, u.X, u.Y, z, zTick, t, v, w,
+		)
 		if err != nil {
 			return nil, err
 		}
 	} else {
 		// g || q || Pk || N ̃ || h1 || h2 || C1 || C2 || z || z' || t || v || w
-		challenge, err = core.FiatShamir(curveParams.Gx, curveParams.Gy, curveParams.N, pp.pk.N, pp.dealerParams.N, pp.dealerParams.H1, pp.dealerParams.H2, pp.c1, pp.c2, z, zTick, t, v, w)
+		challenge, err = core.FiatShamir(
+			curveParams.Gx, curveParams.Gy, curveParams.N, pp.pk.N, pp.dealerParams.N, pp.dealerParams.H1,
+			pp.dealerParams.H2, pp.c1, pp.c2, z, zTick, t, v, w,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -751,13 +767,19 @@ func verify2Proof(pi Range2Proof, pp *verifyProof2Params, wc bool) error {
 	var challenge []byte
 	if wc {
 		// g || q || Pk || N ̃ || h1 || h2 || X || c1 || c2 || uHat || z || zHatTick || t || vHat || wHat
-		challenge, err = core.FiatShamir(curveParams.Gx, curveParams.Gy, curveParams.N, pp.pk.N, pp.dealerParams.N, pp.dealerParams.H1, pp.dealerParams.H2, pp.X.X, pp.X.Y, pp.c1, pp.c2, uHat.X, uHat.Y, pi.z, zHatTick, pi.t, vHat, wHat)
+		challenge, err = core.FiatShamir(
+			curveParams.Gx, curveParams.Gy, curveParams.N, pp.pk.N, pp.dealerParams.N, pp.dealerParams.H1,
+			pp.dealerParams.H2, pp.X.X, pp.X.Y, pp.c1, pp.c2, uHat.X, uHat.Y, pi.z, zHatTick, pi.t, vHat, wHat,
+		)
 		if err != nil {
 			return err
 		}
 	} else {
 		// g || q || Pk || N ̃ || h1 || h2 || c1 || c2 || z || zHatTick || t || vHat || wHat
-		challenge, err = core.FiatShamir(curveParams.Gx, curveParams.Gy, curveParams.N, pp.pk.N, pp.dealerParams.N, pp.dealerParams.H1, pp.dealerParams.H2, pp.c1, pp.c2, pi.z, zHatTick, pi.t, vHat, wHat)
+		challenge, err = core.FiatShamir(
+			curveParams.Gx, curveParams.Gy, curveParams.N, pp.pk.N, pp.dealerParams.N, pp.dealerParams.H1,
+			pp.dealerParams.H2, pp.c1, pp.c2, pi.z, zHatTick, pi.t, vHat, wHat,
+		)
 		if err != nil {
 			return err
 		}

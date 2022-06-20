@@ -14,7 +14,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 func TestShamirSplitInvalidArgs(t *testing.T) {
@@ -46,16 +46,18 @@ func TestShamirCombineDuplicateShare(t *testing.T) {
 	scheme, err := NewShamir(2, 3, curve)
 	require.Nil(t, err)
 	require.NotNil(t, scheme)
-	_, err = scheme.Combine([]*ShamirShare{
-		{
-			Id:    1,
-			Value: curve.NewScalar().New(3).Bytes(),
-		},
-		{
-			Id:    1,
-			Value: curve.NewScalar().New(3).Bytes(),
-		},
-	}...)
+	_, err = scheme.Combine(
+		[]*ShamirShare{
+			{
+				Id:    1,
+				Value: curve.NewScalar().New(3).Bytes(),
+			},
+			{
+				Id:    1,
+				Value: curve.NewScalar().New(3).Bytes(),
+			},
+		}...,
+	)
 	require.NotNil(t, err)
 }
 

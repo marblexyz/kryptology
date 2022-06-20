@@ -11,7 +11,7 @@ import (
 	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // InnerProductProver is the struct used to create InnerProductProofs
@@ -74,7 +74,10 @@ func NewInnerProductProof(curve *curves.Curve) *InnerProductProof {
 // See section 4.2 on pg 20
 // The conversion specifies generators to use (g and hPrime), as well as the two vectors l, r of which the inner product is tHat
 // Additionally, note that the P used for the IPP is in fact P*h^-mu from the range proof
-func (prover *InnerProductProver) rangeToIPP(proofG, proofH []curves.Point, l, r []curves.Scalar, tHat curves.Scalar, capPhmuinv, u curves.Point, transcript *merlin.Transcript) (*InnerProductProof, error) {
+func (prover *InnerProductProver) rangeToIPP(
+	proofG, proofH []curves.Point, l, r []curves.Scalar, tHat curves.Scalar, capPhmuinv, u curves.Point,
+	transcript *merlin.Transcript,
+) (*InnerProductProof, error) {
 	// Note that P as a witness is only g^l * h^r
 	// P needs to be in the form of g^l * h^r * u^<l,r>
 	// Calculate the final P including the u^<l,r> term
@@ -132,7 +135,9 @@ func (prover *InnerProductProver) getP(a, b []curves.Scalar, u curves.Point) (cu
 // Prove executes the prover protocol on pg 16 of https://eprint.iacr.org/2017/1066.pdf
 // It generates an inner product proof for vectors a and b, using u to blind the inner product in P
 // A transcript is used for the Fiat Shamir heuristic
-func (prover *InnerProductProver) Prove(a, b []curves.Scalar, u curves.Point, transcript *merlin.Transcript) (*InnerProductProof, error) {
+func (prover *InnerProductProver) Prove(
+	a, b []curves.Scalar, u curves.Point, transcript *merlin.Transcript,
+) (*InnerProductProof, error) {
 	// Vectors must have length power of two
 	if !isPowerOfTwo(len(a)) {
 		return nil, errors.New("ipp vector length must be power of two")

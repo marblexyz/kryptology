@@ -9,7 +9,7 @@ package sharing
 import (
 	"io"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 type Polynomial struct {

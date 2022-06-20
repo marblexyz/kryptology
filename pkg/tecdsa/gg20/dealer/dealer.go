@@ -13,10 +13,10 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/paillier"
-	"github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/paillier"
+	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 // ParticipantData represents all data to be sent to a participant
@@ -116,11 +116,13 @@ type ShareJson struct {
 }
 
 func (s Share) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ShareJson{
-		Identifier: s.Identifier,
-		Value:      s.Value.BigInt(),
-		Point:      s.Point,
-	})
+	return json.Marshal(
+		ShareJson{
+			Identifier: s.Identifier,
+			Value:      s.Value.BigInt(),
+			Point:      s.Point,
+		},
+	)
 }
 
 func (s *Share) UnmarshalJSON(bytes []byte) error {
@@ -182,7 +184,9 @@ func DerivePublicKey(curve elliptic.Curve, secretKey *big.Int) (*curves.EcPoint,
 
 // NewDealerShares generates the Secp256k1 private key shares and public key
 // if ikm == nil, a new private key will be generated
-func NewDealerShares(curve elliptic.Curve, threshold, total uint32, ikm *big.Int) (*curves.EcPoint, map[uint32]*Share, error) {
+func NewDealerShares(curve elliptic.Curve, threshold, total uint32, ikm *big.Int) (
+	*curves.EcPoint, map[uint32]*Share, error,
+) {
 	if total < threshold {
 		return nil, nil, fmt.Errorf("parts cannot be less than threshold")
 	}
@@ -239,7 +243,9 @@ func NewDealerShares(curve elliptic.Curve, threshold, total uint32, ikm *big.Int
 
 // genProofParams creates all the values needed for ProofParams using the specified
 // genSafePrime function, genRandInMod function, and number of bits
-func genProofParams(genSafePrime func(uint) (*big.Int, error), genRandInMod func(*big.Int) (*big.Int, error), bits uint) (*ProofParams, error) {
+func genProofParams(
+	genSafePrime func(uint) (*big.Int, error), genRandInMod func(*big.Int) (*big.Int, error), bits uint,
+) (*ProofParams, error) {
 
 	values := make(chan *big.Int, 2)
 	errors := make(chan error, 2)

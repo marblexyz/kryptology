@@ -3,9 +3,9 @@ package k256
 import (
 	"sync"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves/native"
-	"github.com/coinbase/kryptology/pkg/core/curves/native/k256/fp"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/k256/fp"
 )
 
 var (
@@ -31,18 +31,22 @@ func k256PointParamsInit() {
 	k256PointParams = native.EllipticPointParams{
 		A: fp.K256FpNew(),
 		B: fp.K256FpNew().SetUint64(7),
-		Gx: fp.K256FpNew().SetLimbs(&[native.FieldLimbs]uint64{
-			0x59f2815b16f81798,
-			0x029bfcdb2dce28d9,
-			0x55a06295ce870b07,
-			0x79be667ef9dcbbac,
-		}),
-		Gy: fp.K256FpNew().SetLimbs(&[native.FieldLimbs]uint64{
-			0x9c47d08ffb10d4b8,
-			0xfd17b448a6855419,
-			0x5da4fbfc0e1108a8,
-			0x483ada7726a3c465,
-		}),
+		Gx: fp.K256FpNew().SetLimbs(
+			&[native.FieldLimbs]uint64{
+				0x59f2815b16f81798,
+				0x029bfcdb2dce28d9,
+				0x55a06295ce870b07,
+				0x79be667ef9dcbbac,
+			},
+		),
+		Gy: fp.K256FpNew().SetLimbs(
+			&[native.FieldLimbs]uint64{
+				0x9c47d08ffb10d4b8,
+				0xfd17b448a6855419,
+				0x5da4fbfc0e1108a8,
+				0x483ada7726a3c465,
+			},
+		),
 		BitSize: 256,
 		Name:    "secp256k1",
 	}

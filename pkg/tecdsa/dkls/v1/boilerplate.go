@@ -5,11 +5,11 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/core/protocol"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/dkg"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/refresh"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/sign"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/protocol"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/refresh"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/sign"
 )
 
 // AliceDkg DKLS DKG implementation that satisfies the protocol iterator interface.
@@ -209,7 +209,9 @@ func (b *BobDkg) Result(version uint) (*protocol.Message, error) {
 
 // NewAliceSign creates a new protocol that can compute a signature as Alice.
 // Requires dkg state that was produced at the end of DKG.Output().
-func NewAliceSign(curve *curves.Curve, hash hash.Hash, message []byte, dkgResultMessage *protocol.Message, version uint) (*AliceSign, error) {
+func NewAliceSign(
+	curve *curves.Curve, hash hash.Hash, message []byte, dkgResultMessage *protocol.Message, version uint,
+) (*AliceSign, error) {
 	dkgResult, err := DecodeAliceDkgResult(dkgResultMessage)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -240,7 +242,9 @@ func NewAliceSign(curve *curves.Curve, hash hash.Hash, message []byte, dkgResult
 
 // NewBobSign creates a new protocol that can compute a signature as Bob.
 // Requires dkg state that was produced at the end of DKG.Output().
-func NewBobSign(curve *curves.Curve, hash hash.Hash, message []byte, dkgResultMessage *protocol.Message, version uint) (*BobSign, error) {
+func NewBobSign(
+	curve *curves.Curve, hash hash.Hash, message []byte, dkgResultMessage *protocol.Message, version uint,
+) (*BobSign, error) {
 	dkgResult, err := DecodeBobDkgResult(dkgResultMessage)
 	if err != nil {
 		return nil, errors.WithStack(err)

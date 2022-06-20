@@ -6,8 +6,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/zkp/schnorr"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
 )
 
 // ReceiverStreamOTRun exposes the entire seed OT process for the receiver in "stream mode" to the user.

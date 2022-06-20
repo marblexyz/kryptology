@@ -16,7 +16,7 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // Runs a DKG on initialized Alice/Bob objects. Reports any errors encountered.
@@ -73,56 +73,69 @@ func TestDkgProto(t *testing.T) {
 	bob := NewBobDkg(params)
 	aErr, bErr := iteratedDkg(alice, bob)
 
-	t.Run("both alice/bob complete simultaneously", func(t *testing.T) {
-		require.ErrorIs(t, aErr, io.EOF)
-		require.ErrorIs(t, bErr, io.EOF)
-	})
+	t.Run(
+		"both alice/bob complete simultaneously", func(t *testing.T) {
+			require.ErrorIs(t, aErr, io.EOF)
+			require.ErrorIs(t, bErr, io.EOF)
+		},
+	)
 
-	t.Run("OT results are correct", func(t *testing.T) {
-		require.NoError(t, verifyOt(alice.Alice, bob.Bob))
-	})
+	t.Run(
+		"OT results are correct", func(t *testing.T) {
+			require.NoError(t, verifyOt(alice.Alice, bob.Bob))
+		},
+	)
 
-	t.Run("Both parties produces identical composite pubkey", func(t *testing.T) {
-		require.Equal(t,
-			alice.Alice.Pk,
-			bob.Bob.Pk,
-		)
-	})
+	t.Run(
+		"Both parties produces identical composite pubkey", func(t *testing.T) {
+			require.Equal(
+				t,
+				alice.Alice.Pk,
+				bob.Bob.Pk,
+			)
+		},
+	)
 
 	var aliceResult *DkgResult
 	var bobResult *DkgResult
-	t.Run("alices produces valid result", func(t *testing.T) {
-		// Get the result
-		r, err := alice.Result()
+	t.Run(
+		"alices produces valid result", func(t *testing.T) {
+			// Get the result
+			r, err := alice.Result()
 
-		// Test
-		require.NoError(t, err)
-		require.NotNil(t, r)
-		require.IsType(t, &DkgResult{}, r)
-		aliceResult = r.(*DkgResult)
+			// Test
+			require.NoError(t, err)
+			require.NotNil(t, r)
+			require.IsType(t, &DkgResult{}, r)
+			aliceResult = r.(*DkgResult)
 
-		// Decode and verify
-		_, err = NewAliceSign(params, nil, aliceResult.DkgState)
-		require.NoError(t, err)
-	})
-	t.Run("alices produces valid result", func(t *testing.T) {
-		// Get the result
-		r, err := bob.Result()
+			// Decode and verify
+			_, err = NewAliceSign(params, nil, aliceResult.DkgState)
+			require.NoError(t, err)
+		},
+	)
+	t.Run(
+		"alices produces valid result", func(t *testing.T) {
+			// Get the result
+			r, err := bob.Result()
 
-		// Test
-		require.NoError(t, err)
-		require.NotNil(t, r)
-		require.IsType(t, &DkgResult{}, r)
-		bobResult = r.(*DkgResult)
+			// Test
+			require.NoError(t, err)
+			require.NotNil(t, r)
+			require.IsType(t, &DkgResult{}, r)
+			bobResult = r.(*DkgResult)
 
-		// Decode and verify
-		_, err = NewBobSign(params, nil, bobResult.DkgState)
-		require.NoError(t, err)
-	})
+			// Decode and verify
+			_, err = NewBobSign(params, nil, bobResult.DkgState)
+			require.NoError(t, err)
+		},
+	)
 
-	t.Run("alice/bob agree on pubkey", func(t *testing.T) {
-		require.Equal(t, aliceResult.Pubkey, bobResult.Pubkey)
-	})
+	t.Run(
+		"alice/bob agree on pubkey", func(t *testing.T) {
+			require.Equal(t, aliceResult.Pubkey, bobResult.Pubkey)
+		},
+	)
 }
 
 // DKG > Result > NewDklsSign > Sign > Result
@@ -155,33 +168,41 @@ func TestDkgSignProto(t *testing.T) {
 	require.NoError(t, err)
 
 	// Sign
-	t.Run("sign", func(t *testing.T) {
-		aErr, bErr = iteratedSign(aliceSign, bobSign)
-		require.ErrorIs(t, aErr, io.EOF)
-		require.ErrorIs(t, bErr, io.EOF)
-	})
+	t.Run(
+		"sign", func(t *testing.T) {
+			aErr, bErr = iteratedSign(aliceSign, bobSign)
+			require.ErrorIs(t, aErr, io.EOF)
+			require.ErrorIs(t, bErr, io.EOF)
+		},
+	)
 	// Don't continue to verifying results if sign didn't run to completion.
 	require.ErrorIs(t, aErr, io.EOF)
 	require.ErrorIs(t, bErr, io.EOF)
 
 	// Result
 	var result interface{}
-	t.Run("bob produces result of correct type", func(t *testing.T) {
-		result, err = bobSign.Result()
-		require.NoError(t, err)
-	})
+	t.Run(
+		"bob produces result of correct type", func(t *testing.T) {
+			result, err = bobSign.Result()
+			require.NoError(t, err)
+		},
+	)
 	require.NotNil(t, result)
 	require.IsType(t, &curves.EcdsaSignature{}, result)
 
-	t.Run("valid signature", func(t *testing.T) {
-		require.True(t,
-			curves.VerifyEcdsa(aliceDkg.Alice.Pk,
-				digest[:],
-				result.(*curves.EcdsaSignature),
-			),
-			"signature failed verification",
-		)
-	})
+	t.Run(
+		"valid signature", func(t *testing.T) {
+			require.True(
+				t,
+				curves.VerifyEcdsa(
+					aliceDkg.Alice.Pk,
+					digest[:],
+					result.(*curves.EcdsaSignature),
+				),
+				"signature failed verification",
+			)
+		},
+	)
 }
 
 // Decode > NewDklsSign > Sign > Result
@@ -218,8 +239,10 @@ func TestSignColdStart(t *testing.T) {
 	require.IsType(t, &curves.EcdsaSignature{}, result)
 
 	// Test the result
-	require.True(t,
-		curves.VerifyEcdsa(alice.alice.Pk,
+	require.True(
+		t,
+		curves.VerifyEcdsa(
+			alice.alice.Pk,
 			digest[:],
 			result.(*curves.EcdsaSignature),
 		),
@@ -237,33 +260,39 @@ func TestEncodeDecode(t *testing.T) {
 
 	var aliceBytes []byte
 	var bobBytes []byte
-	t.Run("Encode Alice/Bob", func(t *testing.T) {
-		aliceBytes, err = EncodeAlice(alice.Alice)
-		require.NoError(t, err)
+	t.Run(
+		"Encode Alice/Bob", func(t *testing.T) {
+			aliceBytes, err = EncodeAlice(alice.Alice)
+			require.NoError(t, err)
 
-		bobBytes, err = EncodeBob(bob.Bob)
-		require.NoError(t, err)
-	})
+			bobBytes, err = EncodeBob(bob.Bob)
+			require.NoError(t, err)
+		},
+	)
 	require.NotEmpty(t, aliceBytes)
 	require.NotEmpty(t, bobBytes)
 
-	t.Run("Decode Alice", func(t *testing.T) {
-		decodedAlice, err := DecodeAlice(params, aliceBytes)
-		require.NoError(t, err)
-		require.NotNil(t, decodedAlice)
+	t.Run(
+		"Decode Alice", func(t *testing.T) {
+			decodedAlice, err := DecodeAlice(params, aliceBytes)
+			require.NoError(t, err)
+			require.NotNil(t, decodedAlice)
 
-		require.Equal(t, alice.Alice.Pk, decodedAlice.Pk)
-		require.Equal(t, alice.Alice.PkA, decodedAlice.PkA)
-		require.Equal(t, alice.Alice.SkA, decodedAlice.SkA)
-	})
+			require.Equal(t, alice.Alice.Pk, decodedAlice.Pk)
+			require.Equal(t, alice.Alice.PkA, decodedAlice.PkA)
+			require.Equal(t, alice.Alice.SkA, decodedAlice.SkA)
+		},
+	)
 
-	t.Run("Decode Bob", func(t *testing.T) {
-		decodedBob, err := DecodeBob(params, bobBytes)
-		require.NoError(t, err)
-		require.NotNil(t, decodedBob)
+	t.Run(
+		"Decode Bob", func(t *testing.T) {
+			decodedBob, err := DecodeBob(params, bobBytes)
+			require.NoError(t, err)
+			require.NotNil(t, decodedBob)
 
-		require.Equal(t, bob.Bob.Pk, decodedBob.Pk)
-		require.Equal(t, bob.Bob.PkB, decodedBob.PkB)
-		require.Equal(t, bob.Bob.SkB, decodedBob.SkB)
-	})
+			require.Equal(t, bob.Bob.Pk, decodedBob.Pk)
+			require.Equal(t, bob.Bob.PkB, decodedBob.PkB)
+			require.Equal(t, bob.Bob.SkB, decodedBob.SkB)
+		},
+	)
 }

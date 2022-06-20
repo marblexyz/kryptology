@@ -12,7 +12,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 var testCurve = curves.ED25519()
@@ -43,16 +43,18 @@ func TestEd25519FeldmanCombineDuplicateShare(t *testing.T) {
 	scheme, err := NewFeldman(2, 3, testCurve)
 	require.Nil(t, err)
 	require.NotNil(t, scheme)
-	_, err = scheme.Combine([]*ShamirShare{
-		{
-			Id:    1,
-			Value: testCurve.Scalar.New(3).Bytes(),
-		},
-		{
-			Id:    1,
-			Value: testCurve.Scalar.New(3).Bytes(),
-		},
-	}...)
+	_, err = scheme.Combine(
+		[]*ShamirShare{
+			{
+				Id:    1,
+				Value: testCurve.Scalar.New(3).Bytes(),
+			},
+			{
+				Id:    1,
+				Value: testCurve.Scalar.New(3).Bytes(),
+			},
+		}...,
+	)
 	require.NotNil(t, err)
 }
 

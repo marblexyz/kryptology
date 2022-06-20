@@ -14,9 +14,9 @@ import (
 	"github.com/gtank/merlin"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/signatures/common"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/signatures/common"
 )
 
 // BlindSignatureContext contains the data used for computing
@@ -42,18 +42,23 @@ type BlindSignatureContext struct {
 // msgs are hidden from the signer but can also be empty
 // if no messages are hidden but a blind signature is still desired
 // because the signer should have no knowledge of the signature
-func NewBlindSignatureContext(curve *curves.PairingCurve, msgs map[int]curves.Scalar, generators *MessageGenerators, nonce common.Nonce, reader io.Reader) (*BlindSignatureContext, common.SignatureBlinding, error) {
+func NewBlindSignatureContext(
+	curve *curves.PairingCurve, msgs map[int]curves.Scalar, generators *MessageGenerators, nonce common.Nonce,
+	reader io.Reader,
+) (*BlindSignatureContext, common.SignatureBlinding, error) {
 	if curve == nil || generators == nil || nonce == nil || reader == nil {
 		return nil, nil, internal.ErrNilArguments
 	}
 	points := make([]curves.Point, 0)
 	secrets := make([]curves.Scalar, 0)
 
-	committing := common.NewProofCommittedBuilder(&curves.Curve{
-		Scalar: curve.Scalar,
-		Point:  curve.Scalar.Point().(curves.PairingPoint).OtherGroup(),
-		Name:   curve.Name,
-	})
+	committing := common.NewProofCommittedBuilder(
+		&curves.Curve{
+			Scalar: curve.Scalar,
+			Point:  curve.Scalar.Point().(curves.PairingPoint).OtherGroup(),
+			Name:   curve.Name,
+		},
+	)
 
 	// C = h0^blinding_factor*h_i^m_i.....
 	for i, m := range msgs {
@@ -196,7 +201,9 @@ func (bsc BlindSignatureContext) Verify(knownMsgs []int, generators *MessageGene
 // msgs are known to the signer
 // `msgs` is an index to message map where the index
 // corresponds to the index in `generators`
-func (bsc BlindSignatureContext) ToBlindSignature(msgs map[int]curves.Scalar, sk *SecretKey, generators *MessageGenerators, nonce common.Nonce) (*BlindSignature, error) {
+func (bsc BlindSignatureContext) ToBlindSignature(
+	msgs map[int]curves.Scalar, sk *SecretKey, generators *MessageGenerators, nonce common.Nonce,
+) (*BlindSignature, error) {
 	if sk == nil || generators == nil || nonce == nil {
 		return nil, internal.ErrNilArguments
 	}

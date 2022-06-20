@@ -15,9 +15,9 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/internal"
-	crypto "github.com/coinbase/kryptology/pkg/core"
-	curves2 "github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/internal"
+	crypto "github.com/trysuperdrop/kryptology/pkg/core"
+	curves2 "github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 var testPrimes = []*big.Int{
@@ -134,7 +134,8 @@ func TestPsfProofParams_Prove(t *testing.T) {
 	sk, _ := NewSecretKey(
 		// 75-digit random primes from Wolfram-Alpha
 		internal.B10("110045198697022997120409435651962875820936327127306040565577217116705932648687"),
-		internal.B10("95848033199746534486927143950536999279071340697368502822602282152563330640779"))
+		internal.B10("95848033199746534486927143950536999279071340697368502822602282152563330640779"),
+	)
 	smallSk, _ := NewSecretKey(big.NewInt(13), big.NewInt(11))
 
 	// Some points for testing
@@ -150,72 +151,93 @@ func TestPsfProofParams_Prove(t *testing.T) {
 		expectedResultLen int
 	}{
 		// Positive tests
-		{"positive: p256, small numbers",
+		{
+			"positive: p256, small numbers",
 			&PsfProofParams{elliptic.P256(), smallSk, 1001, Qp256},
 			nil,
 			PsfProofLength,
 		},
-		{"positive: p256, large numbers",
+		{
+			"positive: p256, large numbers",
 			&PsfProofParams{elliptic.P256(), sk, pi, Qp256},
 			nil,
 			PsfProofLength,
 		},
-		{"positive: s256, large numbers",
+		{
+			"positive: s256, large numbers",
 			&PsfProofParams{btcec.S256(), sk, pi, Qs256},
 			nil,
 			PsfProofLength,
 		},
 
 		// Nil params
-		{"negative: ",
-			&PsfProofParams{btcec.S256(),
+		{
+			"negative: ",
+			&PsfProofParams{
+				btcec.S256(),
 				sk,
 				pi,
-				Qs256},
+				Qs256,
+			},
 			nil,
 			PsfProofLength,
 		},
-		{"negative: proof params are nil",
-			&PsfProofParams{nil,
+		{
+			"negative: proof params are nil",
+			&PsfProofParams{
+				nil,
 				sk,
 				pi,
-				Qs256},
+				Qs256,
+			},
 			internal.ErrNilArguments,
 			0,
 		},
-		{"negative: SecretKey is nil",
-			&PsfProofParams{btcec.S256(),
+		{
+			"negative: SecretKey is nil",
+			&PsfProofParams{
+				btcec.S256(),
 				nil,
 				pi,
-				Qs256},
+				Qs256,
+			},
 			internal.ErrNilArguments,
 			0,
 		},
-		{"negative: y is nil",
-			&PsfProofParams{btcec.S256(),
+		{
+			"negative: y is nil",
+			&PsfProofParams{
+				btcec.S256(),
 				sk,
 				0,
-				Qs256},
+				Qs256,
+			},
 			internal.ErrNilArguments,
 			0,
 		},
-		{"negative: Pi is nil",
-			&PsfProofParams{btcec.S256(),
+		{
+			"negative: Pi is nil",
+			&PsfProofParams{
+				btcec.S256(),
 				sk,
 				pi,
-				nil},
+				nil,
+			},
 			internal.ErrNilArguments,
-			0},
+			0,
+		},
 	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			// test
-			result, err := test.in.Prove()
+		t.Run(
+			test.name, func(t *testing.T) {
+				// test
+				result, err := test.in.Prove()
 
-			// Verify the results are as expected
-			require.Equal(t, test.expectedError, err)
-			require.Len(t, result, test.expectedResultLen)
-		})
+				// Verify the results are as expected
+				require.Equal(t, test.expectedError, err)
+				require.Len(t, result, test.expectedResultLen)
+			},
+		)
 	}
 
 }
@@ -225,9 +247,12 @@ func TestPsfProof_MarshalJSON(t *testing.T) {
 	// Generate some proof
 	sk, _ := NewSecretKey(
 		internal.B10("110045198697022997120409435651962875820936327127306040565577217116705932648687"),
-		internal.B10("95848033199746534486927143950536999279071340697368502822602282152563330640779"))
-	Q, _ := curves2.NewScalarBaseMult(elliptic.P256(),
-		internal.B10("270988338908697209412444309907441365656383309727758604622908325428179708750"))
+		internal.B10("95848033199746534486927143950536999279071340697368502822602282152563330640779"),
+	)
+	Q, _ := curves2.NewScalarBaseMult(
+		elliptic.P256(),
+		internal.B10("270988338908697209412444309907441365656383309727758604622908325428179708750"),
+	)
 	params := &PsfProofParams{
 		elliptic.P256(), sk,
 		1,
@@ -261,7 +286,8 @@ func TestPsfProofWorks(t *testing.T) {
 	sk, _ := NewSecretKey(
 		// 75-digit random primes from Wolfram-Alpha
 		internal.B10("110045198697022997120409435651962875820936327127306040565577217116705932648687"),
-		internal.B10("95848033199746534486927143950536999279071340697368502822602282152563330640779"))
+		internal.B10("95848033199746534486927143950536999279071340697368502822602282152563330640779"),
+	)
 
 	// Some points for testing
 	k := internal.B10("270988338908697209412444309907441365656383309727758604622908325428179708750")

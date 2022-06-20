@@ -12,8 +12,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	v1 "github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	v1 "github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 func TestNonceShareFromBytes(t *testing.T) {
@@ -92,9 +92,11 @@ func TestNonceSharesAdd(t *testing.T) {
 func TestNonceSharesAdd_errors(t *testing.T) {
 	one := NewNonceShare(0, []byte{0x01})
 	two := NewNonceShare(1, []byte{0x02})
-	require.PanicsWithValue(t, "identifiers must match for valid addition", func() {
-		one.Add(two)
-	})
+	require.PanicsWithValue(
+		t, "identifiers must match for valid addition", func() {
+			one.Add(two)
+		},
+	)
 }
 
 func toShamirShare(nonceShares []*NonceShare) []*v1.ShamirShare {

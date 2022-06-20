@@ -12,7 +12,7 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	mod "github.com/coinbase/kryptology/pkg/core"
+	mod "github.com/trysuperdrop/kryptology/pkg/core"
 )
 
 type encryptionKeyMarshal struct {

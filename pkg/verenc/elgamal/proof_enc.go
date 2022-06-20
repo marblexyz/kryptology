@@ -12,8 +12,8 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // ProofVerEnc is a proof of verifiable encryption for a discrete log
@@ -119,7 +119,9 @@ func (ek EncryptionKey) VerifiableEncrypt(msg []byte, params *EncryptParams) (*C
 	return cipherText, proof, nil
 }
 
-func (ek EncryptionKey) genProof(nonce, msg []byte, msgIsHashed bool, cipherText *CipherText, blinding curves.Scalar, h curves.Point) (*ProofVerEnc, error) {
+func (ek EncryptionKey) genProof(
+	nonce, msg []byte, msgIsHashed bool, cipherText *CipherText, blinding curves.Scalar, h curves.Point,
+) (*ProofVerEnc, error) {
 	r := ek.Value.Scalar().Random(crand.Reader)
 	// R1 = r * G
 	r1 := ek.Value.Generator().Mul(r)

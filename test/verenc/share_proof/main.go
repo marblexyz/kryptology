@@ -4,9 +4,9 @@ import (
 	crand "crypto/rand"
 	"fmt"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/sharing"
-	"github.com/coinbase/kryptology/pkg/verenc/elgamal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/sharing"
+	"github.com/trysuperdrop/kryptology/pkg/verenc/elgamal"
 )
 
 func main() {
@@ -106,17 +106,21 @@ func computeProof(
 ) *commitTwinProof {
 	r1 := curve.Scalar.Random(crand.Reader)
 	r2 := curve.Scalar.Random(crand.Reader)
-	encctxt, _, _ := encKey.VerifiableEncrypt(share, &elgamal.EncryptParams{
-		Domain:          domain,
-		Blinding:        r2,
-		MessageIsHashed: true,
-		ProofNonce:      domain,
-	})
-	serverCtxt, _, _ := servKey.VerifiableEncrypt(share, &elgamal.EncryptParams{
-		Blinding:        r1,
-		MessageIsHashed: true,
-		ProofNonce:      domain,
-	})
+	encctxt, _, _ := encKey.VerifiableEncrypt(
+		share, &elgamal.EncryptParams{
+			Domain:          domain,
+			Blinding:        r2,
+			MessageIsHashed: true,
+			ProofNonce:      domain,
+		},
+	)
+	serverCtxt, _, _ := servKey.VerifiableEncrypt(
+		share, &elgamal.EncryptParams{
+			Blinding:        r1,
+			MessageIsHashed: true,
+			ProofNonce:      domain,
+		},
+	)
 
 	w := curve.Scalar.Random(crand.Reader)
 	n1 := curve.Scalar.Random(crand.Reader)

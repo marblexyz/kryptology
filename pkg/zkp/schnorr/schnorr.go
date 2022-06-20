@@ -16,7 +16,7 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 type Commitment = []byte
@@ -125,7 +125,9 @@ func (p *Prover) ProveCommit(x curves.Scalar) (*Proof, Commitment, error) {
 
 // DecommitVerify receives a `Proof` and a `Commitment`; it first checks that the proof actually opens the commitment;
 // then it verifies the proof. returns and error if either on eof thse fail.
-func DecommitVerify(proof *Proof, commitment Commitment, curve *curves.Curve, basepoint curves.Point, uniqueSessionId []byte) error {
+func DecommitVerify(
+	proof *Proof, commitment Commitment, curve *curves.Curve, basepoint curves.Point, uniqueSessionId []byte,
+) error {
 	hash := sha3.New256()
 	if _, err := hash.Write(proof.C.Bytes()); err != nil {
 		return err

@@ -14,8 +14,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	v1 "github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	v1 "github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 const expectedSeedHex = "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60"
@@ -45,7 +45,10 @@ func TestThresholdSign(t *testing.T) {
 
 	message := []byte("fnord!")
 	wrongMessage := []byte("23")
-	sig := ThresholdSign(reverseBytes(keyShare.Value.Bytes()), pub, message, reverseBytes(nonceShare.Value.Bytes()), noncePub.ToAffineCompressed())
+	sig := ThresholdSign(
+		reverseBytes(keyShare.Value.Bytes()), pub, message, reverseBytes(nonceShare.Value.Bytes()),
+		noncePub.ToAffineCompressed(),
+	)
 
 	ok, _ := Verify(pub, message, sig)
 	require.True(t, ok)
@@ -72,25 +75,29 @@ func TestThresholdSign_invalid_secrets(t *testing.T) {
 	require.NoError(t, err)
 	noncePub := curves.ED25519().Point.Generator().Mul(nScalar)
 
-	require.PanicsWithValue(t, "ed25519: bad key share length: 0",
+	require.PanicsWithValue(
+		t, "ed25519: bad key share length: 0",
 		func() {
 			ThresholdSign(make([]byte, 0), pub.ToAffineCompressed(), message, nonce, noncePub.ToAffineCompressed())
 		},
 	)
 
-	require.PanicsWithValue(t, "ed25519: bad key share length: 33",
+	require.PanicsWithValue(
+		t, "ed25519: bad key share length: 33",
 		func() {
 			ThresholdSign(make([]byte, 33), pub.ToAffineCompressed(), message, nonce, noncePub.ToAffineCompressed())
 		},
 	)
 
-	require.PanicsWithValue(t, "ed25519: bad nonce share length: 0",
+	require.PanicsWithValue(
+		t, "ed25519: bad nonce share length: 0",
 		func() {
 			ThresholdSign(secret, pub.ToAffineCompressed(), message, make([]byte, 0), noncePub.ToAffineCompressed())
 		},
 	)
 
-	require.PanicsWithValue(t, "ed25519: bad nonce share length: 33",
+	require.PanicsWithValue(
+		t, "ed25519: bad nonce share length: 33",
 		func() {
 			ThresholdSign(secret, pub.ToAffineCompressed(), message, make([]byte, 33), noncePub.ToAffineCompressed())
 		},

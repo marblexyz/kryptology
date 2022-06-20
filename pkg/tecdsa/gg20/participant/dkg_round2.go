@@ -9,12 +9,12 @@ package participant
 import (
 	"fmt"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/paillier"
-	"github.com/coinbase/kryptology/pkg/sharing/v1"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/dealer"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/proof"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/paillier"
+	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/proof"
 )
 
 // DkgRound2Bcast contains value that will be echo broadcast to all other players.
@@ -29,7 +29,9 @@ type DkgRound2P2PSend struct {
 
 // DkgRound2 implements distributed key generation round 2
 // [spec] fig 5: DistKeyGenRound2
-func (dp *DkgParticipant) DkgRound2(params map[uint32]*DkgRound1Bcast) (*DkgRound2Bcast, map[uint32]*DkgRound2P2PSend, error) {
+func (dp *DkgParticipant) DkgRound2(params map[uint32]*DkgRound1Bcast) (
+	*DkgRound2Bcast, map[uint32]*DkgRound2P2PSend, error,
+) {
 	// Make sure dkg participant is not empty
 	if dp == nil || dp.Curve == nil {
 		return nil, nil, internal.ErrNilArguments

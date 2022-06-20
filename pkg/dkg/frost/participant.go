@@ -10,9 +10,9 @@ package frost
 import (
 	"strconv"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/sharing"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/sharing"
 )
 
 type DkgParticipant struct {
@@ -35,7 +35,9 @@ type dkgParticipantData struct {
 	Verifiers *sharing.FeldmanVerifier
 }
 
-func NewDkgParticipant(id, threshold uint32, ctx string, curve *curves.Curve, otherParticipants ...uint32) (*DkgParticipant, error) {
+func NewDkgParticipant(
+	id, threshold uint32, ctx string, curve *curves.Curve, otherParticipants ...uint32,
+) (*DkgParticipant, error) {
 	if curve == nil || len(otherParticipants) == 0 {
 		return nil, internal.ErrNilArguments
 	}

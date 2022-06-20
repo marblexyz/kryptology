@@ -12,8 +12,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/extension/kos"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
 )
 
 func TestDkg(t *testing.T) {
@@ -24,49 +24,51 @@ func TestDkg(t *testing.T) {
 	}
 	for _, curve := range curveInstances {
 		boundCurve := curve
-		t.Run(fmt.Sprintf("testing dkg for curve %s", boundCurve.Name), func(tt *testing.T) {
-			tt.Parallel()
-			alice := NewAlice(boundCurve)
-			bob := NewBob(boundCurve)
+		t.Run(
+			fmt.Sprintf("testing dkg for curve %s", boundCurve.Name), func(tt *testing.T) {
+				tt.Parallel()
+				alice := NewAlice(boundCurve)
+				bob := NewBob(boundCurve)
 
-			seed, err := bob.Round1GenerateRandomSeed()
-			require.NoError(tt, err)
-			round3Output, err := alice.Round2CommitToProof(seed)
-			require.NoError(tt, err)
-			proof, err := bob.Round3SchnorrProve(round3Output)
-			require.NoError(tt, err)
-			proof, err = alice.Round4VerifyAndReveal(proof)
-			require.NoError(tt, err)
-			proof, err = bob.Round5DecommitmentAndStartOt(proof)
-			require.NoError(tt, err)
-			compressedReceiversMaskedChoice, err := alice.Round6DkgRound2Ot(proof)
-			require.NoError(tt, err)
-			challenge, err := bob.Round7DkgRound3Ot(compressedReceiversMaskedChoice)
-			require.NoError(tt, err)
-			challengeResponse, err := alice.Round8DkgRound4Ot(challenge)
-			require.NoError(tt, err)
-			challengeOpenings, err := bob.Round9DkgRound5Ot(challengeResponse)
-			require.NoError(tt, err)
-			err = alice.Round10DkgRound6Ot(challengeOpenings)
-			require.NoError(tt, err)
-			// Verify correctness of the OT subprotocol after  has completed
-			for i := 0; i < kos.Kappa; i++ {
-				if alice.receiver.Output.OneTimePadDecryptionKey[i] != bob.sender.Output.OneTimePadEncryptionKeys[i][alice.receiver.Output.RandomChoiceBits[i]] {
-					tt.Errorf("oblivious transfer is incorrect at index i=%v", i)
+				seed, err := bob.Round1GenerateRandomSeed()
+				require.NoError(tt, err)
+				round3Output, err := alice.Round2CommitToProof(seed)
+				require.NoError(tt, err)
+				proof, err := bob.Round3SchnorrProve(round3Output)
+				require.NoError(tt, err)
+				proof, err = alice.Round4VerifyAndReveal(proof)
+				require.NoError(tt, err)
+				proof, err = bob.Round5DecommitmentAndStartOt(proof)
+				require.NoError(tt, err)
+				compressedReceiversMaskedChoice, err := alice.Round6DkgRound2Ot(proof)
+				require.NoError(tt, err)
+				challenge, err := bob.Round7DkgRound3Ot(compressedReceiversMaskedChoice)
+				require.NoError(tt, err)
+				challengeResponse, err := alice.Round8DkgRound4Ot(challenge)
+				require.NoError(tt, err)
+				challengeOpenings, err := bob.Round9DkgRound5Ot(challengeResponse)
+				require.NoError(tt, err)
+				err = alice.Round10DkgRound6Ot(challengeOpenings)
+				require.NoError(tt, err)
+				// Verify correctness of the OT subprotocol after  has completed
+				for i := 0; i < kos.Kappa; i++ {
+					if alice.receiver.Output.OneTimePadDecryptionKey[i] != bob.sender.Output.OneTimePadEncryptionKeys[i][alice.receiver.Output.RandomChoiceBits[i]] {
+						tt.Errorf("oblivious transfer is incorrect at index i=%v", i)
+					}
 				}
-			}
 
-			pkA := boundCurve.ScalarBaseMult(alice.Output().SecretKeyShare)
-			pkB := boundCurve.ScalarBaseMult(bob.Output().SecretKeyShare)
+				pkA := boundCurve.ScalarBaseMult(alice.Output().SecretKeyShare)
+				pkB := boundCurve.ScalarBaseMult(bob.Output().SecretKeyShare)
 
-			computedPublicKeyA := pkA.Mul(bob.Output().SecretKeyShare)
-			require.True(tt, computedPublicKeyA.Equal(alice.Output().PublicKey))
-			require.True(tt, computedPublicKeyA.Equal(bob.Output().PublicKey))
+				computedPublicKeyA := pkA.Mul(bob.Output().SecretKeyShare)
+				require.True(tt, computedPublicKeyA.Equal(alice.Output().PublicKey))
+				require.True(tt, computedPublicKeyA.Equal(bob.Output().PublicKey))
 
-			computedPublicKeyB := pkB.Mul(alice.Output().SecretKeyShare)
-			require.True(tt, computedPublicKeyB.Equal(alice.Output().PublicKey))
-			require.True(tt, computedPublicKeyB.Equal(bob.Output().PublicKey))
-		})
+				computedPublicKeyB := pkB.Mul(alice.Output().SecretKeyShare)
+				require.True(tt, computedPublicKeyB.Equal(alice.Output().PublicKey))
+				require.True(tt, computedPublicKeyB.Equal(bob.Output().PublicKey))
+			},
+		)
 	}
 }
 

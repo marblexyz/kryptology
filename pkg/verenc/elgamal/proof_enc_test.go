@@ -11,7 +11,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 func TestEncryptionKeyEncryptAndProve(t *testing.T) {
@@ -37,12 +37,14 @@ func TestEncryptionKeyEncryptAndProve(t *testing.T) {
 	for _, msg := range testMsgs {
 		msgBytes := msg.Bytes()
 		require.NoError(t, err)
-		cs, proof, err := ek.VerifiableEncrypt(msgBytes, &EncryptParams{
-			Domain:          domain,
-			MessageIsHashed: true,
-			GenProof:        true,
-			ProofNonce:      domain,
-		})
+		cs, proof, err := ek.VerifiableEncrypt(
+			msgBytes, &EncryptParams{
+				Domain:          domain,
+				MessageIsHashed: true,
+				GenProof:        true,
+				ProofNonce:      domain,
+			},
+		)
 		require.NoError(t, err)
 
 		err = ek.VerifyDomainEncryptProof(domain, cs, proof)
@@ -64,12 +66,14 @@ func TestEncryptionKeyEncryptAndProvePlaintextMsg(t *testing.T) {
 	msg := "testMessage"
 	msgBytes := []byte(msg)
 
-	cs, proof, err := ek.VerifiableEncrypt(msgBytes, &EncryptParams{
-		Domain:          domain,
-		MessageIsHashed: false,
-		GenProof:        true,
-		ProofNonce:      domain,
-	})
+	cs, proof, err := ek.VerifiableEncrypt(
+		msgBytes, &EncryptParams{
+			Domain:          domain,
+			MessageIsHashed: false,
+			GenProof:        true,
+			ProofNonce:      domain,
+		},
+	)
 	require.NoError(t, err)
 
 	err = ek.VerifyDomainEncryptProof(domain, cs, proof)
@@ -105,13 +109,15 @@ func TestEncryptionKeyEncryptAndProveBlinding(t *testing.T) {
 	}
 	for _, msg := range testMsgs {
 		msgTestBytes := msg.test.Bytes()
-		cs, proof, err := ek.VerifiableEncrypt(msgTestBytes, &EncryptParams{
-			Domain:          domain,
-			MessageIsHashed: true,
-			Blinding:        msg.blinding,
-			GenProof:        true,
-			ProofNonce:      domain,
-		})
+		cs, proof, err := ek.VerifiableEncrypt(
+			msgTestBytes, &EncryptParams{
+				Domain:          domain,
+				MessageIsHashed: true,
+				Blinding:        msg.blinding,
+				GenProof:        true,
+				ProofNonce:      domain,
+			},
+		)
 		require.NoError(t, err)
 
 		err = ek.VerifyDomainEncryptProof(domain, cs, proof)
@@ -130,23 +136,27 @@ func TestEncryptionKeyEncryptAndProveInvalidInputs(t *testing.T) {
 	ek, _, err := NewKeys(bls12381)
 	require.NoError(t, err)
 
-	_, _, err = ek.VerifiableEncrypt(nil, &EncryptParams{
-		Domain:          domain,
-		MessageIsHashed: true,
-		GenProof:        true,
-		ProofNonce:      domain,
-	})
+	_, _, err = ek.VerifiableEncrypt(
+		nil, &EncryptParams{
+			Domain:          domain,
+			MessageIsHashed: true,
+			GenProof:        true,
+			ProofNonce:      domain,
+		},
+	)
 	require.Error(t, err)
 
 	msg2 := bls12381.Scalar.New(2)
 	msg2Bytes := msg2.Bytes()
-	_, _, err = ek.VerifiableEncrypt(msg2Bytes, &EncryptParams{
-		Domain:          domain,
-		MessageIsHashed: true,
-		Blinding:        bls12381.Scalar.New(0),
-		GenProof:        true,
-		ProofNonce:      domain,
-	})
+	_, _, err = ek.VerifiableEncrypt(
+		msg2Bytes, &EncryptParams{
+			Domain:          domain,
+			MessageIsHashed: true,
+			Blinding:        bls12381.Scalar.New(0),
+			GenProof:        true,
+			ProofNonce:      domain,
+		},
+	)
 	require.Error(t, err)
 }
 
@@ -167,12 +177,14 @@ func TestMarshalUnmarshalWithDomain(t *testing.T) {
 	for _, msg := range testMsgs {
 		msgBytes := msg.Bytes()
 		require.NoError(t, err)
-		cs, proof, err := ek.VerifiableEncrypt(msgBytes, &EncryptParams{
-			Domain:          domain,
-			MessageIsHashed: true,
-			GenProof:        true,
-			ProofNonce:      domain,
-		})
+		cs, proof, err := ek.VerifiableEncrypt(
+			msgBytes, &EncryptParams{
+				Domain:          domain,
+				MessageIsHashed: true,
+				GenProof:        true,
+				ProofNonce:      domain,
+			},
+		)
 		require.NoError(t, err)
 
 		proofBytes, err := proof.MarshalBinary()
@@ -204,11 +216,13 @@ func TestMarshalUnmarshal(t *testing.T) {
 	for _, msg := range testMsgs {
 		msgBytes := msg.Bytes()
 		require.NoError(t, err)
-		cs, proof, err := ek.VerifiableEncrypt(msgBytes, &EncryptParams{
-			MessageIsHashed: true,
-			GenProof:        true,
-			ProofNonce:      domain,
-		})
+		cs, proof, err := ek.VerifiableEncrypt(
+			msgBytes, &EncryptParams{
+				MessageIsHashed: true,
+				GenProof:        true,
+				ProofNonce:      domain,
+			},
+		)
 		require.NoError(t, err)
 
 		proofBytes, err := proof.MarshalBinary()

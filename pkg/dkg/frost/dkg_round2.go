@@ -9,9 +9,9 @@ package frost
 import (
 	"fmt"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/sharing"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/sharing"
 )
 
 // Round2Bcast are values that are broadcast to all other participants
@@ -22,7 +22,9 @@ type Round2Bcast struct {
 }
 
 // Round2 implements dkg round 2 of FROST
-func (dp *DkgParticipant) Round2(bcast map[uint32]*Round1Bcast, p2psend map[uint32]*sharing.ShamirShare) (*Round2Bcast, error) {
+func (dp *DkgParticipant) Round2(bcast map[uint32]*Round1Bcast, p2psend map[uint32]*sharing.ShamirShare) (
+	*Round2Bcast, error,
+) {
 	// Make sure dkg participant is not empty
 	if dp == nil || dp.Curve == nil {
 		return nil, internal.ErrNilArguments

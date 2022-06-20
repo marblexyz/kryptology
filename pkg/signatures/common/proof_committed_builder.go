@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 const limit = 65535
@@ -73,7 +73,9 @@ func (pcb ProofCommittedBuilder) GetChallengeContribution() []byte {
 }
 
 // GenerateProof converts the blinding factors and secrets into Schnorr proofs
-func (pcb ProofCommittedBuilder) GenerateProof(challenge curves.Scalar, secrets []curves.Scalar) ([]curves.Scalar, error) {
+func (pcb ProofCommittedBuilder) GenerateProof(challenge curves.Scalar, secrets []curves.Scalar) (
+	[]curves.Scalar, error,
+) {
 	if len(secrets) != len(pcb.scalars) {
 		return nil, fmt.Errorf("secrets is not equal to blinding factors")
 	}

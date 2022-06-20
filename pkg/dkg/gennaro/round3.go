@@ -9,8 +9,8 @@ package gennaro
 import (
 	"fmt"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 // Round3Bcast contains values that will be broadcast to other participants.

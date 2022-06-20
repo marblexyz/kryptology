@@ -14,7 +14,7 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 func TestMultiply(t *testing.T) {
@@ -37,7 +37,9 @@ func TestMultiply(t *testing.T) {
 		require.Nil(t, <-errors)
 	}
 	for i := 0; i < kappa; i++ {
-		require.Equal(t, sender.sender.receiver.Rho[i], receiver.receiver.sender.Rho[i][sender.sender.receiver.choice[i]])
+		require.Equal(
+			t, sender.sender.receiver.Rho[i], receiver.receiver.sender.Rho[i][sender.sender.receiver.choice[i]],
+		)
 	}
 	alpha := [multiplicity]*big.Int{}
 	beta := [multiplicity]*big.Int{}

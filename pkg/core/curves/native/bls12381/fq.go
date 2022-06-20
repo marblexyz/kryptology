@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/coinbase/kryptology/pkg/core/curves/native"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
 )
 
 type Fq [native.FieldLimbs]uint64
@@ -20,10 +20,14 @@ const fqS = 32
 const qInv = 0xfffffffeffffffff
 
 // fqGenerator = 7 (multiplicative fqGenerator of r-1 order, that is also quadratic nonresidue)
-var fqGenerator = [native.FieldLimbs]uint64{0x0000000efffffff1, 0x17e363d300189c0f, 0xff9c57876f8457b0, 0x351332208fc5a8c4}
+var fqGenerator = [native.FieldLimbs]uint64{
+	0x0000000efffffff1, 0x17e363d300189c0f, 0xff9c57876f8457b0, 0x351332208fc5a8c4,
+}
 
 // fqModulus
-var fqModulus = [native.FieldLimbs]uint64{0xffffffff00000001, 0x53bda402fffe5bfe, 0x3339d80809a1d805, 0x73eda753299d7d48}
+var fqModulus = [native.FieldLimbs]uint64{
+	0xffffffff00000001, 0x53bda402fffe5bfe, 0x3339d80809a1d805, 0x73eda753299d7d48,
+}
 
 func Bls12381FqNew() *native.Field {
 	return &native.Field{
@@ -35,12 +39,24 @@ func Bls12381FqNew() *native.Field {
 
 func bls12381FqParamsInit() {
 	bls12381FqParams = native.FieldParams{
-		R:       [native.FieldLimbs]uint64{0x00000001fffffffe, 0x5884b7fa00034802, 0x998c4fefecbc4ff5, 0x1824b159acc5056f},
-		R2:      [native.FieldLimbs]uint64{0xc999e990f3f29c6d, 0x2b6cedcb87925c23, 0x05d314967254398f, 0x0748d9d99f59ff11},
-		R3:      [native.FieldLimbs]uint64{0xc62c1807439b73af, 0x1b3e0d188cf06990, 0x73d13c71c7b5f418, 0x6e2a5bb9c8db33e9},
-		Modulus: [native.FieldLimbs]uint64{0xffffffff00000001, 0x53bda402fffe5bfe, 0x3339d80809a1d805, 0x73eda753299d7d48},
-		BiModulus: new(big.Int).SetBytes([]byte{
-			0x73, 0xed, 0xa7, 0x53, 0x29, 0x9d, 0x7d, 0x48, 0x33, 0x39, 0xd8, 0x08, 0x09, 0xa1, 0xd8, 0x05, 0x53, 0xbd, 0xa4, 0x02, 0xff, 0xfe, 0x5b, 0xfe, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x01}),
+		R: [native.FieldLimbs]uint64{
+			0x00000001fffffffe, 0x5884b7fa00034802, 0x998c4fefecbc4ff5, 0x1824b159acc5056f,
+		},
+		R2: [native.FieldLimbs]uint64{
+			0xc999e990f3f29c6d, 0x2b6cedcb87925c23, 0x05d314967254398f, 0x0748d9d99f59ff11,
+		},
+		R3: [native.FieldLimbs]uint64{
+			0xc62c1807439b73af, 0x1b3e0d188cf06990, 0x73d13c71c7b5f418, 0x6e2a5bb9c8db33e9,
+		},
+		Modulus: [native.FieldLimbs]uint64{
+			0xffffffff00000001, 0x53bda402fffe5bfe, 0x3339d80809a1d805, 0x73eda753299d7d48,
+		},
+		BiModulus: new(big.Int).SetBytes(
+			[]byte{
+				0x73, 0xed, 0xa7, 0x53, 0x29, 0x9d, 0x7d, 0x48, 0x33, 0x39, 0xd8, 0x08, 0x09, 0xa1, 0xd8, 0x05, 0x53,
+				0xbd, 0xa4, 0x02, 0xff, 0xfe, 0x5b, 0xfe, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x01,
+			},
+		),
 	}
 }
 
@@ -241,11 +257,13 @@ func (f bls12381FqArithmetic) Sqrt(wasSquare *int, out, arg *[native.FieldLimbs]
 		Value:      c,
 		Params:     getBls12381FqParams(),
 		Arithmetic: f,
-	}).Equal(&native.Field{
-		Value:      *arg,
-		Params:     getBls12381FqParams(),
-		Arithmetic: f,
-	})
+	}).Equal(
+		&native.Field{
+			Value:      *arg,
+			Params:     getBls12381FqParams(),
+			Arithmetic: f,
+		},
+	)
 	f.Selectznz(out, out, &z, *wasSquare)
 }
 

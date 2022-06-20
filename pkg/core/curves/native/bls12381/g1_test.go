@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves/native"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
 )
 
 func TestG1IsOnCurve(t *testing.T) {
@@ -162,22 +162,26 @@ func TestG1Add(t *testing.T) {
 	require.Equal(t, 1, a.IsOnCurve())
 	require.Equal(t, 1, b.IsOnCurve())
 	c.Add(a, b)
-	d.x.Set(&fp{
-		0x29e1e987ef68f2d0,
-		0xc5f3ec531db03233,
-		0xacd6c4b6ca19730f,
-		0x18ad9e827bc2bab7,
-		0x46e3b2c5785cc7a9,
-		0x07e571d42d22ddd6,
-	})
-	d.y.Set(&fp{
-		0x94d117a7e5a539e7,
-		0x8e17ef673d4b5d22,
-		0x9d746aaf508a33ea,
-		0x8c6d883d2516c9a2,
-		0x0bc3b8d5fb0447f7,
-		0x07bfa4c7210f4f44,
-	})
+	d.x.Set(
+		&fp{
+			0x29e1e987ef68f2d0,
+			0xc5f3ec531db03233,
+			0xacd6c4b6ca19730f,
+			0x18ad9e827bc2bab7,
+			0x46e3b2c5785cc7a9,
+			0x07e571d42d22ddd6,
+		},
+	)
+	d.y.Set(
+		&fp{
+			0x94d117a7e5a539e7,
+			0x8e17ef673d4b5d22,
+			0x9d746aaf508a33ea,
+			0x8c6d883d2516c9a2,
+			0x0bc3b8d5fb0447f7,
+			0x07bfa4c7210f4f44,
+		},
+	)
 	d.z.SetOne()
 	require.Equal(t, 1, c.Equal(d))
 }
@@ -193,18 +197,22 @@ func TestG1Sub(t *testing.T) {
 
 func TestG1Mul(t *testing.T) {
 	g := new(G1).Generator()
-	a := Bls12381FqNew().SetRaw(&[native.FieldLimbs]uint64{
-		0x2b568297a56da71c,
-		0xd8c39ecb0ef375d1,
-		0x435c38da67bfbf96,
-		0x8088a05026b659b2,
-	})
-	b := Bls12381FqNew().SetRaw(&[native.FieldLimbs]uint64{
-		0x785fdd9b26ef8b85,
-		0xc997f25837695c18,
-		0x4c8dbc39e7b756c1,
-		0x70d9b6cc6d87df20,
-	})
+	a := Bls12381FqNew().SetRaw(
+		&[native.FieldLimbs]uint64{
+			0x2b568297a56da71c,
+			0xd8c39ecb0ef375d1,
+			0x435c38da67bfbf96,
+			0x8088a05026b659b2,
+		},
+	)
+	b := Bls12381FqNew().SetRaw(
+		&[native.FieldLimbs]uint64{
+			0x785fdd9b26ef8b85,
+			0xc997f25837695c18,
+			0x4c8dbc39e7b756c1,
+			0x70d9b6cc6d87df20,
+		},
+	)
 	c := Bls12381FqNew().Mul(a, b)
 	t1 := new(G1).Generator()
 	t1.Mul(t1, a)
@@ -327,11 +335,26 @@ func TestG1Hash(t *testing.T) {
 	tests := []struct {
 		input, expected string
 	}{
-		{"", "052926add2207b76ca4fa57a8734416c8dc95e24501772c814278700eed6d1e4e8cf62d9c09db0fac349612b759e79a108ba738453bfed09cb546dbb0783dbb3a5f1f566ed67bb6be0e8c67e2e81a4cc68ee29813bb7994998f3eae0c9c6a265"},
-		{"abc", "03567bc5ef9c690c2ab2ecdf6a96ef1c139cc0b2f284dca0a9a7943388a49a3aee664ba5379a7655d3c68900be2f69030b9c15f3fe6e5cf4211f346271d7b01c8f3b28be689c8429c85b67af215533311f0b8dfaaa154fa6b88176c229f2885d"},
-		{"abcdef0123456789", "11e0b079dea29a68f0383ee94fed1b940995272407e3bb916bbf268c263ddd57a6a27200a784cbc248e84f357ce82d9803a87ae2caf14e8ee52e51fa2ed8eefe80f02457004ba4d486d6aa1f517c0889501dc7413753f9599b099ebcbbd2d709"},
-		{"q128_qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq", "15f68eaa693b95ccb85215dc65fa81038d69629f70aeee0d0f677cf22285e7bf58d7cb86eefe8f2e9bc3f8cb84fac4881807a1d50c29f430b8cafc4f8638dfeeadf51211e1602a5f184443076715f91bb90a48ba1e370edce6ae1062f5e6dd38"},
-		{"a512_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "082aabae8b7dedb0e78aeb619ad3bfd9277a2f77ba7fad20ef6aabdc6c31d19ba5a6d12283553294c1825c4b3ca2dcfe05b84ae5a942248eea39e1d91030458c40153f3b654ab7872d779ad1e942856a20c438e8d99bc8abfbf74729ce1f7ac8"},
+		{
+			"",
+			"052926add2207b76ca4fa57a8734416c8dc95e24501772c814278700eed6d1e4e8cf62d9c09db0fac349612b759e79a108ba738453bfed09cb546dbb0783dbb3a5f1f566ed67bb6be0e8c67e2e81a4cc68ee29813bb7994998f3eae0c9c6a265",
+		},
+		{
+			"abc",
+			"03567bc5ef9c690c2ab2ecdf6a96ef1c139cc0b2f284dca0a9a7943388a49a3aee664ba5379a7655d3c68900be2f69030b9c15f3fe6e5cf4211f346271d7b01c8f3b28be689c8429c85b67af215533311f0b8dfaaa154fa6b88176c229f2885d",
+		},
+		{
+			"abcdef0123456789",
+			"11e0b079dea29a68f0383ee94fed1b940995272407e3bb916bbf268c263ddd57a6a27200a784cbc248e84f357ce82d9803a87ae2caf14e8ee52e51fa2ed8eefe80f02457004ba4d486d6aa1f517c0889501dc7413753f9599b099ebcbbd2d709",
+		},
+		{
+			"q128_qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+			"15f68eaa693b95ccb85215dc65fa81038d69629f70aeee0d0f677cf22285e7bf58d7cb86eefe8f2e9bc3f8cb84fac4881807a1d50c29f430b8cafc4f8638dfeeadf51211e1602a5f184443076715f91bb90a48ba1e370edce6ae1062f5e6dd38",
+		},
+		{
+			"a512_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+			"082aabae8b7dedb0e78aeb619ad3bfd9277a2f77ba7fad20ef6aabdc6c31d19ba5a6d12283553294c1825c4b3ca2dcfe05b84ae5a942248eea39e1d91030458c40153f3b654ab7872d779ad1e942856a20c438e8d99bc8abfbf74729ce1f7ac8",
+		},
 	}
 
 	pt := new(G1).Identity()

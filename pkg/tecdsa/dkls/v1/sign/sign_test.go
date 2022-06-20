@@ -13,11 +13,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
-	"github.com/coinbase/kryptology/pkg/ot/extension/kos"
-	"github.com/coinbase/kryptology/pkg/ot/ottest"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
+	"github.com/trysuperdrop/kryptology/pkg/ot/ottest"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
 )
 
 func TestSign(t *testing.T) {
@@ -37,8 +37,14 @@ func TestSign(t *testing.T) {
 		secretKeyShareB := curve.Scalar.Random(rand.Reader)
 		require.NoError(t, err)
 		publicKey := curve.ScalarBaseMult(secretKeyShareA.Mul(secretKeyShareB))
-		alice := NewAlice(curve, sha3.New256(), &dkg.AliceOutput{SeedOtResult: baseOtReceiverOutput, SecretKeyShare: secretKeyShareA, PublicKey: publicKey})
-		bob := NewBob(curve, sha3.New256(), &dkg.BobOutput{SeedOtResult: baseOtSenderOutput, SecretKeyShare: secretKeyShareB, PublicKey: publicKey})
+		alice := NewAlice(
+			curve, sha3.New256(),
+			&dkg.AliceOutput{SeedOtResult: baseOtReceiverOutput, SecretKeyShare: secretKeyShareA, PublicKey: publicKey},
+		)
+		bob := NewBob(
+			curve, sha3.New256(),
+			&dkg.BobOutput{SeedOtResult: baseOtSenderOutput, SecretKeyShare: secretKeyShareB, PublicKey: publicKey},
+		)
 
 		message := []byte("A message.")
 		seed, err := alice.Round1GenerateRandomSeed()
@@ -64,8 +70,14 @@ func BenchmarkSign(b *testing.B) {
 	secretKeyShareA := curve.Scalar.Random(rand.Reader)
 	secretKeyShareB := curve.Scalar.Random(rand.Reader)
 	publicKey := curve.ScalarBaseMult(secretKeyShareA.Mul(secretKeyShareB))
-	alice := NewAlice(curve, sha3.New256(), &dkg.AliceOutput{SeedOtResult: baseOtReceiverOutput, SecretKeyShare: secretKeyShareA, PublicKey: publicKey})
-	bob := NewBob(curve, sha3.New256(), &dkg.BobOutput{SeedOtResult: baseOtSenderOutput, SecretKeyShare: secretKeyShareB, PublicKey: publicKey})
+	alice := NewAlice(
+		curve, sha3.New256(),
+		&dkg.AliceOutput{SeedOtResult: baseOtReceiverOutput, SecretKeyShare: secretKeyShareA, PublicKey: publicKey},
+	)
+	bob := NewBob(
+		curve, sha3.New256(),
+		&dkg.BobOutput{SeedOtResult: baseOtSenderOutput, SecretKeyShare: secretKeyShareB, PublicKey: publicKey},
+	)
 
 	message := []byte("A message.")
 	for n := 0; n < b.N; n++ {

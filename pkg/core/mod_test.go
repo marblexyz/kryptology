@@ -12,7 +12,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/internal"
 )
 
 var (
@@ -20,16 +20,29 @@ var (
 
 	// Large numbers for testing -- computing with independent tooling
 	// x,y 100-digit numbers
-	x, _     = new(big.Int).SetString("7146643783615963513942641287213372249533955323510461217840179896547799100626220786140425637990097431", 10)
-	y, _     = new(big.Int).SetString("1747698065194620177681258504464368264357359841192790848951902311522815739310792522712583635858354245", 10)
-	sumxy, _ = new(big.Int).SetString("8894341848810583691623899791677740513891315164703252066792082208070614839937013308853009273848451676", 10)
-	xy, _    = new(big.Int).SetString("12490175513260779219420155073726764321605372267033815716483640700978475653623775696463227582174703069158832890348206546318843052423532258178885792744599932977235221784868792263260215861775082862444595", 10)
+	x, _     = new(big.Int).SetString(
+		"7146643783615963513942641287213372249533955323510461217840179896547799100626220786140425637990097431", 10,
+	)
+	y, _     = new(big.Int).SetString(
+		"1747698065194620177681258504464368264357359841192790848951902311522815739310792522712583635858354245", 10,
+	)
+	sumxy, _ = new(big.Int).SetString(
+		"8894341848810583691623899791677740513891315164703252066792082208070614839937013308853009273848451676", 10,
+	)
+	xy, _    = new(big.Int).SetString(
+		"12490175513260779219420155073726764321605372267033815716483640700978475653623775696463227582174703069158832890348206546318843052423532258178885792744599932977235221784868792263260215861775082862444595",
+		10,
+	)
 
 	// 101-digit modulus
-	m, _ = new(big.Int).SetString("85832751158419329546684678412285185885848111422509523329716452068504806021136687603399722116388773253", 10)
+	m, _ = new(big.Int).SetString(
+		"85832751158419329546684678412285185885848111422509523329716452068504806021136687603399722116388773253", 10,
+	)
 
 	// 99-digit modulus
-	n, _ = new(big.Int).SetString("604464499356780653111583485887412477603580949137220100557796699530113283915988830359783807274682723", 10)
+	n, _ = new(big.Int).SetString(
+		"604464499356780653111583485887412477603580949137220100557796699530113283915988830359783807274682723", 10,
+	)
 )
 
 func TestConstantTimeEqByteSound(t *testing.T) {
@@ -55,10 +68,12 @@ func TestConstantTimeEqByteSound(t *testing.T) {
 	}
 	// Run all the tests!
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			actual := ConstantTimeEqByte(test.a, test.b)
-			require.Equal(t, test.expected, actual)
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				actual := ConstantTimeEqByte(test.a, test.b)
+				require.Equal(t, test.expected, actual)
+			},
+		)
 	}
 }
 
@@ -85,10 +100,12 @@ func TestConstantTimeEqSound(t *testing.T) {
 	}
 	// Run all the tests!
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			actual := ConstantTimeEq(test.a, test.b)
-			require.Equal(t, test.expected, actual)
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				actual := ConstantTimeEq(test.a, test.b)
+				require.Equal(t, test.expected, actual)
+			},
+		)
 	}
 }
 
@@ -394,10 +411,12 @@ func TestRandIsExpectedLength(t *testing.T) {
 // Randomly selected nonces with a large modulus will be unique with overwhelming probability
 func TestRandDistinctWithLargeModulus(t *testing.T) {
 	const iterations = 1000
-	testUnique(t, iterations, func() *big.Int {
-		r, _ := Rand(m)
-		return r
-	})
+	testUnique(
+		t, iterations, func() *big.Int {
+			r, _ := Rand(m)
+			return r
+		},
+	)
 }
 
 // Calls sampleFunc() n times and asserts that the lower 64B of each output are unique.
@@ -509,12 +528,14 @@ func TestExpKnownAnswer(t *testing.T) {
 
 	// Run all the tests!
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			actual, err := Exp(test.x, test.e, test.m)
-			if err != nil {
-				require.Equal(t, test.expected, actual)
-			}
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				actual, err := Exp(test.x, test.e, test.m)
+				if err != nil {
+					require.Equal(t, test.expected, actual)
+				}
+			},
+		)
 	}
 }
 

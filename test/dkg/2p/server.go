@@ -13,7 +13,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	dkg "github.com/coinbase/kryptology/pkg/dkg/gennaro2p"
+	dkg "github.com/trysuperdrop/kryptology/pkg/dkg/gennaro2p"
 )
 
 type server struct {

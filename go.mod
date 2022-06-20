@@ -1,4 +1,4 @@
-module github.com/coinbase/kryptology
+module github.com/trysuperdrop/kryptology
 
 go 1.17
 
@@ -25,5 +25,3 @@ require (
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
-
-replace github.com/coinbase/kryptology => github.com/trysuperdrop/kryptology v1.5.6-0.20220620030910-593b3b656914

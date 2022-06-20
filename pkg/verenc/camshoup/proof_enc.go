@@ -12,8 +12,8 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	"github.com/coinbase/kryptology/internal"
-	mod "github.com/coinbase/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/internal"
+	mod "github.com/trysuperdrop/kryptology/pkg/core"
 )
 
 // ProofVerEnc is a proof of verifiable encryption for a discrete log
@@ -81,12 +81,16 @@ func (ek EncryptionKey) EncryptAndProve(nonce []byte, msgs []*big.Int) (*CipherT
 // Not using t = g^m*h^s as the idemix protocol does not use it.
 // Guess is that since the knowledge of m is proved in the credential attribute proving protocol.
 // Use this function if the proof will be part of more proofs.
-func (ek EncryptionKey) EncryptAndProveBlindings(nonce []byte, msgs []*big.Int, blindings []*big.Int) (*CipherText, *ProofVerEnc, error) {
+func (ek EncryptionKey) EncryptAndProveBlindings(nonce []byte, msgs []*big.Int, blindings []*big.Int) (
+	*CipherText, *ProofVerEnc, error,
+) {
 	if len(msgs) != len(blindings) {
 		return nil, nil, fmt.Errorf("number of messages %d != number of blindings %d", len(msgs), len(blindings))
 	}
 	if len(msgs) > len(ek.y1) {
-		return nil, nil, fmt.Errorf("number of messages %d is more than supported by this key %d", len(msgs), len(ek.y1))
+		return nil, nil, fmt.Errorf(
+			"number of messages %d is more than supported by this key %d", len(msgs), len(ek.y1),
+		)
 	}
 	for i, b := range blindings {
 		if b == nil {
@@ -155,7 +159,9 @@ func (ek EncryptionKey) ciphertextTestValues(r, hash *big.Int, msgs []*big.Int) 
 }
 
 // fiatShamir computes h(n, g, Y2, Y3, Y1, C.U, C.V, C.E, CT.U, CT.V, CT.E)
-func (ek EncryptionKey) fiatShamir(nonce []byte, ciphertext *CipherText, ciphertextTValues *CipherText) (*big.Int, error) {
+func (ek EncryptionKey) fiatShamir(nonce []byte, ciphertext *CipherText, ciphertextTValues *CipherText) (
+	*big.Int, error,
+) {
 	hValues := make([][]byte, len(ciphertext.e)+len(ciphertextTValues.e)+len(ek.y1)+9)
 	hValues[0] = ek.group.n.Bytes()
 	hValues[1] = ek.group.g.Bytes()

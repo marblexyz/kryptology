@@ -12,8 +12,8 @@ import (
 
 	"github.com/gtank/merlin"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/signatures/common"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/signatures/common"
 )
 
 // PokSignatureProof is the actual proof sent from a prover
@@ -190,7 +190,9 @@ func (pok PokSignatureProof) VerifySigPok(pk *PublicKey) bool {
 	return !pk.value.IsIdentity() &&
 		!pok.aPrime.IsIdentity() &&
 		!pok.aBar.IsIdentity() &&
-		pok.aPrime.MultiPairing(pok.aPrime, pk.value, pok.aBar, pk.value.Generator().Neg().(curves.PairingPoint)).IsOne()
+		pok.aPrime.MultiPairing(
+			pok.aPrime, pk.value, pok.aBar, pk.value.Generator().Neg().(curves.PairingPoint),
+		).IsOne()
 }
 
 // Verify checks a signature proof of knowledge and selective disclosure proof

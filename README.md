@@ -4,28 +4,28 @@ Coinbase's advanced cryptography library
 ## Quickstart
 Use the latest version of this library:
 ```$xslt
-go get github.com/coinbase/kryptology
+go get github.com/trysuperdrop/kryptology
 ```
 
 Pin a specific release of this library:
 ```$xslt
-go get github.com/coinbase/kryptology@v1.6.0
+go get github.com/trysuperdrop/kryptology@v1.6.0
 ```
 
 ## Documentation
 
-Public documentations can be found at https://pkg.go.dev/github.com/coinbase/kryptology
+Public documentations can be found at https://pkg.go.dev/github.com/trysuperdrop/kryptology
 
 To access the documentation of the local version, run `godoc -http=:6060` and open
 the following url in your browser.
 
-http://localhost:6060/pkg/github.com/coinbase/kryptology/
+http://localhost:6060/pkg/github.com/trysuperdrop/kryptology/
 
 ## Developer Setup
 **Prerequisites**: `golang 1.17`, `make`
 
 ```$xslt
-git clone git@github.com/coinbase/kryptology.git && make 
+git clone git@github.com/trysuperdrop/kryptology.git && make 
 ``` 
 
 ## Components

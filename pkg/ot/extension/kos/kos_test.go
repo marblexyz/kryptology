@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
-	"github.com/coinbase/kryptology/pkg/ot/ottest"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/ot/ottest"
 )
 
 func TestBinaryMult(t *testing.T) {
@@ -42,7 +42,10 @@ func TestCOTExtension(t *testing.T) {
 		baseOtSenderOutput, baseOtReceiverOutput, err := ottest.RunSimplestOT(curve, Kappa, uniqueSessionId)
 		require.NoError(t, err)
 		for i := 0; i < Kappa; i++ {
-			require.Equal(t, baseOtReceiverOutput.OneTimePadDecryptionKey[i], baseOtSenderOutput.OneTimePadEncryptionKeys[i][baseOtReceiverOutput.RandomChoiceBits[i]])
+			require.Equal(
+				t, baseOtReceiverOutput.OneTimePadDecryptionKey[i],
+				baseOtSenderOutput.OneTimePadEncryptionKeys[i][baseOtReceiverOutput.RandomChoiceBits[i]],
+			)
 		}
 
 		sender := NewCOtSender(baseOtReceiverOutput, curve)
@@ -102,7 +105,10 @@ func TestCOTExtensionStreaming(t *testing.T) {
 		require.Nil(t, <-errorsChannel)
 	}
 	for i := 0; i < Kappa; i++ {
-		require.Equal(t, baseOtReceiver.Output.OneTimePadDecryptionKey[i], baseOtSender.Output.OneTimePadEncryptionKeys[i][baseOtReceiver.Output.RandomChoiceBits[i]])
+		require.Equal(
+			t, baseOtReceiver.Output.OneTimePadDecryptionKey[i],
+			baseOtSender.Output.OneTimePadEncryptionKeys[i][baseOtReceiver.Output.RandomChoiceBits[i]],
+		)
 	}
 
 	// begin test of cOT extension. first populate both parties' inputs randomly

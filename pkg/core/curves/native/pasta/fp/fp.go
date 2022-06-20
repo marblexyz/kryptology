@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/coinbase/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/internal"
 )
 
 type Fp fiat_pasta_fp_montgomery_domain_field_element
@@ -35,12 +35,14 @@ var s = 32
 // p = 0x40000000000000000000000000000000224698fc094cf91b992d30ed00000001
 var modulus = &Fp{0x992d30ed00000001, 0x224698fc094cf91b, 0x0000000000000000, 0x4000000000000000}
 
-var biModulus = new(big.Int).SetBytes([]byte{
-	0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x22, 0x46, 0x98, 0xfc, 0x09, 0x4c, 0xf9, 0x1b,
-	0x99, 0x2d, 0x30, 0xed, 0x00, 0x00, 0x00, 0x01,
-})
+var biModulus = new(big.Int).SetBytes(
+	[]byte{
+		0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x22, 0x46, 0x98, 0xfc, 0x09, 0x4c, 0xf9, 0x1b,
+		0x99, 0x2d, 0x30, 0xed, 0x00, 0x00, 0x00, 0x01,
+	},
+)
 
 // Cmp returns -1 if fp < rhs
 // 0 if fp == rhs
@@ -174,7 +176,9 @@ func (fp *Fp) SetBytes(input *[32]byte) (*Fp, error) {
 		return nil, fmt.Errorf("invalid byte sequence")
 	}
 	fiat_pasta_fp_from_bytes((*[4]uint64)(fp), input)
-	fiat_pasta_fp_to_montgomery((*fiat_pasta_fp_montgomery_domain_field_element)(fp), (*fiat_pasta_fp_non_montgomery_domain_field_element)(fp))
+	fiat_pasta_fp_to_montgomery(
+		(*fiat_pasta_fp_montgomery_domain_field_element)(fp), (*fiat_pasta_fp_non_montgomery_domain_field_element)(fp),
+	)
 	return fp, nil
 }
 
@@ -192,7 +196,10 @@ func (fp *Fp) SetBigInt(bi *big.Int) *Fp {
 
 // SetRaw converts a raw array into a field element
 func (fp *Fp) SetRaw(array *[4]uint64) *Fp {
-	fiat_pasta_fp_to_montgomery((*fiat_pasta_fp_montgomery_domain_field_element)(fp), (*fiat_pasta_fp_non_montgomery_domain_field_element)(array))
+	fiat_pasta_fp_to_montgomery(
+		(*fiat_pasta_fp_montgomery_domain_field_element)(fp),
+		(*fiat_pasta_fp_non_montgomery_domain_field_element)(array),
+	)
 	return fp
 }
 
@@ -268,7 +275,7 @@ func (fp *Fp) tonelliShanks(elem *Fp) (*Fp, bool) {
 	b := new(Fp).Set(t)
 	c := new(Fp).Set(c5)
 	flags := map[bool]int{
-		true:  1,
+		true: 1,
 		false: 0,
 	}
 
@@ -293,7 +300,8 @@ func (fp *Fp) Invert(elem *Fp) (*Fp, bool) {
 		0x992d30ecffffffff,
 		0x224698fc094cf91b,
 		0x0000000000000000,
-		0x4000000000000000}
+		0x4000000000000000,
+	}
 	return fp.pow(elem, exp), !elem.IsZero()
 }
 

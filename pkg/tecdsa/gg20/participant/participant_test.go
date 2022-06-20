@@ -17,10 +17,10 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/paillier"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/dealer"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/paillier"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
 )
 
 func TestConvertToAdditiveWorks(t *testing.T) {
@@ -129,11 +129,14 @@ func TestConvertToAdditiveRecombine(t *testing.T) {
 					t.Errorf("PreparePublicShares failed: %v", err)
 				}
 
-				pss, err := pi.convertToAdditive(curve,
+				pss, err := pi.convertToAdditive(
+					curve,
 					map[uint32]*dealer.PublicShare{
 						i: publicSharesMap[i],
 						j: publicSharesMap[j],
-						k: publicSharesMap[k]})
+						k: publicSharesMap[k],
+					},
+				)
 				if err != nil {
 					t.Errorf("convertToAdditive failed: %v", err)
 				}
@@ -172,18 +175,20 @@ func TestVerifyStateMapRoundCheck(t *testing.T) {
 	for _, test := range tests {
 		s := &Signer{}
 
-		t.Run(test.name, func(t *testing.T) {
-			// set the state round
-			s.Round = test.stateRound
+		t.Run(
+			test.name, func(t *testing.T) {
+				// set the state round
+				s.Round = test.stateRound
 
-			// test
-			err := s.verifyStateMap(test.roundIn, nil)
+				// test
+				err := s.verifyStateMap(test.roundIn, nil)
 
-			// verify the error is as expected
-			if err != test.expected {
-				t.Errorf("unexpected error: want=%v got=%v", test.expected, err)
-			}
-		})
+				// verify the error is as expected
+				if err != test.expected {
+					t.Errorf("unexpected error: want=%v got=%v", test.expected, err)
+				}
+			},
+		)
 	}
 }
 
@@ -222,27 +227,29 @@ func TestSetCosigners(t *testing.T) {
 	for _, test := range tests {
 		s := &Signer{}
 
-		t.Run(test.name, func(t *testing.T) {
-			// setup
-			s.resetSignRound()
-			s.state = &state{}
-			s.threshold = uint(test.threshold)
+		t.Run(
+			test.name, func(t *testing.T) {
+				// setup
+				s.resetSignRound()
+				s.state = &state{}
+				s.threshold = uint(test.threshold)
 
-			cosigners := make([]uint32, 0)
-			for k := range test.cosigners {
-				cosigners = append(cosigners, k)
-			}
+				cosigners := make([]uint32, 0)
+				for k := range test.cosigners {
+					cosigners = append(cosigners, k)
+				}
 
-			err := s.setCosigners(cosigners)
+				err := s.setCosigners(cosigners)
 
-			// did we get the expected result?
-			if err != test.expectedErr {
-				t.Errorf("wrong error. want=%v  got=%v", test.expectedErr, err)
-			}
-			if len(s.state.cosigners) != test.expectedLen {
-				t.Errorf("wrong length. want=%v  got=%v", test.expectedErr.Error(), len(test.cosigners))
-			}
-		})
+				// did we get the expected result?
+				if err != test.expectedErr {
+					t.Errorf("wrong error. want=%v  got=%v", test.expectedErr, err)
+				}
+				if len(s.state.cosigners) != test.expectedLen {
+					t.Errorf("wrong length. want=%v  got=%v", test.expectedErr.Error(), len(test.cosigners))
+				}
+			},
+		)
 	}
 }
 
@@ -302,27 +309,29 @@ func TestVerifyStateMapCosigners(t *testing.T) {
 	for _, test := range tests {
 		s := &Signer{}
 
-		t.Run(test.name, func(t *testing.T) {
-			// setup
-			s.resetSignRound()
-			s.state = &state{}
-			s.id = test.self
-			s.threshold = 3
-			cosigners := make([]uint32, 0)
-			for id := range test.cosigners {
-				cosigners = append(cosigners, id)
-			}
-			err := s.setCosigners(cosigners)
-			require.NoError(t, err)
-			// func under test
-			err = s.verifyStateMap(1, test.testSigners)
-			// did we get the expected result?
-			if test.expectedOk {
+		t.Run(
+			test.name, func(t *testing.T) {
+				// setup
+				s.resetSignRound()
+				s.state = &state{}
+				s.id = test.self
+				s.threshold = 3
+				cosigners := make([]uint32, 0)
+				for id := range test.cosigners {
+					cosigners = append(cosigners, id)
+				}
+				err := s.setCosigners(cosigners)
 				require.NoError(t, err)
-			} else {
-				require.Error(t, err)
-			}
-		})
+				// func under test
+				err = s.verifyStateMap(1, test.testSigners)
+				// did we get the expected result?
+				if test.expectedOk {
+					require.NoError(t, err)
+				} else {
+					require.Error(t, err)
+				}
+			},
+		)
 	}
 }
 

@@ -9,9 +9,9 @@ package bls_sig
 import (
 	"fmt"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves/native"
-	"github.com/coinbase/kryptology/pkg/core/curves/native/bls12381"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/bls12381"
 )
 
 // Implement BLS signatures on the BLS12-381 curve
@@ -103,7 +103,9 @@ func (sig Signature) coreAggregateVerify(pks []*PublicKey, msgs [][]byte, signDs
 		return false, fmt.Errorf("at least one message is required")
 	}
 	if len(pks) != len(msgs) {
-		return false, fmt.Errorf("the number of public keys does not match the number of messages: %v != %v", len(pks), len(msgs))
+		return false, fmt.Errorf(
+			"the number of public keys does not match the number of messages: %v != %v", len(pks), len(msgs),
+		)
 	}
 	if sig.Value.InCorrectSubgroup() == 0 {
 		return false, fmt.Errorf("signature is not in the correct subgroup")

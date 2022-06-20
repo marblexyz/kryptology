@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"math/big"
 
-	mod "github.com/coinbase/kryptology/pkg/core"
+	mod "github.com/trysuperdrop/kryptology/pkg/core"
 )
 
 const ell = 128
@@ -88,7 +88,9 @@ func (p CdlProofParams) Prove() (*CdlProof, error) {
 			return nil, err
 		}
 		alpha[i-6] = a
-		fsInput[i], err = mod.Exp(p.H1, a, p.N) // In the pseudocode, there is a typo which uses h, but it should be h_1 instead
+		fsInput[i], err = mod.Exp(
+			p.H1, a, p.N,
+		) // In the pseudocode, there is a typo which uses h, but it should be h_1 instead
 		if err != nil {
 			return nil, err
 		}

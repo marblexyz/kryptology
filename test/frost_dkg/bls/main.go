@@ -10,10 +10,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	dkg "github.com/coinbase/kryptology/pkg/dkg/frost"
-	"github.com/coinbase/kryptology/pkg/sharing"
-	bls "github.com/coinbase/kryptology/pkg/signatures/bls/bls_sig"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	dkg "github.com/trysuperdrop/kryptology/pkg/dkg/frost"
+	"github.com/trysuperdrop/kryptology/pkg/sharing"
+	bls "github.com/trysuperdrop/kryptology/pkg/signatures/bls/bls_sig"
 )
 
 const LIMIT = 4
@@ -115,7 +115,8 @@ func round1(participants map[uint32]*dkg.DkgParticipant) (map[uint32]*dkg.Round1
 	return rnd1Bcast, rnd1P2p
 }
 
-func round2(participants map[uint32]*dkg.DkgParticipant,
+func round2(
+	participants map[uint32]*dkg.DkgParticipant,
 	rnd1Bcast map[uint32]*dkg.Round1Bcast,
 	rnd1P2p map[uint32]dkg.Round1P2PSend,
 ) (curves.Point, map[uint32][]byte) {
@@ -167,7 +168,8 @@ func createDkgParticipants(thresh, limit int) map[uint32]*dkg.DkgParticipant {
 }
 
 func printHelp() {
-	fmt.Printf(`
+	fmt.Printf(
+		`
 bls INPUT
 Simulate a DKG using BLS keys
 FLAGS:

@@ -13,11 +13,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/extension/kos"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/dkg"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/refresh"
-	"github.com/coinbase/kryptology/pkg/tecdsa/dkls/v1/sign"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/refresh"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/sign"
 )
 
 func performDKG(t *testing.T, curve *curves.Curve) (*dkg.Alice, *dkg.Bob) {
@@ -50,7 +50,9 @@ func performDKG(t *testing.T, curve *curves.Curve) (*dkg.Alice, *dkg.Bob) {
 	return alice, bob
 }
 
-func performRefresh(t *testing.T, curve *curves.Curve, aliceSecretKeyShare, bobSecretKeyShare curves.Scalar) (*refresh.Alice, *refresh.Bob) {
+func performRefresh(
+	t *testing.T, curve *curves.Curve, aliceSecretKeyShare, bobSecretKeyShare curves.Scalar,
+) (*refresh.Alice, *refresh.Bob) {
 	t.Helper()
 	alice := refresh.NewAlice(curve, &dkg.AliceOutput{SecretKeyShare: aliceSecretKeyShare})
 	bob := refresh.NewBob(curve, &dkg.BobOutput{SecretKeyShare: bobSecretKeyShare})
@@ -80,46 +82,50 @@ func Test_RefreshLeadsToTheSamePublicKeyButDifferentPrivateMaterial(t *testing.T
 	}
 	for _, curve := range curveInstances {
 		boundCurve := curve
-		t.Run(fmt.Sprintf("testing refresh for curve %s", boundCurve.Name), func(tt *testing.T) {
-			tt.Parallel()
-			alice, bob := performDKG(tt, boundCurve)
+		t.Run(
+			fmt.Sprintf("testing refresh for curve %s", boundCurve.Name), func(tt *testing.T) {
+				tt.Parallel()
+				alice, bob := performDKG(tt, boundCurve)
 
-			publicKey := alice.Output().PublicKey
-			require.True(tt, publicKey.Equal(bob.Output().PublicKey))
+				publicKey := alice.Output().PublicKey
+				require.True(tt, publicKey.Equal(bob.Output().PublicKey))
 
-			aliceRefreshed, bobRefreshed := performRefresh(tt, boundCurve, alice.Output().SecretKeyShare, bob.Output().SecretKeyShare)
+				aliceRefreshed, bobRefreshed := performRefresh(
+					tt, boundCurve, alice.Output().SecretKeyShare, bob.Output().SecretKeyShare,
+				)
 
-			require.NotEqual(tt, aliceRefreshed.Output().SecretKeyShare, alice.Output().SecretKeyShare)
-			require.NotEqual(tt, bobRefreshed.Output().SeedOtResult, bob.Output().SecretKeyShare)
-			require.NotEqualValues(
-				tt,
-				aliceRefreshed.Output().SeedOtResult.OneTimePadDecryptionKey,
-				alice.Output().SeedOtResult.OneTimePadDecryptionKey,
-			)
-			require.NotEqualValues(
-				tt,
-				aliceRefreshed.Output().SeedOtResult.PackedRandomChoiceBits,
-				alice.Output().SeedOtResult.PackedRandomChoiceBits,
-			)
-			require.NotEqualValues(
-				tt,
-				aliceRefreshed.Output().SeedOtResult.RandomChoiceBits,
-				alice.Output().SeedOtResult.RandomChoiceBits,
-			)
-			require.NotEqualValues(
-				tt,
-				bobRefreshed.Output().SeedOtResult.OneTimePadEncryptionKeys,
-				bob.Output().SeedOtResult.OneTimePadEncryptionKeys,
-			)
+				require.NotEqual(tt, aliceRefreshed.Output().SecretKeyShare, alice.Output().SecretKeyShare)
+				require.NotEqual(tt, bobRefreshed.Output().SeedOtResult, bob.Output().SecretKeyShare)
+				require.NotEqualValues(
+					tt,
+					aliceRefreshed.Output().SeedOtResult.OneTimePadDecryptionKey,
+					alice.Output().SeedOtResult.OneTimePadDecryptionKey,
+				)
+				require.NotEqualValues(
+					tt,
+					aliceRefreshed.Output().SeedOtResult.PackedRandomChoiceBits,
+					alice.Output().SeedOtResult.PackedRandomChoiceBits,
+				)
+				require.NotEqualValues(
+					tt,
+					aliceRefreshed.Output().SeedOtResult.RandomChoiceBits,
+					alice.Output().SeedOtResult.RandomChoiceBits,
+				)
+				require.NotEqualValues(
+					tt,
+					bobRefreshed.Output().SeedOtResult.OneTimePadEncryptionKeys,
+					bob.Output().SeedOtResult.OneTimePadEncryptionKeys,
+				)
 
-			pkA := boundCurve.ScalarBaseMult(aliceRefreshed.Output().SecretKeyShare)
-			computedPublicKeyA := pkA.Mul(bobRefreshed.Output().SecretKeyShare)
-			require.True(tt, computedPublicKeyA.Equal(publicKey))
+				pkA := boundCurve.ScalarBaseMult(aliceRefreshed.Output().SecretKeyShare)
+				computedPublicKeyA := pkA.Mul(bobRefreshed.Output().SecretKeyShare)
+				require.True(tt, computedPublicKeyA.Equal(publicKey))
 
-			pkB := boundCurve.ScalarBaseMult(bobRefreshed.Output().SecretKeyShare)
-			computedPublicKeyB := pkB.Mul(aliceRefreshed.Output().SecretKeyShare)
-			require.True(tt, computedPublicKeyB.Equal(publicKey))
-		})
+				pkB := boundCurve.ScalarBaseMult(bobRefreshed.Output().SecretKeyShare)
+				computedPublicKeyB := pkB.Mul(aliceRefreshed.Output().SecretKeyShare)
+				require.True(tt, computedPublicKeyB.Equal(publicKey))
+			},
+		)
 	}
 }
 
@@ -131,17 +137,21 @@ func Test_RefreshOTIsCorrect(t *testing.T) {
 	}
 	for _, curve := range curveInstances {
 		boundCurve := curve
-		t.Run(fmt.Sprintf("testing OT correctness of key refresh for curve %s", boundCurve.Name), func(tt *testing.T) {
-			tt.Parallel()
-			alice, bob := performDKG(tt, boundCurve)
-			aliceRefreshed, bobRefreshed := performRefresh(tt, boundCurve, alice.Output().SecretKeyShare, bob.Output().SecretKeyShare)
-			for i := 0; i < kos.Kappa; i++ {
-				if aliceRefreshed.Output().SeedOtResult.OneTimePadDecryptionKey[i] != bobRefreshed.Output().SeedOtResult.OneTimePadEncryptionKeys[i][aliceRefreshed.Output().SeedOtResult.RandomChoiceBits[i]] {
-					tt.Errorf("oblivious transfer is incorrect at index i=%v", i)
+		t.Run(
+			fmt.Sprintf("testing OT correctness of key refresh for curve %s", boundCurve.Name), func(tt *testing.T) {
+				tt.Parallel()
+				alice, bob := performDKG(tt, boundCurve)
+				aliceRefreshed, bobRefreshed := performRefresh(
+					tt, boundCurve, alice.Output().SecretKeyShare, bob.Output().SecretKeyShare,
+				)
+				for i := 0; i < kos.Kappa; i++ {
+					if aliceRefreshed.Output().SeedOtResult.OneTimePadDecryptionKey[i] != bobRefreshed.Output().SeedOtResult.OneTimePadEncryptionKeys[i][aliceRefreshed.Output().SeedOtResult.RandomChoiceBits[i]] {
+						tt.Errorf("oblivious transfer is incorrect at index i=%v", i)
+					}
 				}
-			}
 
-		})
+			},
+		)
 	}
 
 }
@@ -154,35 +164,43 @@ func Test_CanSignAfterRefresh(t *testing.T) {
 	}
 	for _, curve := range curveInstances {
 		boundCurve := curve
-		t.Run(fmt.Sprintf("testing sign after refresh for curve %s", boundCurve.Name), func(tt *testing.T) {
-			tt.Parallel()
-			aliceDKG, bobDKG := performDKG(tt, boundCurve)
+		t.Run(
+			fmt.Sprintf("testing sign after refresh for curve %s", boundCurve.Name), func(tt *testing.T) {
+				tt.Parallel()
+				aliceDKG, bobDKG := performDKG(tt, boundCurve)
 
-			publicKey := aliceDKG.Output().PublicKey
-			require.True(tt, publicKey.Equal(bobDKG.Output().PublicKey))
+				publicKey := aliceDKG.Output().PublicKey
+				require.True(tt, publicKey.Equal(bobDKG.Output().PublicKey))
 
-			aliceRefreshed, bobRefreshed := performRefresh(tt, boundCurve, aliceDKG.Output().SecretKeyShare, bobDKG.Output().SecretKeyShare)
+				aliceRefreshed, bobRefreshed := performRefresh(
+					tt, boundCurve, aliceDKG.Output().SecretKeyShare, bobDKG.Output().SecretKeyShare,
+				)
 
-			alice := sign.NewAlice(boundCurve, sha3.New256(), &dkg.AliceOutput{
-				SeedOtResult:   aliceRefreshed.Output().SeedOtResult,
-				SecretKeyShare: aliceRefreshed.Output().SecretKeyShare,
-				PublicKey:      publicKey,
-			})
-			bob := sign.NewBob(boundCurve, sha3.New256(), &dkg.BobOutput{
-				SeedOtResult:   bobRefreshed.Output().SeedOtResult,
-				SecretKeyShare: bobRefreshed.Output().SecretKeyShare,
-				PublicKey:      publicKey,
-			})
+				alice := sign.NewAlice(
+					boundCurve, sha3.New256(), &dkg.AliceOutput{
+						SeedOtResult:   aliceRefreshed.Output().SeedOtResult,
+						SecretKeyShare: aliceRefreshed.Output().SecretKeyShare,
+						PublicKey:      publicKey,
+					},
+				)
+				bob := sign.NewBob(
+					boundCurve, sha3.New256(), &dkg.BobOutput{
+						SeedOtResult:   bobRefreshed.Output().SeedOtResult,
+						SecretKeyShare: bobRefreshed.Output().SecretKeyShare,
+						PublicKey:      publicKey,
+					},
+				)
 
-			message := []byte("A message.")
-			seed, err := alice.Round1GenerateRandomSeed()
-			require.NoError(tt, err)
-			round3Output, err := bob.Round2Initialize(seed)
-			require.NoError(tt, err)
-			round4Output, err := alice.Round3Sign(message, round3Output)
-			require.NoError(tt, err)
-			err = bob.Round4Final(message, round4Output)
-			require.NoError(tt, err, "curve: %s", boundCurve.Name)
-		})
+				message := []byte("A message.")
+				seed, err := alice.Round1GenerateRandomSeed()
+				require.NoError(tt, err)
+				round3Output, err := bob.Round2Initialize(seed)
+				require.NoError(tt, err)
+				round4Output, err := alice.Round3Sign(message, round3Output)
+				require.NoError(tt, err)
+				err = bob.Round4Final(message, round4Output)
+				require.NoError(tt, err, "curve: %s", boundCurve.Name)
+			},
+		)
 	}
 }

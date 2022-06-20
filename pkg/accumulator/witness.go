@@ -12,7 +12,7 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // MembershipWitness contains the witness c and the value y respect to the accumulator state.
@@ -101,7 +101,9 @@ func (mw *MembershipWitness) ApplyDelta(delta *Delta) (*MembershipWitness, error
 }
 
 // BatchUpdate performs batch update as described in section 4
-func (mw *MembershipWitness) BatchUpdate(additions []Element, deletions []Element, coefficients []Coefficient) (*MembershipWitness, error) {
+func (mw *MembershipWitness) BatchUpdate(
+	additions []Element, deletions []Element, coefficients []Coefficient,
+) (*MembershipWitness, error) {
 	delta, err := evaluateDelta(mw.y, additions, deletions, coefficients)
 	if err != nil {
 		return nil, err
@@ -114,7 +116,9 @@ func (mw *MembershipWitness) BatchUpdate(additions []Element, deletions []Elemen
 }
 
 // MultiBatchUpdate performs multi-batch update using epoch as described in section 4.2
-func (mw *MembershipWitness) MultiBatchUpdate(A [][]Element, D [][]Element, C [][]Coefficient) (*MembershipWitness, error) {
+func (mw *MembershipWitness) MultiBatchUpdate(A [][]Element, D [][]Element, C [][]Coefficient) (
+	*MembershipWitness, error,
+) {
 	delta, err := evaluateDeltas(mw.y, A, D, C)
 	if err != nil {
 		return nil, fmt.Errorf("evaluateDeltas fails")

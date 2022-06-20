@@ -16,9 +16,9 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	dkg "github.com/coinbase/kryptology/pkg/dkg/gennaro"
-	"github.com/coinbase/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	dkg "github.com/trysuperdrop/kryptology/pkg/dkg/gennaro"
+	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
 )
 
 const LIMIT = 4
@@ -113,7 +113,8 @@ func round1(participants map[uint32]*dkg.Participant) (map[uint32]dkg.Round1Bcas
 	return rnd1Bcast, rnd1P2p
 }
 
-func round2(participants map[uint32]*dkg.Participant,
+func round2(
+	participants map[uint32]*dkg.Participant,
 	rnd1Bcast map[uint32]dkg.Round1Bcast,
 	rnd1P2p map[uint32]dkg.Round1P2PSend,
 ) map[uint32]dkg.Round2Bcast {
@@ -138,7 +139,9 @@ func round2(participants map[uint32]*dkg.Participant,
 	return rnd2Bcast
 }
 
-func round3(participants map[uint32]*dkg.Participant, rnd2Bcast map[uint32]dkg.Round2Bcast) (*curves.EcPoint, map[uint32]*v1.ShamirShare) {
+func round3(participants map[uint32]*dkg.Participant, rnd2Bcast map[uint32]dkg.Round2Bcast) (
+	*curves.EcPoint, map[uint32]*v1.ShamirShare,
+) {
 	signingShares := make(map[uint32]*v1.ShamirShare, len(participants))
 	var verificationKey *curves.EcPoint
 	for id := range rnd2Bcast {
@@ -187,12 +190,14 @@ func createDkgParticipants(thresh, limit int) map[uint32]*dkg.Participant {
 }
 
 func printHelp() {
-	fmt.Printf(`
+	fmt.Printf(
+		`
 k256 INPUT
 Simulate a DKG using secp256k1 keys
 FLAGS:
   -h, --help						Show this help message and exit
   -n, --limit						The total number of participants
   -t, --treshold					The minimum number of participants needed to sign
-`)
+`,
+	)
 }

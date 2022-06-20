@@ -27,8 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/zkp/schnorr"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
 )
 
 const (
@@ -229,7 +229,9 @@ func (receiver *Receiver) Round2VerifySchnorrAndPadTransfer(proof *schnorr.Proof
 
 // Round3PadTransfer is the sender's "Pad Transfer" phase in OT; see steps 4 and 5 of page 16 of the paper.
 // Returns the challenges xi
-func (sender *Sender) Round3PadTransfer(compressedReceiversMaskedChoice []ReceiversMaskedChoices) ([]OtChallenge, error) {
+func (sender *Sender) Round3PadTransfer(compressedReceiversMaskedChoice []ReceiversMaskedChoices) (
+	[]OtChallenge, error,
+) {
 	var err error
 	challenge := make([]OtChallenge, sender.batchSize)
 	sender.Output.OneTimePadEncryptionKeys = make([]OneTimePadEncryptionKeys, sender.batchSize)
@@ -295,7 +297,9 @@ func (receiver *Receiver) Round4RespondToChallenge(challenge []OtChallenge) ([]O
 		hashedKey = sha3.Sum256(hashedKey[:])
 		challengeResponses[i] = hashedKey
 		alternativeChallengeResponse := xorBytes(receiver.senderChallenge[i], hashedKey)
-		subtle.ConstantTimeCopy(receiver.Output.RandomChoiceBits[i], challengeResponses[i][:], alternativeChallengeResponse[:])
+		subtle.ConstantTimeCopy(
+			receiver.Output.RandomChoiceBits[i], challengeResponses[i][:], alternativeChallengeResponse[:],
+		)
 	}
 	return challengeResponses, nil
 }

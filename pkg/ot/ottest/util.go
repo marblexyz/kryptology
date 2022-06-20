@@ -5,15 +5,17 @@ package ottest
 import (
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
 )
 
 // RunSimplestOT is a utility function used _only_ during various tests.
 // essentially, it encapsulates the entire process of running a base OT, so that other tests can use it / bootstrap themselves.
 // it handles the creation of the base OT sender and receiver, as well as orchestrates the rounds on them;
 // it returns their outsputs, so that others can use them.
-func RunSimplestOT(curve *curves.Curve, batchSize int, uniqueSessionId [simplest.DigestSize]byte) (*simplest.SenderOutput, *simplest.ReceiverOutput, error) {
+func RunSimplestOT(
+	curve *curves.Curve, batchSize int, uniqueSessionId [simplest.DigestSize]byte,
+) (*simplest.SenderOutput, *simplest.ReceiverOutput, error) {
 	receiver, err := simplest.NewReceiver(curve, batchSize, uniqueSessionId)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "constructing OT receiver in run simplest OT")

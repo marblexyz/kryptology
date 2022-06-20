@@ -10,7 +10,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/coinbase/kryptology/pkg/core/curves/native"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
 )
 
 var p256FqInitonce sync.Once
@@ -27,13 +27,24 @@ func P256FqNew() *native.Field {
 func p256FqParamsInit() {
 	// See FIPS 186-3, section D.2.3
 	p256FqParams = native.FieldParams{
-		R:       [native.FieldLimbs]uint64{0x0c46353d039cdaaf, 0x4319055258e8617b, 0x0000000000000000, 0x00000000ffffffff},
-		R2:      [native.FieldLimbs]uint64{0x83244c95be79eea2, 0x4699799c49bd6fa6, 0x2845b2392b6bec59, 0x66e12d94f3d95620},
-		R3:      [native.FieldLimbs]uint64{0xac8ebec90b65a624, 0x111f28ae0c0555c9, 0x2543b9246ba5e93f, 0x503a54e76407be65},
-		Modulus: [native.FieldLimbs]uint64{0xf3b9cac2fc632551, 0xbce6faada7179e84, 0xffffffffffffffff, 0xffffffff00000000},
-		BiModulus: new(big.Int).SetBytes([]byte{
-			0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xbc, 0xe6, 0xfa, 0xad, 0xa7, 0x17, 0x9e, 0x84, 0xf3, 0xb9, 0xca, 0xc2, 0xfc, 0x63, 0x25, 0x51,
-		}),
+		R:       [native.FieldLimbs]uint64{
+			0x0c46353d039cdaaf, 0x4319055258e8617b, 0x0000000000000000, 0x00000000ffffffff,
+		},
+		R2:      [native.FieldLimbs]uint64{
+			0x83244c95be79eea2, 0x4699799c49bd6fa6, 0x2845b2392b6bec59, 0x66e12d94f3d95620,
+		},
+		R3:      [native.FieldLimbs]uint64{
+			0xac8ebec90b65a624, 0x111f28ae0c0555c9, 0x2543b9246ba5e93f, 0x503a54e76407be65,
+		},
+		Modulus: [native.FieldLimbs]uint64{
+			0xf3b9cac2fc632551, 0xbce6faada7179e84, 0xffffffffffffffff, 0xffffffff00000000,
+		},
+		BiModulus: new(big.Int).SetBytes(
+			[]byte{
+				0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xbc,
+				0xe6, 0xfa, 0xad, 0xa7, 0x17, 0x9e, 0x84, 0xf3, 0xb9, 0xca, 0xc2, 0xfc, 0x63, 0x25, 0x51,
+			},
+		),
 	}
 }
 
@@ -68,17 +79,26 @@ func (f p256FqArithmetic) Square(out, arg *[native.FieldLimbs]uint64) {
 
 // Mul performs modular multiplication
 func (f p256FqArithmetic) Mul(out, arg1, arg2 *[native.FieldLimbs]uint64) {
-	Mul((*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1), (*MontgomeryDomainFieldElement)(arg2))
+	Mul(
+		(*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1),
+		(*MontgomeryDomainFieldElement)(arg2),
+	)
 }
 
 // Add performs modular addition
 func (f p256FqArithmetic) Add(out, arg1, arg2 *[native.FieldLimbs]uint64) {
-	Add((*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1), (*MontgomeryDomainFieldElement)(arg2))
+	Add(
+		(*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1),
+		(*MontgomeryDomainFieldElement)(arg2),
+	)
 }
 
 // Sub performs modular subtraction
 func (f p256FqArithmetic) Sub(out, arg1, arg2 *[native.FieldLimbs]uint64) {
-	Sub((*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1), (*MontgomeryDomainFieldElement)(arg2))
+	Sub(
+		(*MontgomeryDomainFieldElement)(out), (*MontgomeryDomainFieldElement)(arg1),
+		(*MontgomeryDomainFieldElement)(arg2),
+	)
 }
 
 // Sqrt performs modular square root
@@ -123,10 +143,16 @@ func (f p256FqArithmetic) Sqrt(wasSquare *int, out, arg *[native.FieldLimbs]uint
 			Params:     getP256FqParams(),
 			Arithmetic: f,
 		}).IsOne() + 1
-		Mul((*MontgomeryDomainFieldElement)(&tv), (*MontgomeryDomainFieldElement)(&z), (*MontgomeryDomainFieldElement)(&c))
+		Mul(
+			(*MontgomeryDomainFieldElement)(&tv), (*MontgomeryDomainFieldElement)(&z),
+			(*MontgomeryDomainFieldElement)(&c),
+		)
 		Selectznz(&z, uint1(flag), &z, &tv)
 		Square((*MontgomeryDomainFieldElement)(&c), (*MontgomeryDomainFieldElement)(&c))
-		Mul((*MontgomeryDomainFieldElement)(&tv), (*MontgomeryDomainFieldElement)(&t), (*MontgomeryDomainFieldElement)(&c))
+		Mul(
+			(*MontgomeryDomainFieldElement)(&tv), (*MontgomeryDomainFieldElement)(&t),
+			(*MontgomeryDomainFieldElement)(&c),
+		)
 		Selectznz(&t, uint1(flag), &t, &tv)
 		copy(b[:], t[:])
 	}
@@ -135,11 +161,13 @@ func (f p256FqArithmetic) Sqrt(wasSquare *int, out, arg *[native.FieldLimbs]uint
 		Value:      c,
 		Params:     getP256FqParams(),
 		Arithmetic: f,
-	}).Equal(&native.Field{
-		Value:      *arg,
-		Params:     getP256FqParams(),
-		Arithmetic: f,
-	})
+	}).Equal(
+		&native.Field{
+			Value:      *arg,
+			Params:     getP256FqParams(),
+			Arithmetic: f,
+		},
+	)
 	Selectznz(out, uint1(*wasSquare), out, &z)
 }
 
@@ -152,110 +180,224 @@ func (f p256FqArithmetic) Invert(wasInverted *int, out, arg *[native.FieldLimbs]
 
 	copy(x1[:], arg[:])
 	native.Pow2k(&x10, arg, 1, f)
-	Mul((*MontgomeryDomainFieldElement)(&x11), (*MontgomeryDomainFieldElement)(&x10), (*MontgomeryDomainFieldElement)(&x1))
-	Mul((*MontgomeryDomainFieldElement)(&x101), (*MontgomeryDomainFieldElement)(&x10), (*MontgomeryDomainFieldElement)(&x11))
-	Mul((*MontgomeryDomainFieldElement)(&x111), (*MontgomeryDomainFieldElement)(&x10), (*MontgomeryDomainFieldElement)(&x101))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&x11), (*MontgomeryDomainFieldElement)(&x10),
+		(*MontgomeryDomainFieldElement)(&x1),
+	)
+	Mul(
+		(*MontgomeryDomainFieldElement)(&x101), (*MontgomeryDomainFieldElement)(&x10),
+		(*MontgomeryDomainFieldElement)(&x11),
+	)
+	Mul(
+		(*MontgomeryDomainFieldElement)(&x111), (*MontgomeryDomainFieldElement)(&x10),
+		(*MontgomeryDomainFieldElement)(&x101),
+	)
 	native.Pow2k(&x1010, &x101, 1, f)
-	Mul((*MontgomeryDomainFieldElement)(&x1111), (*MontgomeryDomainFieldElement)(&x101), (*MontgomeryDomainFieldElement)(&x1010))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&x1111), (*MontgomeryDomainFieldElement)(&x101),
+		(*MontgomeryDomainFieldElement)(&x1010),
+	)
 	native.Pow2k(&x10101, &x1010, 1, f)
-	Mul((*MontgomeryDomainFieldElement)(&x10101), (*MontgomeryDomainFieldElement)(&x10101), (*MontgomeryDomainFieldElement)(&x1))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&x10101), (*MontgomeryDomainFieldElement)(&x10101),
+		(*MontgomeryDomainFieldElement)(&x1),
+	)
 	native.Pow2k(&x101010, &x10101, 1, f)
-	Mul((*MontgomeryDomainFieldElement)(&x101111), (*MontgomeryDomainFieldElement)(&x101), (*MontgomeryDomainFieldElement)(&x101010))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&x101111), (*MontgomeryDomainFieldElement)(&x101),
+		(*MontgomeryDomainFieldElement)(&x101010),
+	)
 
-	Mul((*MontgomeryDomainFieldElement)(&x6), (*MontgomeryDomainFieldElement)(&x10101), (*MontgomeryDomainFieldElement)(&x101010))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&x6), (*MontgomeryDomainFieldElement)(&x10101),
+		(*MontgomeryDomainFieldElement)(&x101010),
+	)
 
 	native.Pow2k(&x8, &x6, 2, f)
-	Mul((*MontgomeryDomainFieldElement)(&x8), (*MontgomeryDomainFieldElement)(&x8), (*MontgomeryDomainFieldElement)(&x11))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&x8), (*MontgomeryDomainFieldElement)(&x8),
+		(*MontgomeryDomainFieldElement)(&x11),
+	)
 
 	native.Pow2k(&x16, &x8, 8, f)
-	Mul((*MontgomeryDomainFieldElement)(&x16), (*MontgomeryDomainFieldElement)(&x16), (*MontgomeryDomainFieldElement)(&x8))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&x16), (*MontgomeryDomainFieldElement)(&x16),
+		(*MontgomeryDomainFieldElement)(&x8),
+	)
 
 	native.Pow2k(&x32, &x16, 16, f)
-	Mul((*MontgomeryDomainFieldElement)(&x32), (*MontgomeryDomainFieldElement)(&x32), (*MontgomeryDomainFieldElement)(&x16))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&x32), (*MontgomeryDomainFieldElement)(&x32),
+		(*MontgomeryDomainFieldElement)(&x16),
+	)
 
 	native.Pow2k(&tmp, &x32, 64, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x32))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x32),
+	)
 
 	native.Pow2k(&tmp, &tmp, 32, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x32))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x32),
+	)
 
 	native.Pow2k(&tmp, &tmp, 6, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x101111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x101111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 5, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 4, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x11))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x11),
+	)
 
 	native.Pow2k(&tmp, &tmp, 5, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x1111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x1111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 5, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x10101))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x10101),
+	)
 
 	native.Pow2k(&tmp, &tmp, 4, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x101))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x101),
+	)
 
 	native.Pow2k(&tmp, &tmp, 3, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x101))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x101),
+	)
 
 	native.Pow2k(&tmp, &tmp, 3, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x101))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x101),
+	)
 
 	native.Pow2k(&tmp, &tmp, 5, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 9, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x101111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x101111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 6, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x1111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x1111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 2, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x1))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x1),
+	)
 
 	native.Pow2k(&tmp, &tmp, 5, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x1))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x1),
+	)
 
 	native.Pow2k(&tmp, &tmp, 6, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x1111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x1111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 5, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 4, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 5, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 5, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x101))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x101),
+	)
 
 	native.Pow2k(&tmp, &tmp, 3, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x11))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x11),
+	)
 
 	native.Pow2k(&tmp, &tmp, 10, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x101111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x101111),
+	)
 
 	native.Pow2k(&tmp, &tmp, 2, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x11))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x11),
+	)
 
 	native.Pow2k(&tmp, &tmp, 5, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x11))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x11),
+	)
 
 	native.Pow2k(&tmp, &tmp, 5, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x11))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x11),
+	)
 
 	native.Pow2k(&tmp, &tmp, 3, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x1))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x1),
+	)
 
 	native.Pow2k(&tmp, &tmp, 7, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x10101))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x10101),
+	)
 
 	native.Pow2k(&tmp, &tmp, 6, f)
-	Mul((*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&x1111))
+	Mul(
+		(*MontgomeryDomainFieldElement)(&tmp), (*MontgomeryDomainFieldElement)(&tmp),
+		(*MontgomeryDomainFieldElement)(&x1111),
+	)
 
 	*wasInverted = (&native.Field{
 		Value:      *arg,
@@ -284,10 +426,13 @@ func (f p256FqArithmetic) Selectznz(out, arg1, arg2 *[native.FieldLimbs]uint64, 
 // generator = 7 mod q is a generator of the `q - 1` order multiplicative
 // subgroup, or in other words a primitive element of the field.
 // generator^t where t * 2^s + 1 = q
-var generator = &[native.FieldLimbs]uint64{0x55eb74ab1949fac9, 0xd5af25406e5aaa5d, 0x0000000000000001, 0x00000006fffffff9}
+var generator = &[native.FieldLimbs]uint64{
+	0x55eb74ab1949fac9, 0xd5af25406e5aaa5d, 0x0000000000000001, 0x00000006fffffff9,
+}
 
 // s satisfies the equation 2^s * t = q - 1 with t odd.
 var s = 4
 
 // rootOfUnity
-var rootOfUnity = &[native.FieldLimbs]uint64{0x0592d7fbb41e6602, 0x1546cad004378daf, 0xba807ace842a3dfc, 0xffc97f062a770992}
+var rootOfUnity = &[native.FieldLimbs]uint64{
+	0x0592d7fbb41e6602, 0x1546cad004378daf, 0xba807ace842a3dfc, 0xffc97f062a770992}

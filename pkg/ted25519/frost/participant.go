@@ -10,9 +10,9 @@ package frost
 import (
 	"fmt"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/dkg/frost"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/dkg/frost"
 )
 
 // Signer is a tSchnorr player performing the signing operation.
@@ -46,7 +46,10 @@ type state struct {
 // NewSigner create a signer from a dkg participant
 // Note that we can pre-assign Lagrange coefficients lcoeffs of each cosigner. This optimizes performance.
 // See paragraph 3 of section 3 in the draft - https://tools.ietf.org/pdf/draft-komlo-frost-00.pdf
-func NewSigner(info *frost.DkgParticipant, id, thresh uint32, lcoeffs map[uint32]curves.Scalar, cosigners []uint32, challengeDeriver ChallengeDerive) (*Signer, error) {
+func NewSigner(
+	info *frost.DkgParticipant, id, thresh uint32, lcoeffs map[uint32]curves.Scalar, cosigners []uint32,
+	challengeDeriver ChallengeDerive,
+) (*Signer, error) {
 	if info == nil || len(cosigners) == 0 || len(lcoeffs) == 0 {
 		return nil, internal.ErrNilArguments
 	}

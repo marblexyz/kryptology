@@ -15,8 +15,8 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	tt "github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core"
+	tt "github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core"
 )
 
 func TestIsIdentity(t *testing.T) {
@@ -320,10 +320,12 @@ func TestIsBasePoint(t *testing.T) {
 	}
 	// Run all the tests!
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			actual := EcPoint{test.curve, test.x, test.y}.IsBasePoint()
-			require.Equal(t, test.expected, actual)
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				actual := EcPoint{test.curve, test.x, test.y}.IsBasePoint()
+				require.Equal(t, test.expected, actual)
+			},
+		)
 	}
 }
 
@@ -362,9 +364,10 @@ func TestEquals(t *testing.T) {
 	}
 	// Run all the tests!
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			actual := test.x.Equals(test.y)
-			require.Equal(t, test.expected, actual)
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				actual := test.x.Equals(test.y)
+				require.Equal(t, test.expected, actual)
+			})
 	}
 }

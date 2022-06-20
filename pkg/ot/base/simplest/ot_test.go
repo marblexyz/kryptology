@@ -14,9 +14,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
-	"github.com/coinbase/kryptology/pkg/ot/ottest"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/ot/ottest"
 )
 
 func TestOtOnMultipleCurves(t *testing.T) {
@@ -33,7 +33,9 @@ func TestOtOnMultipleCurves(t *testing.T) {
 		require.NoError(t, err)
 
 		for i := 0; i < batchSize; i++ {
-			require.Equal(t, receiver.OneTimePadDecryptionKey[i], sender.OneTimePadEncryptionKeys[i][receiver.RandomChoiceBits[i]])
+			require.Equal(
+				t, receiver.OneTimePadDecryptionKey[i], sender.OneTimePadEncryptionKeys[i][receiver.RandomChoiceBits[i]],
+			)
 		}
 
 		// Transfer messages
@@ -69,7 +71,9 @@ func TestOTStreaming(t *testing.T) {
 	require.Nil(t, err)
 
 	senderPipe, receiverPipe := simplest.NewPipeWrappers()
-	errorsChannel := make(chan error, 2) // warning: if one party errors, the other will sit there forever. add timeouts.
+	errorsChannel := make(
+		chan error, 2,
+	) // warning: if one party errors, the other will sit there forever. add timeouts.
 	go func() {
 		errorsChannel <- simplest.SenderStreamOTRun(sender, senderPipe)
 	}()
@@ -80,6 +84,9 @@ func TestOTStreaming(t *testing.T) {
 		require.Nil(t, <-errorsChannel)
 	}
 	for i := 0; i < batchSize; i++ {
-		require.Equal(t, receiver.Output.OneTimePadDecryptionKey[i], sender.Output.OneTimePadEncryptionKeys[i][receiver.Output.RandomChoiceBits[i]])
+		require.Equal(
+			t, receiver.Output.OneTimePadDecryptionKey[i],
+			sender.Output.OneTimePadEncryptionKeys[i][receiver.Output.RandomChoiceBits[i]],
+		)
 	}
 }

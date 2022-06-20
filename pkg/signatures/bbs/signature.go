@@ -11,7 +11,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // Signature is a BBS+ signature

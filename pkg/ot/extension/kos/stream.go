@@ -6,15 +6,17 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
 )
 
 // ReceiverStreamCOtRun exposes an end-to-end "streaming" version of the cOT process for the receiver.
 // this is similar to what we're also doing in the base OT side. the user only passes an arbitrary `ReadWriter` here,
 // together with the relevant inputs (namely a choice vector); this method handles all parts of the process,
 // including both encoding / decoding and writing to / reading from the stream.
-func ReceiverStreamCOtRun(receiver *Receiver, hashKeySeed [simplest.DigestSize]byte, choice [COtBlockSizeBytes]byte, rw io.ReadWriter) error {
+func ReceiverStreamCOtRun(
+	receiver *Receiver, hashKeySeed [simplest.DigestSize]byte, choice [COtBlockSizeBytes]byte, rw io.ReadWriter,
+) error {
 	enc := gob.NewEncoder(rw)
 	dec := gob.NewDecoder(rw)
 
@@ -38,7 +40,9 @@ func ReceiverStreamCOtRun(receiver *Receiver, hashKeySeed [simplest.DigestSize]b
 // SenderStreamCOtRun exposes the end-to-end "streaming" version of cOT for the sender.
 // the sender should pass an arbitrary ReadWriter together with their input; this will handle the whole process,
 // including all component methods, plus reading to and writing from the network.
-func SenderStreamCOtRun(sender *Sender, hashKeySeed [simplest.DigestSize]byte, input [L][OtWidth]curves.Scalar, rw io.ReadWriter) error {
+func SenderStreamCOtRun(
+	sender *Sender, hashKeySeed [simplest.DigestSize]byte, input [L][OtWidth]curves.Scalar, rw io.ReadWriter,
+) error {
 	enc := gob.NewEncoder(rw)
 	dec := gob.NewDecoder(rw)
 

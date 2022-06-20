@@ -14,7 +14,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/internal"
 )
 
 func TestFpSetOne(t *testing.T) {
@@ -149,10 +149,20 @@ func TestFpNeg(t *testing.T) {
 	g.SetLimbs(&[Limbs]uint64{7, 0, 0, 0, 0, 0})
 	a.SetOne()
 	a.Neg(&a)
-	e.SetRaw(&[Limbs]uint64{0x43f5fffffffcaaae, 0x32b7fff2ed47fffd, 0x07e83a49a2e99d69, 0xeca8f3318332bb7a, 0xef148d1ea0f4c069, 0x040ab3263eff0206})
+	e.SetRaw(
+		&[Limbs]uint64{
+			0x43f5fffffffcaaae, 0x32b7fff2ed47fffd, 0x07e83a49a2e99d69, 0xeca8f3318332bb7a, 0xef148d1ea0f4c069,
+			0x040ab3263eff0206,
+		},
+	)
 	require.Equal(t, 1, e.Equal(&a))
 	a.Neg(&g)
-	e.SetRaw(&[Limbs]uint64{0x21baffffffe90017, 0x445bffa5cba3ffed, 0xd028c5627db257bc, 0x14275ad5a2de0d96, 0x3e7434202365960e, 0x0249d4217f792796})
+	e.SetRaw(
+		&[Limbs]uint64{
+			0x21baffffffe90017, 0x445bffa5cba3ffed, 0xd028c5627db257bc, 0x14275ad5a2de0d96, 0x3e7434202365960e,
+			0x0249d4217f792796,
+		},
+	)
 	require.Equal(t, e, a)
 }
 
@@ -180,7 +190,12 @@ func TestFpSqrt(t *testing.T) {
 
 func TestFpInvert(t *testing.T) {
 	var two, twoInv, a, lhs, rhs, rhsInv fp
-	twoInv.SetRaw(&[Limbs]uint64{0x1804000000015554, 0x855000053ab00001, 0x633cb57c253c276f, 0x6e22d1ec31ebb502, 0xd3916126f2d14ca2, 0x17fbb8571a006596})
+	twoInv.SetRaw(
+		&[Limbs]uint64{
+			0x1804000000015554, 0x855000053ab00001, 0x633cb57c253c276f, 0x6e22d1ec31ebb502, 0xd3916126f2d14ca2,
+			0x17fbb8571a006596,
+		},
+	)
 	two.SetUint64(2)
 	_, inverted := a.Invert(&two)
 	require.Equal(t, 1, inverted)
@@ -228,8 +243,18 @@ func TestFpBigInt(t *testing.T) {
 	t2.SetBigInt(t1.BigInt())
 	require.Equal(t, t1, t2)
 
-	e.SetRaw(&[Limbs]uint64{0x922af810e5e35f31, 0x6bc75973ed382d59, 0xd4716c9d4d491d42, 0x69d98d1ebeeb3f6e, 0x7e425d7b46d4a82b, 0x12d04b0965870e92})
-	b := new(big.Int).SetBytes([]byte{9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9})
+	e.SetRaw(
+		&[Limbs]uint64{
+			0x922af810e5e35f31, 0x6bc75973ed382d59, 0xd4716c9d4d491d42, 0x69d98d1ebeeb3f6e, 0x7e425d7b46d4a82b,
+			0x12d04b0965870e92,
+		},
+	)
+	b := new(big.Int).SetBytes(
+		[]byte{
+			9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+			9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+		},
+	)
 	t1.SetBigInt(b)
 	require.Equal(t, e, t1)
 	e.Neg(&e)
@@ -256,7 +281,12 @@ func TestFpSetBytesWideBigInt(t *testing.T) {
 func TestFpToMontgomery(t *testing.T) {
 	var v fp
 	v.SetUint64(2)
-	require.Equal(t, fp{0x321300000006554f, 0xb93c0018d6c40005, 0x57605e0db0ddbb51, 0x8b256521ed1f9bcb, 0x6cf28d7901622c03, 0x11ebab9dbb81e28c}, v)
+	require.Equal(
+		t, fp{
+			0x321300000006554f, 0xb93c0018d6c40005, 0x57605e0db0ddbb51, 0x8b256521ed1f9bcb, 0x6cf28d7901622c03,
+			0x11ebab9dbb81e28c,
+		}, v,
+	)
 }
 
 func TestFpFromMontgomery(t *testing.T) {
@@ -270,28 +300,33 @@ func TestFpFromMontgomery(t *testing.T) {
 func TestFpLexicographicallyLargest(t *testing.T) {
 	require.Equal(t, 0, new(fp).SetZero().LexicographicallyLargest())
 	require.Equal(t, 0, new(fp).SetOne().LexicographicallyLargest())
-	require.Equal(t, 0, (&fp{
-		0xa1fafffffffe5557,
-		0x995bfff976a3fffe,
-		0x03f41d24d174ceb4,
-		0xf6547998c1995dbd,
-		0x778a468f507a6034,
-		0x020559931f7f8103,
-	}).LexicographicallyLargest())
-	require.Equal(t, 1, (&fp{
-		0x1804000000015554,
-		0x855000053ab00001,
-		0x633cb57c253c276f,
-		0x6e22d1ec31ebb502,
-		0xd3916126f2d14ca2,
-		0x17fbb8571a006596,
-	}).LexicographicallyLargest())
-	require.Equal(t, 1, (&fp{
-		0x43f5fffffffcaaae,
-		0x32b7fff2ed47fffd,
-		0x07e83a49a2e99d69,
-		0xeca8f3318332bb7a,
-		0xef148d1ea0f4c069,
-		0x040ab3263eff0206,
-	}).LexicographicallyLargest())
+	require.Equal(
+		t, 0, (&fp{
+			0xa1fafffffffe5557,
+			0x995bfff976a3fffe,
+			0x03f41d24d174ceb4,
+			0xf6547998c1995dbd,
+			0x778a468f507a6034,
+			0x020559931f7f8103,
+		}).LexicographicallyLargest(),
+	)
+	require.Equal(
+		t, 1, (&fp{
+			0x1804000000015554,
+			0x855000053ab00001,
+			0x633cb57c253c276f,
+			0x6e22d1ec31ebb502,
+			0xd3916126f2d14ca2,
+			0x17fbb8571a006596,
+		}).LexicographicallyLargest(),
+	)
+	require.Equal(
+		t, 1, (&fp{
+			0x43f5fffffffcaaae,
+			0x32b7fff2ed47fffd,
+			0x07e83a49a2e99d69,
+			0xeca8f3318332bb7a,
+			0xef148d1ea0f4c069,
+			0x040ab3263eff0206,
+		}).LexicographicallyLargest())
 }

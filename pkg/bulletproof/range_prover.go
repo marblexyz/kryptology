@@ -14,7 +14,7 @@ import (
 	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // RangeProver is the struct used to create RangeProofs
@@ -81,7 +81,9 @@ func NewRangeProof(curve *curves.Curve) *RangeProof {
 // gamma is a scalar used for as a blinding factor
 // g, h, u are unique points used as generators for the blinding factor
 // transcript is a merlin transcript to be used for the fiat shamir heuristic
-func (prover *RangeProver) Prove(v, gamma curves.Scalar, n int, g, h, u curves.Point, transcript *merlin.Transcript) (*RangeProof, error) {
+func (prover *RangeProver) Prove(
+	v, gamma curves.Scalar, n int, g, h, u curves.Point, transcript *merlin.Transcript,
+) (*RangeProof, error) {
 	// n must be less than the number of generators generated
 	if n > len(prover.generators.G) {
 		return nil, errors.New("ipp vector length must be less than maxVectorLength")
@@ -416,7 +418,9 @@ func cmoveScalar(x, y curves.Scalar, which int, curve curves.Curve) (curves.Scal
 // It takes the current state of the transcript and appends the newly calculated capA and capS values
 // Two new scalars are then read from the transcript
 // See section 4.4 pg22 of https://eprint.iacr.org/2017/1066.pdf
-func calcyz(V, capA, capS curves.Point, transcript *merlin.Transcript, curve curves.Curve) (curves.Scalar, curves.Scalar, error) {
+func calcyz(V, capA, capS curves.Point, transcript *merlin.Transcript, curve curves.Curve) (
+	curves.Scalar, curves.Scalar, error,
+) {
 	// Add the A,S values to transcript
 	transcript.AppendMessage([]byte("addV"), V.ToAffineUncompressed())
 	transcript.AppendMessage([]byte("addcapA"), capA.ToAffineUncompressed())

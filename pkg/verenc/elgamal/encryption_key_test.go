@@ -11,7 +11,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 func TestEncryptionKeyEncrypt(t *testing.T) {
@@ -38,10 +38,12 @@ func TestEncryptionKeyEncrypt(t *testing.T) {
 	for _, msg := range testMsgs {
 		msgBytes := msg.Bytes()
 		require.NoError(t, err)
-		cs, _, err := ek.VerifiableEncrypt(msgBytes, &EncryptParams{
-			Domain:          domain,
-			MessageIsHashed: true,
-		})
+		cs, _, err := ek.VerifiableEncrypt(
+			msgBytes, &EncryptParams{
+				Domain:          domain,
+				MessageIsHashed: true,
+			},
+		)
 		require.NoError(t, err)
 		_, m, err := dk.VerifiableDecryptWithDomain(domain, cs)
 		require.NoError(t, err)
@@ -57,18 +59,22 @@ func TestEncryptionKeyEncryptInvalidMessages(t *testing.T) {
 	require.NoError(t, err)
 
 	// nil message
-	_, _, err = ek.VerifiableEncrypt(nil, &EncryptParams{
-		Domain:          domain,
-		MessageIsHashed: true,
-	})
+	_, _, err = ek.VerifiableEncrypt(
+		nil, &EncryptParams{
+			Domain:          domain,
+			MessageIsHashed: true,
+		},
+	)
 	require.Error(t, err)
 
 	msg := k256.Scalar.New(1234567890)
 	msgBytes := msg.Bytes()
-	cs, _, err := ek.VerifiableEncrypt(msgBytes, &EncryptParams{
-		Domain:          domain,
-		MessageIsHashed: true,
-	})
+	cs, _, err := ek.VerifiableEncrypt(
+		msgBytes, &EncryptParams{
+			Domain:          domain,
+			MessageIsHashed: true,
+		},
+	)
 	require.NoError(t, err)
 	// invalid domain i.e. not the same domain used to encrypt
 	_, _, err = dk.VerifiableDecryptWithDomain([]byte{}, cs)

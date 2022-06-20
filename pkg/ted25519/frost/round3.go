@@ -9,8 +9,8 @@ package frost
 import (
 	"fmt"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // Round3Bcast contains the output of FROST signature, i.e., it contains FROST signature (z,c) and the
@@ -131,7 +131,9 @@ func (signer *Signer) SignRound3(round3Input map[uint32]*Round2Bcast) (*Round3Bc
 }
 
 // Method to verify a frost signature.
-func Verify(curve *curves.Curve, challengeDeriver ChallengeDerive, vk curves.Point, msg []byte, signature *Signature) (bool, error) {
+func Verify(
+	curve *curves.Curve, challengeDeriver ChallengeDerive, vk curves.Point, msg []byte, signature *Signature,
+) (bool, error) {
 	if vk == nil || msg == nil || len(msg) == 0 || signature.C == nil || signature.Z == nil {
 		return false, fmt.Errorf("invalid input")
 	}

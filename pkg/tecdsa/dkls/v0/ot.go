@@ -15,8 +15,8 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 type (
@@ -394,7 +394,9 @@ func (receiver *cOTReceiver) init(idExt [32]byte, choice []byte, w io.Writer) er
 	return enc.Encode(result)
 }
 
-func (sender *cOTSender) transfer(idExt [32]byte, inputMain []*big.Int, inputOT [2 * s][]*big.Int, rw io.ReadWriter) error {
+func (sender *cOTSender) transfer(
+	idExt [32]byte, inputMain []*big.Int, inputOT [2 * s][]*big.Int, rw io.ReadWriter,
+) error {
 	// input message: Bob's values WPrime, VPrime, and U. output: tau.
 	enc := gob.NewEncoder(rw)
 	dec := gob.NewDecoder(rw)
@@ -464,7 +466,10 @@ func (sender *cOTSender) transfer(idExt [32]byte, inputMain []*big.Int, inputOT 
 	length := 32 * sender.multiplicity
 	for j := 0; j < 2*s; j++ {
 		result.TauOT[j] = make([]*big.Int, sender.multiplicity)
-		column, err := core.ExpandMessageXmd(sha256.New, append(zeta[2*kappa*sender.multiplicity+j][:], byte(j&0x07), byte(j>>3)), []byte("Coinbase_tECDSA"), length)
+		column, err := core.ExpandMessageXmd(
+			sha256.New, append(zeta[2*kappa*sender.multiplicity+j][:], byte(j&0x07), byte(j>>3)),
+			[]byte("Coinbase_tECDSA"), length,
+		)
 		if err != nil {
 			return err
 		}
@@ -474,7 +479,10 @@ func (sender *cOTSender) transfer(idExt [32]byte, inputMain []*big.Int, inputOT 
 		for i := 0; i < 32; i++ {
 			zeta[2*kappa*sender.multiplicity+j][i] ^= sender.receiver.Packed[i] // warning: overwrites zeta_j!!!!!! just using it as a place to store
 		}
-		column, err = core.ExpandMessageXmd(sha256.New, append(zeta[2*kappa*sender.multiplicity+j][:], byte(j&0x07), byte(j>>3)), []byte("Coinbase_tECDSA"), length)
+		column, err = core.ExpandMessageXmd(
+			sha256.New, append(zeta[2*kappa*sender.multiplicity+j][:], byte(j&0x07), byte(j>>3)),
+			[]byte("Coinbase_tECDSA"), length,
+		)
 		if err != nil {
 			return err
 		}
@@ -505,7 +513,10 @@ func (receiver *cOTReceiver) transfer(r io.Reader) error {
 	}
 	length := 32 * receiver.multiplicity
 	for j := 0; j < 2*s; j++ {
-		column, err := core.ExpandMessageXmd(sha256.New, append(receiver.psi[2*kappa*receiver.multiplicity+j][:], byte(j&0x07), byte(j>>3)), []byte("Coinbase_tECDSA"), length)
+		column, err := core.ExpandMessageXmd(
+			sha256.New, append(receiver.psi[2*kappa*receiver.multiplicity+j][:], byte(j&0x07), byte(j>>3)),
+			[]byte("Coinbase_tECDSA"), length,
+		)
 		if err != nil {
 			return err
 		}
@@ -514,7 +525,11 @@ func (receiver *cOTReceiver) transfer(r io.Reader) error {
 			receiver.tBOT[j][k] = new(big.Int).SetBytes(column[k*32 : (k+1)*32])
 			receiver.tBOT[j][k] = receiver.sender.params.Scalar.Neg(receiver.tBOT[j][k])
 			wj0 := receiver.sender.params.Scalar.Bytes(receiver.tBOT[j][k])
-			wj1 := receiver.sender.params.Scalar.Bytes(receiver.sender.params.Scalar.Add(receiver.tBOT[j][k], input.TauOT[j][k]))
+			wj1 := receiver.sender.params.Scalar.Bytes(
+				receiver.sender.params.Scalar.Add(
+					receiver.tBOT[j][k], input.TauOT[j][k],
+				),
+			)
 			subtle.ConstantTimeCopy(bit, wj0, wj1)
 			receiver.tBOT[j][k].SetBytes(wj0)
 		}

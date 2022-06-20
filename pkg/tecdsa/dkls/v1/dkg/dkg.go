@@ -15,10 +15,10 @@ import (
 	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
-	"github.com/coinbase/kryptology/pkg/ot/extension/kos"
-	"github.com/coinbase/kryptology/pkg/zkp/schnorr"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
+	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
 )
 
 // AliceOutput is the result of running DKG for Alice. It contains both the public and secret values that are needed
@@ -232,7 +232,9 @@ func (alice *Alice) Round6DkgRound2Ot(proof *schnorr.Proof) ([]simplest.Receiver
 }
 
 // Round7DkgRound3Ot is a thin wrapper around the 3rd round of seed OT protocol.
-func (bob *Bob) Round7DkgRound3Ot(compressedReceiversMaskedChoice []simplest.ReceiversMaskedChoices) ([]simplest.OtChallenge, error) {
+func (bob *Bob) Round7DkgRound3Ot(compressedReceiversMaskedChoice []simplest.ReceiversMaskedChoices) (
+	[]simplest.OtChallenge, error,
+) {
 	return bob.sender.Round3PadTransfer(compressedReceiversMaskedChoice)
 }
 
@@ -242,7 +244,9 @@ func (alice *Alice) Round8DkgRound4Ot(challenge []simplest.OtChallenge) ([]simpl
 }
 
 // Round9DkgRound5Ot is a thin wrapper around the 5th round of seed OT protocol.
-func (bob *Bob) Round9DkgRound5Ot(challengeResponses []simplest.OtChallengeResponse) ([]simplest.ChallengeOpening, error) {
+func (bob *Bob) Round9DkgRound5Ot(challengeResponses []simplest.OtChallengeResponse) (
+	[]simplest.ChallengeOpening, error,
+) {
 	return bob.sender.Round5Verify(challengeResponses)
 }
 

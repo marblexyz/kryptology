@@ -19,8 +19,8 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/pkg/errors"
 
-	crypto "github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/dkg/gennaro2p"
+	crypto "github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/dkg/gennaro2p"
 )
 
 const (

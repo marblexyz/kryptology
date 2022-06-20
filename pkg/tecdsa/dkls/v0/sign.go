@@ -15,7 +15,7 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // Alice struct encoding Alice's state during one execution of the overall signing algorithm.
@@ -158,7 +158,9 @@ func (alice *Alice) signInit(digest []byte, rw io.ReadWriter) error {
 
 	// Alice's response here is _two_ (i.e., collated) responses to the multiplication protocol.
 	// followed by Alice's R', followed by a schnorr proof for R (!). folllowed by \eta^{\phi} and \eta^{sig}.
-	if err = tA.Multiply(idExt, []*big.Int{alice.params.Scalar.Add(phi, kAInv), alice.params.Scalar.Mul(alice.SkA, kAInv)}, rw); err != nil {
+	if err = tA.Multiply(
+		idExt, []*big.Int{alice.params.Scalar.Add(phi, kAInv), alice.params.Scalar.Mul(alice.SkA, kAInv)}, rw,
+	); err != nil {
 		return err
 	}
 
@@ -248,7 +250,9 @@ func (bob *Bob) signFinal(digest []byte, r io.Reader) error {
 	temp = sha256.Sum256(gamma1.Bytes())
 	phi := bob.params.Scalar.Sub(input.EtaPhi, new(big.Int).SetBytes(temp[:]))
 	theta := bob.params.Scalar.Sub(bob.tB.TB[0], bob.params.Scalar.Div(phi, bob.kB))
-	sigB := bob.params.Scalar.Add(bob.params.Scalar.Mul(new(big.Int).SetBytes(digest), theta), bob.params.Scalar.Mul(bob.Sig.R, bob.tB.TB[1]))
+	sigB := bob.params.Scalar.Add(
+		bob.params.Scalar.Mul(new(big.Int).SetBytes(digest), theta), bob.params.Scalar.Mul(bob.Sig.R, bob.tB.TB[1]),
+	)
 	gamma2, err := curves.NewScalarBaseMult(bob.params.Curve, bob.tB.TB[1])
 	if err != nil {
 		return err
@@ -268,7 +272,9 @@ func (bob *Bob) signFinal(digest []byte, r io.Reader) error {
 		bob.Sig.V ^= 1
 	}
 	// now verify the signature
-	if !ecdsa.Verify(&ecdsa.PublicKey{Curve: bob.params.Curve, X: bob.Pk.X, Y: bob.Pk.Y}, digest, bob.Sig.R, bob.Sig.S) {
+	if !ecdsa.Verify(
+		&ecdsa.PublicKey{Curve: bob.params.Curve, X: bob.Pk.X, Y: bob.Pk.Y}, digest, bob.Sig.R, bob.Sig.S,
+	) {
 		return fmt.Errorf("final signature failed to verify")
 	}
 	return nil

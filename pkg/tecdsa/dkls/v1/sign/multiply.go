@@ -16,10 +16,10 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/coinbase/kryptology/internal"
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/ot/base/simplest"
-	"github.com/coinbase/kryptology/pkg/ot/extension/kos"
+	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
+	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
 )
 
 // This implements the Multiplication protocol of DKLs, protocol 5. https://eprint.iacr.org/2018/499.pdf
@@ -75,7 +75,9 @@ func generateGadgetVector(curve *curves.Curve) ([kos.L]curves.Scalar, error) {
 // NewMultiplySender generates a `MultiplySender` instance, ready to take part in multiplication as the "sender".
 // You must supply it the _output_ of a seed OT, from the receiver's point of view, as well as params and a unique ID.
 // That is, the mult sender must run the base OT as the receiver; note the (apparent) reversal of roles.
-func NewMultiplySender(seedOtResults *simplest.ReceiverOutput, curve *curves.Curve, uniqueSessionId [simplest.DigestSize]byte) (*MultiplySender, error) {
+func NewMultiplySender(
+	seedOtResults *simplest.ReceiverOutput, curve *curves.Curve, uniqueSessionId [simplest.DigestSize]byte,
+) (*MultiplySender, error) {
 	sender := kos.NewCOtSender(seedOtResults, curve)
 	gadget, err := generateGadgetVector(curve)
 	if err != nil {
@@ -96,7 +98,9 @@ func NewMultiplySender(seedOtResults *simplest.ReceiverOutput, curve *curves.Cur
 // NewMultiplyReceiver generates a `MultiplyReceiver` instance, ready to take part in multiplication as the "receiver".
 // You must supply it the _output_ of a seed OT, from the sender's point of view, as well as params and a unique ID.
 // That is, the mult sender must run the base OT as the sender; note the (apparent) reversal of roles.
-func NewMultiplyReceiver(seedOtResults *simplest.SenderOutput, curve *curves.Curve, uniqueSessionId [simplest.DigestSize]byte) (*MultiplyReceiver, error) {
+func NewMultiplyReceiver(
+	seedOtResults *simplest.SenderOutput, curve *curves.Curve, uniqueSessionId [simplest.DigestSize]byte,
+) (*MultiplyReceiver, error) {
 	receiver := kos.NewCOtReceiver(seedOtResults, curve)
 	gadget, err := generateGadgetVector(curve)
 	if err != nil {
@@ -172,7 +176,9 @@ func (receiver *MultiplyReceiver) Round1Initialize(beta curves.Scalar) (*kos.Rou
 // Doesn't actually send the message yet, only stashes it and moves onto the next steps of the multiplication protocol
 // specifically, Alice can then do step 5) (compute the outputs of the multiplication protocol), also stashes this.
 // Finishes by taking care of 7), after that, Alice is totally done with multiplication and has stashed the outputs.
-func (sender *MultiplySender) Round2Multiply(alpha curves.Scalar, round1Output *kos.Round1Output) (*MultiplyRound2Output, error) {
+func (sender *MultiplySender) Round2Multiply(
+	alpha curves.Scalar, round1Output *kos.Round1Output,
+) (*MultiplyRound2Output, error) {
 	var err error
 	alphaHat := sender.curve.Scalar.Random(rand.Reader)
 	input := [kos.L][2]curves.Scalar{} // sender's input, namely integer "sums" in case w_j == 1.

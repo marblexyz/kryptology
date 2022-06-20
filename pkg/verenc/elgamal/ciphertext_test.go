@@ -11,7 +11,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 func TestCipherTextMarshal(t *testing.T) {
@@ -24,10 +24,12 @@ func TestCipherTextMarshal(t *testing.T) {
 	msg := k256.Scalar.New(1)
 	msgBytes := msg.Bytes()
 	require.NoError(t, err)
-	cs, _, err := ek.VerifiableEncrypt(msgBytes, &EncryptParams{
-		Domain:          domain,
-		MessageIsHashed: true,
-	})
+	cs, _, err := ek.VerifiableEncrypt(
+		msgBytes, &EncryptParams{
+			Domain:          domain,
+			MessageIsHashed: true,
+		},
+	)
 	require.NoError(t, err)
 
 	bin, err := cs.MarshalBinary()

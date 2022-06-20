@@ -10,9 +10,9 @@ import (
 	"encoding/json"
 	"math/big"
 
-	"github.com/coinbase/kryptology/pkg/core"
-	"github.com/coinbase/kryptology/pkg/paillier"
-	"github.com/coinbase/kryptology/pkg/tecdsa/gg20/proof"
+	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/trysuperdrop/kryptology/pkg/paillier"
+	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/proof"
 )
 
 // P2PSend is all the values that need to be sent to each player
@@ -41,7 +41,9 @@ func (p2ps *P2PSend) UnmarshalJSON(bytes []byte) error {
 // SignRound2 performs round 2 signing operations for a single signer
 // Trusted Dealer Mode: see [spec] fig 7: SignRound2
 // DKG Mode: see [spec] fig 8: SignRound2
-func (signer *Signer) SignRound2(params map[uint32]*Round1Bcast, p2p map[uint32]*Round1P2PSend) (map[uint32]*P2PSend, error) {
+func (signer *Signer) SignRound2(params map[uint32]*Round1Bcast, p2p map[uint32]*Round1P2PSend) (
+	map[uint32]*P2PSend, error,
+) {
 	if err := signer.verifyStateMap(2, params); err != nil {
 		return nil, err
 	}

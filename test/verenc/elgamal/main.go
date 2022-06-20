@@ -12,9 +12,9 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
-	"github.com/coinbase/kryptology/pkg/sharing/v1"
-	"github.com/coinbase/kryptology/pkg/verenc/elgamal"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
+	"github.com/trysuperdrop/kryptology/pkg/verenc/elgamal"
 )
 
 func main() {
@@ -42,30 +42,42 @@ func main() {
 
 	user1Pk, user1Sk, _ := elgamal.NewKeys(curve)
 	s1, _ := curve.Scalar.SetBytes(shares[0].Value.Bytes())
-	ctxt1, proof1, _ := ek.VerifiableEncrypt(shares[0].Value.Bytes(), &elgamal.EncryptParams{
-		Domain:          []byte("initial upload user 1"),
-		MessageIsHashed: true,
-		GenProof:        true,
-		ProofNonce:      []byte("initial upload user 1"),
-	})
-	user1Ctxt, _, _ := user1Pk.VerifiableEncrypt(shares[0].Value.Bytes(), &elgamal.EncryptParams{
-		MessageIsHashed: true,
-	})
+	ctxt1, proof1, _ := ek.VerifiableEncrypt(
+		shares[0].Value.Bytes(), &elgamal.EncryptParams{
+			Domain:          []byte("initial upload user 1"),
+			MessageIsHashed: true,
+			GenProof:        true,
+			ProofNonce:      []byte("initial upload user 1"),
+		},
+	)
+	user1Ctxt, _, _ := user1Pk.VerifiableEncrypt(
+		shares[0].Value.Bytes(), &elgamal.EncryptParams{
+			MessageIsHashed: true,
+		},
+	)
 	ctxt1Bytes, _ := ctxt1.MarshalBinary()
 	fmt.Printf("User 1 submits ciphertext %v\n", hex.EncodeToString(ctxt1Bytes))
 
-	ctxt2, proof2, _ := ek.VerifiableEncrypt(shares[1].Value.Bytes(), &elgamal.EncryptParams{
-		Domain:          []byte("initial upload user 2"),
-		MessageIsHashed: true,
-		GenProof:        true,
-		ProofNonce:      []byte("initial upload user 2"),
-	})
+	ctxt2, proof2, _ := ek.VerifiableEncrypt(
+		shares[1].Value.Bytes(), &elgamal.EncryptParams{
+			Domain:          []byte("initial upload user 2"),
+			MessageIsHashed: true,
+			GenProof:        true,
+			ProofNonce:      []byte("initial upload user 2"),
+		},
+	)
 	ctxt2Bytes, _ := ctxt2.MarshalBinary()
 	fmt.Printf("User 2 submits ciphertext %v\n", hex.EncodeToString(ctxt2Bytes))
 
 	fmt.Printf("Coinbase verifies each user's ciphertext\n")
-	fmt.Printf("User 1 ciphertext is valid = %v\n", ek.VerifyEncryptProof([]byte("initial upload user 1"), ctxt1, proof1) == nil)
-	fmt.Printf("User 2 ciphertext is valid = %v\n", ek.VerifyEncryptProof([]byte("initial upload user 2"), ctxt2, proof2) == nil)
+	fmt.Printf(
+		"User 1 ciphertext is valid = %v\n",
+		ek.VerifyEncryptProof([]byte("initial upload user 1"), ctxt1, proof1) == nil,
+	)
+	fmt.Printf(
+		"User 2 ciphertext is valid = %v\n",
+		ek.VerifyEncryptProof([]byte("initial upload user 2"), ctxt2, proof2) == nil,
+	)
 
 	m1 := dk.Decrypt(ctxt1.ToHomomorphicCipherText())
 	m2 := dk.Decrypt(ctxt2.ToHomomorphicCipherText())

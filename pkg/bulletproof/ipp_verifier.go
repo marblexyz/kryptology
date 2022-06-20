@@ -4,7 +4,7 @@ import (
 	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
 
-	"github.com/coinbase/kryptology/pkg/core/curves"
+	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
 
 // InnerProductVerifier is the struct used to verify inner product proofs
@@ -29,7 +29,9 @@ func NewInnerProductVerifier(maxVectorLength int, domain []byte, curve curves.Cu
 
 // Verify verifies the given proof inputs
 // It implements the final comparison of section 3.1 on pg17 of https://eprint.iacr.org/2017/1066.pdf
-func (verifier *InnerProductVerifier) Verify(capP, u curves.Point, proof *InnerProductProof, transcript *merlin.Transcript) (bool, error) {
+func (verifier *InnerProductVerifier) Verify(
+	capP, u curves.Point, proof *InnerProductProof, transcript *merlin.Transcript,
+) (bool, error) {
 	if len(proof.capLs) != len(proof.capRs) {
 		return false, errors.New("ipp capLs and capRs must be same length")
 	}
@@ -71,7 +73,10 @@ func (verifier *InnerProductVerifier) Verify(capP, u curves.Point, proof *InnerP
 
 // Verify verifies the given proof inputs
 // It implements the final comparison of section 3.1 on pg17 of https://eprint.iacr.org/2017/1066.pdf
-func (verifier *InnerProductVerifier) VerifyFromRangeProof(proofG, proofH []curves.Point, capPhmuinv, u curves.Point, tHat curves.Scalar, proof *InnerProductProof, transcript *merlin.Transcript) (bool, error) {
+func (verifier *InnerProductVerifier) VerifyFromRangeProof(
+	proofG, proofH []curves.Point, capPhmuinv, u curves.Point, tHat curves.Scalar, proof *InnerProductProof,
+	transcript *merlin.Transcript,
+) (bool, error) {
 	// Get generators for each elem in a, b and one more for u
 	// len(Ls) = log n, therefore can just exponentiate
 	n := 1 << len(proof.capLs)
@@ -98,7 +103,9 @@ func (verifier *InnerProductVerifier) VerifyFromRangeProof(proofG, proofH []curv
 }
 
 // getRHS gets the right hand side of the final comparison of section 3.1 on pg17
-func (verifier *InnerProductVerifier) getRHS(P curves.Point, proof *InnerProductProof, xs []curves.Scalar) (curves.Point, error) {
+func (verifier *InnerProductVerifier) getRHS(
+	P curves.Point, proof *InnerProductProof, xs []curves.Scalar,
+) (curves.Point, error) {
 	product := P
 	for j, Lj := range proof.capLs {
 		Rj := proof.capRs[j]
@@ -116,7 +123,9 @@ func (verifier *InnerProductVerifier) getRHS(P curves.Point, proof *InnerProduct
 }
 
 // getLHS gets the left hand side of the final comparison of section 3.1 on pg17
-func (verifier *InnerProductVerifier) getLHS(u curves.Point, proof *InnerProductProof, g, h []curves.Point, s []curves.Scalar) (curves.Point, error) {
+func (verifier *InnerProductVerifier) getLHS(
+	u curves.Point, proof *InnerProductProof, g, h []curves.Point, s []curves.Scalar,
+) (curves.Point, error) {
 	sInv, err := invertScalars(s)
 	if err != nil {
 		return nil, errors.Wrap(err, "verify invertScalars")

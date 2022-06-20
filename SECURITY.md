@@ -6,7 +6,7 @@ If you think you have discovered a security issue within any part of this codeba
 
 There are two ways to report a security bug. The easiest is to submit a report to [HackerOne](https://hackerone.com/coinbase) which includes a description of the flaw and any related information (e.g. steps to reproduce, version, etc.).
 
-You can also file a confidential security bug in [GitHub](https://github.com/coinbase/kryptology/security/advisories).
+You can also file a confidential security bug in [GitHub](https://github.com/trysuperdrop/kryptology/security/advisories).
 
 ## Cryptographic Vulnerabilities
 
