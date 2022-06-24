@@ -3,6 +3,8 @@
 package v1
 
 import (
+	"bytes"
+	"encoding/gob"
 	"github.com/trysuperdrop/kryptology/pkg/core/protocol"
 )
 
@@ -31,3 +33,26 @@ func (p *protoStepper) Next(input *protocol.Message) (*protocol.Message, error) 
 
 // Reports true if the step index exceeds the number of steps
 func (p *protoStepper) complete() bool { return p.step >= len(p.steps) /**/ }
+
+func (p *protoStepper) MarshalBinary() ([]byte, error) {
+	var buf bytes.Buffer
+	enc := gob.NewEncoder(&buf)
+	if err := enc.Encode(p.step); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+func (p *protoStepper) UnmarshalBinary(data []byte) error {
+	var dec *gob.Decoder
+
+	reader := bytes.NewReader(data)
+	dec = gob.NewDecoder(reader)
+
+	step := 0
+	if err := dec.Decode(&step); err != nil {
+		return err
+	}
+	p.step = step
+	return nil
+}

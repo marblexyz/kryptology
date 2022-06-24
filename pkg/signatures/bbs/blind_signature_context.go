@@ -11,7 +11,7 @@ import (
 	"io"
 	"sort"
 
-	"github.com/gtank/merlin"
+	"github.com/trysuperdrop/merlin"
 	"golang.org/x/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/internal"

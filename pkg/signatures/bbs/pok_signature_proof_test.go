@@ -10,8 +10,8 @@ import (
 	crand "crypto/rand"
 	"testing"
 
-	"github.com/gtank/merlin"
 	"github.com/stretchr/testify/require"
+	"github.com/trysuperdrop/merlin"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 	"github.com/trysuperdrop/kryptology/pkg/signatures/common"

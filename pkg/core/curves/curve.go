@@ -388,6 +388,20 @@ func (c Curve) NewScalar() Scalar {
 	return c.Scalar.Zero()
 }
 
+// JS TODO Test
+func (c Curve) Equals(cmp Curve) bool {
+	if c.Scalar.Cmp(cmp.Scalar) != 0 {
+		return false
+	}
+	if !c.Point.Equal(cmp.Point) {
+		return false
+	}
+	if c.Name != cmp.Name {
+		return false
+	}
+	return true
+}
+
 // ToEllipticCurve returns the equivalent of this curve as the go interface `elliptic.Curve`
 func (c Curve) ToEllipticCurve() (elliptic.Curve, error) {
 	err := fmt.Errorf("can't convert %s", c.Name)

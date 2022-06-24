@@ -16,8 +16,8 @@ package refresh
 import (
 	"crypto/rand"
 
-	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
+	"github.com/trysuperdrop/merlin"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"

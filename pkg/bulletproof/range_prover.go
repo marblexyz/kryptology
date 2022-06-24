@@ -11,8 +11,8 @@ import (
 	crand "crypto/rand"
 	"math/big"
 
-	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
+	"github.com/trysuperdrop/merlin"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )

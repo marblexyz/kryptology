@@ -19,16 +19,17 @@
 package simplest
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/subtle"
+	"encoding/gob"
 	"fmt"
-
-	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
-	"golang.org/x/crypto/sha3"
-
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
+	"github.com/trysuperdrop/merlin"
+	"golang.org/x/crypto/sha3"
+	"reflect"
 )
 
 const (
@@ -82,6 +83,21 @@ type ReceiverOutput struct {
 	OneTimePadDecryptionKey []OneTimePadDecryptionKey
 }
 
+// JS TODO Test
+func (s *ReceiverOutput) Equals(cmp *ReceiverOutput) bool {
+	res := bytes.Compare(s.PackedRandomChoiceBits, cmp.PackedRandomChoiceBits)
+	if res != 0 {
+		return false
+	}
+	if !reflect.DeepEqual(s.RandomChoiceBits, cmp.RandomChoiceBits) {
+		return false
+	}
+	if !reflect.DeepEqual(s.OneTimePadDecryptionKey, cmp.OneTimePadDecryptionKey) {
+		return false
+	}
+	return true
+}
+
 // Sender stores state for the "sender" role in OT. see Protocol 7 in Appendix A of DKLs18.
 type Sender struct {
 	// Output is the output that is produced as a result of running random OT protocol.
@@ -118,6 +134,186 @@ type Receiver struct {
 	batchSize int
 
 	transcript *merlin.Transcript
+}
+
+func (receiver *Receiver) MarshalBinary() ([]byte, error) {
+	var enc *gob.Encoder
+	var buf bytes.Buffer
+
+	buf = bytes.Buffer{}
+	enc = gob.NewEncoder(&buf)
+	marshalData := map[string][]byte{}
+	if receiver.Output != nil {
+		if err := enc.Encode(receiver.Output); err != nil {
+			return nil, err
+		}
+		marshalData["Output"] = buf.Bytes()
+	} else {
+		marshalData["Output"] = []byte("")
+	}
+
+	if receiver.curve != nil {
+		buf = bytes.Buffer{}
+		enc = gob.NewEncoder(&buf)
+		if err := enc.Encode(receiver.curve); err != nil {
+			return nil, err
+		}
+		marshalData["curve"] = buf.Bytes()
+	} else {
+		marshalData["curve"] = []byte("")
+	}
+
+	if receiver.senderPublicKey != nil {
+		buf = bytes.Buffer{}
+		enc = gob.NewEncoder(&buf)
+		if err := enc.Encode(&receiver.senderPublicKey); err != nil {
+			return nil, err
+		}
+		marshalData["senderPublicKey"] = buf.Bytes()
+	} else {
+		marshalData["senderPublicKey"] = []byte("")
+	}
+
+	if receiver.senderChallenge != nil {
+		buf = bytes.Buffer{}
+		enc = gob.NewEncoder(&buf)
+		if err := enc.Encode(&receiver.senderChallenge); err != nil {
+			return nil, err
+		}
+		marshalData["senderChallenge"] = buf.Bytes()
+	} else {
+		marshalData["senderChallenge"] = []byte("")
+	}
+
+	buf = bytes.Buffer{}
+	enc = gob.NewEncoder(&buf)
+	if err := enc.Encode(&receiver.batchSize); err != nil {
+		return nil, err
+	}
+	marshalData["batchSize"] = buf.Bytes()
+
+	if receiver.transcript != nil {
+		buf = bytes.Buffer{}
+		enc = gob.NewEncoder(&buf)
+		transcriptBytes, err := receiver.transcript.MarshalBinary()
+		if err != nil {
+			return nil, err
+		}
+		marshalData["transcript"] = transcriptBytes
+	} else {
+		marshalData["transcript"] = []byte("")
+	}
+
+	buf = bytes.Buffer{}
+	enc = gob.NewEncoder(&buf)
+	if err := enc.Encode(marshalData); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+func (receiver *Receiver) UnmarshalBinary(data []byte) error {
+	var reader *bytes.Reader
+	var dec *gob.Decoder
+
+	//Use default gob decoder
+	reader = bytes.NewReader(data)
+	dec = gob.NewDecoder(reader)
+	unmarshalData := map[string][]byte{}
+	if err := dec.Decode(&unmarshalData); err != nil {
+		return err
+	}
+
+	if len(unmarshalData["Output"]) > 0 {
+		reader = bytes.NewReader(unmarshalData["Output"])
+		dec = gob.NewDecoder(reader)
+		if err := dec.Decode(&receiver.Output); err != nil {
+			return err
+		}
+	}
+
+	if len(unmarshalData["curve"]) > 0 {
+		reader = bytes.NewReader(unmarshalData["curve"])
+		dec = gob.NewDecoder(reader)
+		if err := dec.Decode(&receiver.curve); err != nil {
+			return err
+		}
+	}
+
+	if len(unmarshalData["senderPublicKey"]) > 0 {
+		reader = bytes.NewReader(unmarshalData["senderPublicKey"])
+		dec = gob.NewDecoder(reader)
+		if err := dec.Decode(&receiver.senderPublicKey); err != nil {
+			return err
+		}
+	}
+
+	if len(unmarshalData["senderChallenge"]) > 0 {
+		reader = bytes.NewReader(unmarshalData["senderChallenge"])
+		dec = gob.NewDecoder(reader)
+		if err := dec.Decode(&receiver.senderChallenge); err != nil {
+			return err
+		}
+	}
+
+	if len(unmarshalData["batchSize"]) > 0 {
+		reader = bytes.NewReader(unmarshalData["batchSize"])
+		dec = gob.NewDecoder(reader)
+		if err := dec.Decode(&receiver.batchSize); err != nil {
+			return err
+		}
+	}
+	if len(unmarshalData["transcript"]) > 0 {
+		transcript := merlin.Transcript{}
+		if err := transcript.UnmarshalBinary(unmarshalData["transcript"]); err != nil {
+			return err
+		}
+		receiver.transcript = &transcript
+	}
+	return nil
+}
+
+// TODO John Test
+func (receiver *Receiver) Equals(cmp *Receiver) bool {
+	if receiver.Output != nil {
+		if cmp.Output == nil {
+			return false
+		}
+		if !receiver.Output.Equals(cmp.Output) {
+			return false
+		}
+	}
+	if receiver.curve != nil {
+		if cmp.curve == nil {
+			return false
+		}
+		if !receiver.curve.Equals(*cmp.curve) {
+			return false
+		}
+	}
+	if receiver.senderPublicKey != nil {
+		if cmp.senderPublicKey == nil {
+			return false
+		}
+		if !receiver.senderPublicKey.Equal(cmp.senderPublicKey) {
+			return false
+		}
+	}
+	if !reflect.DeepEqual(receiver.senderChallenge, cmp.senderChallenge) {
+		return false
+	}
+	if receiver.batchSize != cmp.batchSize {
+		return false
+	}
+	if receiver.transcript != nil {
+		if cmp.transcript == nil {
+			return false
+		}
+		if !receiver.transcript.Equals(cmp.transcript) {
+			return false
+		}
+	}
+	return true
 }
 
 // NewSender creates a new "sender" object, ready to participate in a _random_ verified simplest OT in the role of the sender.

@@ -9,10 +9,11 @@
 package schnorr
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/subtle"
+	"encoding/gob"
 	"fmt"
-
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 
@@ -76,6 +77,91 @@ func (p *Prover) Prove(x curves.Scalar) (*Proof, error) {
 	}
 	result.S = result.C.Mul(x).Add(k)
 	return result, nil
+}
+
+func (s *Prover) MarshalBinary() ([]byte, error) {
+	var buf bytes.Buffer
+	enc := gob.NewEncoder(&buf)
+	if err := enc.Encode(s.curve); err != nil {
+		return nil, err
+	}
+	if err := enc.Encode(&s.basePoint); err != nil {
+		return nil, err
+	}
+	if err := enc.Encode(s.uniqueSessionId); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+func (s *Prover) UnmarshalBinary(data []byte) error {
+	reader := bytes.NewReader(data)
+	dec := gob.NewDecoder(reader)
+	if err := dec.Decode(&s.curve); err != nil {
+		return err
+	}
+	if err := dec.Decode(&s.basePoint); err != nil {
+		return err
+	}
+	if err := dec.Decode(&s.uniqueSessionId); err != nil {
+		return err
+	}
+	return nil
+}
+
+// JS TODO Test
+func (s *Prover) Equals(cmp *Prover) bool {
+	if !s.curve.Equals(*cmp.curve) {
+		return false
+	}
+	if !s.basePoint.Equal(cmp.basePoint) {
+		return false
+	}
+	res := bytes.Compare(s.uniqueSessionId, cmp.uniqueSessionId)
+	return res == 0
+}
+
+func (s *Proof) MarshalBinary() ([]byte, error) {
+	var buf bytes.Buffer
+	enc := gob.NewEncoder(&buf)
+	if err := enc.Encode(&s.C); err != nil {
+		return nil, err
+	}
+	if err := enc.Encode(&s.S); err != nil {
+		return nil, err
+	}
+	if err := enc.Encode(&s.Statement); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+func (s *Proof) UnmarshalBinary(data []byte) error {
+	reader := bytes.NewReader(data)
+	dec := gob.NewDecoder(reader)
+	if err := dec.Decode(&s.C); err != nil {
+		return err
+	}
+	if err := dec.Decode(&s.S); err != nil {
+		return err
+	}
+	if err := dec.Decode(&s.Statement); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Proof) Equals(cmp *Proof) bool {
+	if s.C.Cmp(cmp.C) != 0 {
+		return false
+	}
+	if s.S.Cmp(cmp.S) != 0 {
+		return false
+	}
+	if !s.Statement.Equal(cmp.Statement) {
+		return false
+	}
+	return true
 }
 
 // Verify verifies the `proof`, given the prover parameters `scalar` and `curve`.

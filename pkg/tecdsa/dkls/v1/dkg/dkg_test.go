@@ -7,7 +7,14 @@
 package dkg
 
 import (
+	"bytes"
+	crand "crypto/rand"
+	"encoding/gob"
 	"fmt"
+	"github.com/stretchr/testify/assert"
+	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
+	"github.com/vmihailenco/msgpack/v5"
+	"log"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -103,4 +110,99 @@ func BenchmarkDkg(b *testing.B) {
 		err = alice.Round10DkgRound6Ot(challengeOpenings)
 		require.NoError(b, err)
 	}
+}
+
+type customStruct struct {
+	prover         *schnorr.Prover
+	curve          *curves.Curve
+	secretKeyShare curves.Scalar
+}
+
+func (s *customStruct) MarshalBinary() ([]byte, error) {
+	var enc *gob.Encoder
+	var buf bytes.Buffer
+
+	buf = bytes.Buffer{}
+	enc = gob.NewEncoder(&buf)
+	marshalData := map[string][]byte{}
+	if err := enc.Encode(s.prover); err != nil {
+		return nil, err
+	}
+	marshalData["prover"] = buf.Bytes()
+
+	buf = bytes.Buffer{}
+	enc = gob.NewEncoder(&buf)
+	if err := enc.Encode(s.curve); err != nil {
+		return nil, err
+	}
+	marshalData["curve"] = buf.Bytes()
+
+	buf = bytes.Buffer{}
+	enc = gob.NewEncoder(&buf)
+	if err := enc.Encode(&s.secretKeyShare); err != nil {
+		return nil, err
+	}
+	marshalData["secretKeyShare"] = buf.Bytes()
+
+	buf = bytes.Buffer{}
+	enc = gob.NewEncoder(&buf)
+	if err := enc.Encode(marshalData); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+func (s *customStruct) UnmarshalBinary(data []byte) error {
+	var reader *bytes.Reader
+	var dec *gob.Decoder
+
+	//Use default gob decoder
+	reader = bytes.NewReader(data)
+	dec = gob.NewDecoder(reader)
+	unmarshalData := map[string][]byte{}
+	if err := dec.Decode(&unmarshalData); err != nil {
+		return err
+	}
+
+	reader = bytes.NewReader(unmarshalData["prover"])
+	dec = gob.NewDecoder(reader)
+	if err := dec.Decode(&s.prover); err != nil {
+		return err
+	}
+
+	reader = bytes.NewReader(unmarshalData["curve"])
+	dec = gob.NewDecoder(reader)
+	if err := dec.Decode(&s.curve); err != nil {
+		return err
+	}
+
+	reader = bytes.NewReader(unmarshalData["secretKeyShare"])
+	dec = gob.NewDecoder(reader)
+	if err := dec.Decode(&s.secretKeyShare); err != nil {
+		return err
+	}
+	return nil
+}
+
+func TestAliceEncode(t *testing.T) {
+	gob.Register(&curves.ScalarK256{})
+	gob.Register(&curves.PointK256{})
+	t.Parallel()
+	k256 := curves.K256()
+	sc := k256.Scalar.Random(crand.Reader)
+	c := &customStruct{
+		prover:         schnorr.NewProver(k256, nil, []byte("unique session id random string")),
+		curve:          k256,
+		secretKeyShare: sc,
+	}
+	b, err := msgpack.Marshal(c)
+	assert.Nil(t, err)
+	log.Println(b)
+
+	var v customStruct
+	err = msgpack.Unmarshal(b, &v)
+	assert.Nil(t, err)
+	//assert.Equal(t, curves.K256(), v.curve)
+	assert.Equal(t, sc, v.secretKeyShare)
+	assert.Equal(t, c, &v)
 }

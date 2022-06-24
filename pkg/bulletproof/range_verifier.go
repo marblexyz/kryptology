@@ -1,8 +1,8 @@
 package bulletproof
 
 import (
-	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
+	"github.com/trysuperdrop/merlin"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
@@ -136,7 +136,8 @@ func gethPrime(h []curves.Point, y curves.Scalar, curve curves.Curve) ([]curves.
 // See L67 on pg20
 // Note P on L66 includes blinding factor hmu, this method removes that factor
 func getPhmu(
-	proofG, proofHPrime []curves.Point, h, capA, capS curves.Point, x, y, z, mu curves.Scalar, n int, curve curves.Curve,
+	proofG, proofHPrime []curves.Point, h, capA, capS curves.Point, x, y, z, mu curves.Scalar, n int,
+	curve curves.Curve,
 ) (curves.Point, error) {
 	// h'^(z*y^n + z^2*2^n)
 	zyn := multiplyScalarToScalarVector(z, getknVector(y, n, curve))

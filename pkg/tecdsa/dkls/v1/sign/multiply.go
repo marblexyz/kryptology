@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/gtank/merlin"
 	"github.com/pkg/errors"
+	"github.com/trysuperdrop/merlin"
 	"golang.org/x/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/internal"

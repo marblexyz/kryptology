@@ -3,9 +3,8 @@ package v1
 import (
 	"bytes"
 	"encoding/gob"
-	"hash"
-
 	"github.com/pkg/errors"
+	"hash"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 	"github.com/trysuperdrop/kryptology/pkg/core/protocol"
@@ -63,6 +62,7 @@ var (
 // NewAliceDkg creates a new protocol that can compute a DKG as Alice
 func NewAliceDkg(curve *curves.Curve, version uint) *AliceDkg {
 	a := &AliceDkg{Alice: dkg.NewAlice(curve)}
+
 	a.steps = []func(*protocol.Message) (*protocol.Message, error){
 		func(input *protocol.Message) (*protocol.Message, error) {
 			bobSeed, err := decodeDkgRound2Input(input)
@@ -122,6 +122,65 @@ func NewAliceDkg(curve *curves.Curve, version uint) *AliceDkg {
 	return a
 }
 
+func (a *AliceDkg) SetSteps(version uint) {
+	a.steps = []func(*protocol.Message) (*protocol.Message, error){
+		func(input *protocol.Message) (*protocol.Message, error) {
+			bobSeed, err := decodeDkgRound2Input(input)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			roundOutput, err := a.Round2CommitToProof(bobSeed)
+			if err != nil {
+				return nil, err
+			}
+			return encodeDkgRound2Output(roundOutput, version)
+		},
+		func(input *protocol.Message) (*protocol.Message, error) {
+			proof, err := decodeDkgRound4Input(input)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			aliceProof, err := a.Round4VerifyAndReveal(proof)
+			if err != nil {
+				return nil, err
+			}
+			return encodeDkgRound4Output(aliceProof, version)
+		},
+		func(input *protocol.Message) (*protocol.Message, error) {
+			proof, err := decodeDkgRound6Input(input)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			choices, err := a.Round6DkgRound2Ot(proof)
+			if err != nil {
+				return nil, err
+			}
+			return encodeDkgRound6Output(choices, version)
+		},
+		func(input *protocol.Message) (*protocol.Message, error) {
+			challenge, err := decodeDkgRound8Input(input)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			responses, err := a.Round8DkgRound4Ot(challenge)
+			if err != nil {
+				return nil, err
+			}
+			return encodeDkgRound8Output(responses, version)
+		},
+		func(input *protocol.Message) (*protocol.Message, error) {
+			opening, err := decodeDkgRound10Input(input)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			if err := a.Round10DkgRound6Ot(opening); err != nil {
+				return nil, err
+			}
+			return nil, nil
+		},
+	}
+}
+
 // Result Returns an encoded version of Alice as sequence of bytes that can be used to initialize an AliceSign protocol.
 func (a *AliceDkg) Result(version uint) (*protocol.Message, error) {
 	// Sanity check
@@ -136,24 +195,38 @@ func (a *AliceDkg) Result(version uint) (*protocol.Message, error) {
 	return EncodeAliceDkgOutput(result, version)
 }
 
-func AliceDkgUnmarshalBinary(data []byte) (*AliceDkg, error) {
-	var buf bytes.Buffer
-	buf.Write(data)
-	dec := gob.NewDecoder(&buf)
-	var aliceDKG AliceDkg
-	if err := dec.Decode(&aliceDKG); err != nil {
-		return nil, err
-	}
-	return &aliceDKG, nil
-}
-
-func AliceDkgMarshalBinary(alice *AliceDkg) ([]byte, error) {
+func (a *AliceDkg) MarshalBinary() ([]byte, error) {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
-	if err := enc.Encode(alice); err != nil {
+
+	if err := enc.Encode(a.Alice); err != nil {
+		return nil, err
+	}
+	if err := enc.Encode(a.step); err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
+}
+
+func (a *AliceDkg) UnmarshalBinary(data []byte) error {
+	var dec *gob.Decoder
+
+	reader := bytes.NewReader(data)
+	dec = gob.NewDecoder(reader)
+	alice := dkg.Alice{}
+	if err := dec.Decode(&alice); err != nil {
+		return err
+	}
+	a.Alice = &alice
+	step := 0
+	if err := dec.Decode(&step); err != nil {
+		return err
+	}
+	a.step = step
+	// This is a necessary step, as go cannot marshal an array of functions, so when we
+	// re-load alice's state to memory, we need to set the "steps" parameter.
+	a.SetSteps(protocol.Version1)
+	return nil
 }
 
 // NewBobDkg Creates a new protocol that can compute a DKG as Bob.

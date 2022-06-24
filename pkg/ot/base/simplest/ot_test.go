@@ -10,6 +10,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -34,7 +35,8 @@ func TestOtOnMultipleCurves(t *testing.T) {
 
 		for i := 0; i < batchSize; i++ {
 			require.Equal(
-				t, receiver.OneTimePadDecryptionKey[i], sender.OneTimePadEncryptionKeys[i][receiver.RandomChoiceBits[i]],
+				t, receiver.OneTimePadDecryptionKey[i],
+				sender.OneTimePadEncryptionKeys[i][receiver.RandomChoiceBits[i]],
 			)
 		}
 
@@ -89,4 +91,45 @@ func TestOTStreaming(t *testing.T) {
 			sender.Output.OneTimePadEncryptionKeys[i][receiver.Output.RandomChoiceBits[i]],
 		)
 	}
+}
+
+func TestOTMarshalUnmarshal(t *testing.T) {
+	batchSize := 256
+	curve := curves.K256()
+	hashKeySeed := [32]byte{}
+	_, err := rand.Read(hashKeySeed[:])
+	require.NoError(t, err)
+	sender, err := simplest.NewSender(curve, batchSize, hashKeySeed)
+	require.Nil(t, err)
+	receiver, err := simplest.NewReceiver(curve, batchSize, hashKeySeed)
+	require.Nil(t, err)
+
+	senderPipe, receiverPipe := simplest.NewPipeWrappers()
+	errorsChannel := make(
+		chan error, 2,
+	) // warning: if one party errors, the other will sit there forever. add timeouts.
+	go func() {
+		errorsChannel <- simplest.SenderStreamOTRun(sender, senderPipe)
+	}()
+	go func() {
+		errorsChannel <- simplest.ReceiverStreamOTRun(receiver, receiverPipe)
+	}()
+	for i := 0; i < 2; i++ {
+		require.Nil(t, <-errorsChannel)
+	}
+
+	data, err := receiver.MarshalBinary()
+	assert.NoError(t, err)
+	data2, err := receiver.MarshalBinary()
+	assert.NoError(t, err)
+
+	r := &simplest.Receiver{}
+	err = r.UnmarshalBinary(data)
+	assert.NoError(t, err)
+
+	r2 := &simplest.Receiver{}
+	err = r2.UnmarshalBinary(data2)
+	assert.NoError(t, err)
+
+	assert.True(t, r.Equals(r2))
 }
