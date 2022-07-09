@@ -10,8 +10,10 @@
 package sign
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/rand"
+	"encoding/gob"
 	"fmt"
 	"hash"
 	"math/big"
@@ -113,6 +115,200 @@ type SignRound3Output struct {
 
 	// EtaSig is the Eta_{Sig} from the paper.
 	EtaSig curves.Scalar
+}
+
+func (s *Alice) MarshalBinary() ([]byte, error) {
+	var enc *gob.Encoder
+	var buf bytes.Buffer
+
+	marshalData := map[string][]byte{}
+	if s.hash != nil {
+		buf = bytes.Buffer{}
+		enc = gob.NewEncoder(&buf)
+		if err := enc.Encode(s.hash); err != nil {
+			return nil, err
+		}
+		marshalData["hash"] = buf.Bytes()
+	} else {
+		marshalData["hash"] = []byte("")
+	}
+
+	if s.seedOtResults != nil {
+		buf = bytes.Buffer{}
+		enc = gob.NewEncoder(&buf)
+		if err := enc.Encode(s.seedOtResults); err != nil {
+			return nil, err
+		}
+		marshalData["seedOtResults"] = buf.Bytes()
+	} else {
+		marshalData["seedOtResults"] = []byte("")
+	}
+
+	if s.secretKeyShare != nil {
+		buf = bytes.Buffer{}
+		enc = gob.NewEncoder(&buf)
+		if err := enc.Encode(&s.secretKeyShare); err != nil {
+			return nil, err
+		}
+		marshalData["secretKeyShare"] = buf.Bytes()
+	} else {
+		marshalData["secretKeyShare"] = []byte("")
+	}
+
+	if s.publicKey != nil {
+		buf = bytes.Buffer{}
+		enc = gob.NewEncoder(&buf)
+		if err := enc.Encode(&s.publicKey); err != nil {
+			return nil, err
+		}
+		marshalData["publicKey"] = buf.Bytes()
+	} else {
+		marshalData["publicKey"] = []byte("")
+	}
+
+	if s.curve != nil {
+		buf = bytes.Buffer{}
+		enc = gob.NewEncoder(&buf)
+		if err := enc.Encode(s.curve); err != nil {
+			return nil, err
+		}
+		marshalData["curve"] = buf.Bytes()
+	} else {
+		marshalData["curve"] = []byte("")
+	}
+
+	if s.transcript != nil {
+		buf = bytes.Buffer{}
+		enc = gob.NewEncoder(&buf)
+		transcriptBytes, err := s.transcript.MarshalBinary()
+		if err != nil {
+			return nil, err
+		}
+		marshalData["transcript"] = transcriptBytes
+	} else {
+		marshalData["transcript"] = []byte("")
+	}
+
+	buf = bytes.Buffer{}
+	enc = gob.NewEncoder(&buf)
+	if err := enc.Encode(marshalData); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+func (s *Alice) UnmarshalBinary(data []byte) error {
+	var reader *bytes.Reader
+	var dec *gob.Decoder
+
+	//Use default gob decoder
+	reader = bytes.NewReader(data)
+	dec = gob.NewDecoder(reader)
+	unmarshalData := map[string][]byte{}
+	if err := dec.Decode(&unmarshalData); err != nil {
+		return err
+	}
+
+	if len(unmarshalData["hash"]) > 0 {
+		reader = bytes.NewReader(unmarshalData["hash"])
+		dec = gob.NewDecoder(reader)
+		if err := dec.Decode(&s.hash); err != nil {
+			return err
+		}
+	}
+
+	if len(unmarshalData["seedOtResults"]) > 0 {
+		reader = bytes.NewReader(unmarshalData["seedOtResults"])
+		dec = gob.NewDecoder(reader)
+		if err := dec.Decode(&s.seedOtResults); err != nil {
+			return err
+		}
+	}
+	
+	if len(unmarshalData["secretKeyShare"]) > 0 {
+		reader = bytes.NewReader(unmarshalData["secretKeyShare"])
+		dec = gob.NewDecoder(reader)
+		if err := dec.Decode(&s.secretKeyShare); err != nil {
+			return err
+		}
+	}
+
+	if len(unmarshalData["publicKey"]) > 0 {
+		reader = bytes.NewReader(unmarshalData["publicKey"])
+		dec = gob.NewDecoder(reader)
+		if err := dec.Decode(&s.publicKey); err != nil {
+			return err
+		}
+	}
+
+	if len(unmarshalData["curve"]) > 0 {
+		reader = bytes.NewReader(unmarshalData["curve"])
+		dec = gob.NewDecoder(reader)
+		if err := dec.Decode(&s.curve); err != nil {
+			return err
+		}
+	}
+
+	if len(unmarshalData["transcript"]) > 0 {
+		transcript := merlin.Transcript{}
+		if err := transcript.UnmarshalBinary(unmarshalData["transcript"]); err != nil {
+			return err
+		}
+		s.transcript = &transcript
+	}
+	return nil
+}
+
+func (s *Alice) Equals(cmp *Alice) bool {
+	if s.hash != nil {
+		if cmp.hash == nil {
+			return false
+		}
+		if s.hash != cmp.hash {
+			return false
+		}
+	}
+	if s.seedOtResults != nil {
+		if cmp.seedOtResults == nil {
+			return false
+		}
+		if !s.seedOtResults.Equals(cmp.seedOtResults) {
+			return false
+		}
+	}
+	if s.secretKeyShare != nil {
+		if cmp.secretKeyShare == nil {
+			return false
+		}
+		if s.secretKeyShare.Cmp(cmp.secretKeyShare) != 0 {
+			return false
+		}
+	}
+	if s.publicKey != nil {
+		if cmp.publicKey == nil {
+			return false
+		}
+		if !s.publicKey.Equal(cmp.publicKey) {
+			return false
+		}
+	}
+	if s.curve != nil {
+		if cmp.curve == nil {
+			return false
+		}
+		if !s.curve.Equals(*cmp.curve) {
+			return false
+		}
+	}
+	if s.transcript != nil {
+		if cmp.transcript == nil {
+			return false
+		}
+		if !s.transcript.Equals(cmp.transcript) {
+			return false
+		}
+	}
+	return true
 }
 
 // Round1GenerateRandomSeed first step of the generation of the shared random salt `idExt`
