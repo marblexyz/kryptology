@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"golang.org/x/crypto/sha3"
+	"github.com/trysuperdrop/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
@@ -49,9 +49,17 @@ func TestSign(t *testing.T) {
 		message := []byte("A message.")
 		seed, err := alice.Round1GenerateRandomSeed()
 		require.NoError(t, err)
+		marshalledAlice, err := alice.MarshalBinary()
+		require.NoError(t, err)
+
 		round3Output, err := bob.Round2Initialize(seed)
 		require.NoError(t, err)
-		round4Output, err := alice.Round3Sign(message, round3Output)
+
+		unmarshalledAlice := &Alice{}
+		err = unmarshalledAlice.UnmarshalBinary(marshalledAlice)
+		require.NoError(t, err)
+
+		round4Output, err := unmarshalledAlice.Round3Sign(message, round3Output)
 		require.NoError(t, err)
 		err = bob.Round4Final(message, round4Output)
 		require.NoError(t, err, "curve: %s", curve.Name)

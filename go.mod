@@ -11,8 +11,9 @@ require (
 	github.com/consensys/gnark-crypto v0.5.3
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
+	github.com/trysuperdrop/crypto v0.0.0-20220711063155-06d92624802f
+	github.com/trysuperdrop/merlin v0.1.2-0.20220629233021-ee686cbf6191
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
 	golang.org/x/tools v0.1.5
 )
 
@@ -21,9 +22,9 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mimoo/StrobeGo v0.0.0-20181016162300-f8f6d4d2b643 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/trysuperdrop/merlin v0.1.2-0.20220629233021-ee686cbf6191 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
+	golang.org/x/sys v0.0.0-20220708085239-5a0f0661e09d // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )

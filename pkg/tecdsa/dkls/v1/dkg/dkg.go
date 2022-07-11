@@ -21,6 +21,13 @@ import (
 	"github.com/trysuperdrop/merlin"
 )
 
+func registerTypes() {
+	gob.Register(&curves.ScalarK256{})
+	gob.Register(&curves.PointK256{})
+	gob.Register(&curves.ScalarP256{})
+	gob.Register(&curves.PointP256{})
+}
+
 // AliceOutput is the result of running DKG for Alice. It contains both the public and secret values that are needed
 // for signing.
 type AliceOutput struct {
@@ -76,6 +83,26 @@ type Alice struct {
 	curve *curves.Curve
 
 	transcript *merlin.Transcript
+}
+
+type AlicePublic struct {
+	Prover *schnorr.Prover
+
+	// proof is alice's proof to her portion of the public key. It is stored as an intermediate value, during commitment phase.
+	Proof *schnorr.Proof
+
+	// receiver is the base OT receiver.
+	Receiver *simplest.Receiver
+
+	// secretKeyShare is Alice's secret key for the joint public key.
+	SecretKeyShare curves.Scalar
+
+	// publicKey is the joint public key of Alice and Bob.
+	PublicKey curves.Point
+
+	Curve *curves.Curve
+
+	Transcript *merlin.Transcript
 }
 
 func (s *Alice) Equals(cmp *Alice) bool {
@@ -139,163 +166,42 @@ func (s *Alice) Equals(cmp *Alice) bool {
 }
 
 func (s *Alice) MarshalBinary() ([]byte, error) {
-	var enc *gob.Encoder
-	var buf bytes.Buffer
-
-	marshalData := map[string][]byte{}
-	if s.prover != nil {
-		buf = bytes.Buffer{}
-		enc = gob.NewEncoder(&buf)
-		if err := enc.Encode(s.prover); err != nil {
-			return nil, err
-		}
-		marshalData["prover"] = buf.Bytes()
-	} else {
-		marshalData["prover"] = []byte("")
-	}
-
-	if s.proof != nil {
-		buf = bytes.Buffer{}
-		enc = gob.NewEncoder(&buf)
-		if err := enc.Encode(s.proof); err != nil {
-			return nil, err
-		}
-		marshalData["proof"] = buf.Bytes()
-	} else {
-		marshalData["proof"] = []byte("")
-	}
-
-	if s.receiver != nil {
-		buf = bytes.Buffer{}
-		enc = gob.NewEncoder(&buf)
-		if err := enc.Encode(s.receiver); err != nil {
-			return nil, err
-		}
-		marshalData["receiver"] = buf.Bytes()
-	} else {
-		marshalData["receiver"] = []byte("")
-	}
-
-	if s.secretKeyShare != nil {
-		buf = bytes.Buffer{}
-		enc = gob.NewEncoder(&buf)
-		if err := enc.Encode(&s.secretKeyShare); err != nil {
-			return nil, err
-		}
-		marshalData["secretKeyShare"] = buf.Bytes()
-	} else {
-		marshalData["secretKeyShare"] = []byte("")
-	}
-
-	if s.publicKey != nil {
-		buf = bytes.Buffer{}
-		enc = gob.NewEncoder(&buf)
-		if err := enc.Encode(&s.publicKey); err != nil {
-			return nil, err
-		}
-		marshalData["publicKey"] = buf.Bytes()
-	} else {
-		marshalData["publicKey"] = []byte("")
-	}
-
-	if s.curve != nil {
-		buf = bytes.Buffer{}
-		enc = gob.NewEncoder(&buf)
-		if err := enc.Encode(s.curve); err != nil {
-			return nil, err
-		}
-		marshalData["curve"] = buf.Bytes()
-	} else {
-		marshalData["curve"] = []byte("")
-	}
-
-	if s.transcript != nil {
-		buf = bytes.Buffer{}
-		enc = gob.NewEncoder(&buf)
-		transcriptBytes, err := s.transcript.MarshalBinary()
-		if err != nil {
-			return nil, err
-		}
-		marshalData["transcript"] = transcriptBytes
-	} else {
-		marshalData["transcript"] = []byte("")
-	}
-
-	buf = bytes.Buffer{}
-	enc = gob.NewEncoder(&buf)
-	if err := enc.Encode(marshalData); err != nil {
+	registerTypes()
+	buf := bytes.Buffer{}
+	enc := gob.NewEncoder(&buf)
+	if err := enc.Encode(
+		AlicePublic{
+			Prover:         s.prover,
+			Proof:          s.proof,
+			Curve:          s.curve,
+			Receiver:       s.receiver,
+			SecretKeyShare: s.secretKeyShare,
+			PublicKey:      s.publicKey,
+			Transcript:     s.transcript,
+		},
+	); err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
 
 func (s *Alice) UnmarshalBinary(data []byte) error {
-	var reader *bytes.Reader
-	var dec *gob.Decoder
-
+	registerTypes()
 	//Use default gob decoder
-	reader = bytes.NewReader(data)
-	dec = gob.NewDecoder(reader)
-	unmarshalData := map[string][]byte{}
-	if err := dec.Decode(&unmarshalData); err != nil {
+	reader := bytes.NewReader(data)
+	dec := gob.NewDecoder(reader)
+
+	var alicePublic AlicePublic
+	if err := dec.Decode(&alicePublic); err != nil {
 		return err
 	}
-
-	if len(unmarshalData["prover"]) > 0 {
-		reader = bytes.NewReader(unmarshalData["prover"])
-		dec = gob.NewDecoder(reader)
-		if err := dec.Decode(&s.prover); err != nil {
-			return err
-		}
-	}
-
-	if len(unmarshalData["proof"]) > 0 {
-		reader = bytes.NewReader(unmarshalData["proof"])
-		dec = gob.NewDecoder(reader)
-		if err := dec.Decode(&s.proof); err != nil {
-			return err
-		}
-	}
-
-	if len(unmarshalData["receiver"]) > 0 {
-		reader = bytes.NewReader(unmarshalData["receiver"])
-		dec = gob.NewDecoder(reader)
-		if err := dec.Decode(&s.receiver); err != nil {
-			return err
-		}
-	}
-
-	if len(unmarshalData["secretKeyShare"]) > 0 {
-		reader = bytes.NewReader(unmarshalData["secretKeyShare"])
-		dec = gob.NewDecoder(reader)
-		if err := dec.Decode(&s.secretKeyShare); err != nil {
-			return err
-		}
-	}
-
-	if len(unmarshalData["publicKey"]) > 0 {
-		reader = bytes.NewReader(unmarshalData["publicKey"])
-		dec = gob.NewDecoder(reader)
-		if err := dec.Decode(&s.publicKey); err != nil {
-			return err
-		}
-	}
-
-	if len(unmarshalData["curve"]) > 0 {
-		reader = bytes.NewReader(unmarshalData["curve"])
-		dec = gob.NewDecoder(reader)
-		if err := dec.Decode(&s.curve); err != nil {
-			return err
-		}
-	}
-
-	if len(unmarshalData["transcript"]) > 0 {
-		transcript := merlin.Transcript{}
-		if err := transcript.UnmarshalBinary(unmarshalData["transcript"]); err != nil {
-			return err
-		}
-		s.transcript = &transcript
-	}
+	s.prover = alicePublic.Prover
+	s.proof = alicePublic.Proof
+	s.curve = alicePublic.Curve
+	s.receiver = alicePublic.Receiver
+	s.secretKeyShare = alicePublic.SecretKeyShare
+	s.publicKey = alicePublic.PublicKey
+	s.transcript = alicePublic.Transcript
 	return nil
 }
 

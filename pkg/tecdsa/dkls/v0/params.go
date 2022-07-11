@@ -10,7 +10,7 @@ import (
 	"crypto/elliptic"
 	"math/big"
 
-	"golang.org/x/crypto/sha3"
+	"github.com/trysuperdrop/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )

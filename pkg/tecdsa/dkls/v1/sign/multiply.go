@@ -13,8 +13,8 @@ import (
 	"math/big"
 
 	"github.com/pkg/errors"
+	"github.com/trysuperdrop/crypto/sha3"
 	"github.com/trysuperdrop/merlin"
-	"golang.org/x/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/internal"
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"

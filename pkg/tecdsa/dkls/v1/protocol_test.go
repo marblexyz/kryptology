@@ -18,7 +18,7 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
-	"golang.org/x/crypto/sha3"
+	"github.com/trysuperdrop/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 	"github.com/trysuperdrop/kryptology/pkg/core/protocol"

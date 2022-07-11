@@ -9,8 +9,8 @@ import (
 	"math/big"
 
 	"github.com/pkg/errors"
-	"golang.org/x/crypto/blake2b"
-	"golang.org/x/crypto/sha3"
+	"github.com/trysuperdrop/crypto/blake2b"
+	"github.com/trysuperdrop/crypto/sha3"
 )
 
 // EllipticPointHashType is to indicate which expand operation is used

@@ -11,7 +11,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"golang.org/x/crypto/hkdf"
+	"github.com/trysuperdrop/crypto/hkdf"
 )
 
 // Hash computes the HKDF over many values

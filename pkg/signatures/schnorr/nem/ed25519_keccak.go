@@ -26,7 +26,7 @@ import (
 	"strconv"
 
 	"filippo.io/edwards25519"
-	"golang.org/x/crypto/sha3"
+	"github.com/trysuperdrop/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/internal"
 )

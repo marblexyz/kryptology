@@ -11,7 +11,7 @@ import (
 	"io"
 	"math/big"
 
-	"golang.org/x/crypto/sha3"
+	"github.com/trysuperdrop/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/internal"
 	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"

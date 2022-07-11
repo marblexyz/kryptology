@@ -13,7 +13,7 @@ import (
 	"crypto/subtle"
 	"fmt"
 
-	"golang.org/x/crypto/hkdf"
+	"github.com/trysuperdrop/crypto/hkdf"
 
 	"github.com/trysuperdrop/kryptology/internal"
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"

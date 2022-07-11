@@ -16,7 +16,7 @@ import (
 	"math/big"
 	"sync"
 
-	"golang.org/x/crypto/blake2b"
+	"github.com/trysuperdrop/crypto/blake2b"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fp"
 	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fq"

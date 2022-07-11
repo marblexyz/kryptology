@@ -15,7 +15,7 @@ import (
 	"io"
 
 	"github.com/btcsuite/btcutil/base58"
-	"golang.org/x/crypto/blake2b"
+	"github.com/trysuperdrop/crypto/blake2b"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fp"

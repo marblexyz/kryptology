@@ -16,7 +16,7 @@ import (
 	"math/big"
 
 	"github.com/btcsuite/btcd/btcec"
-	"golang.org/x/crypto/hkdf"
+	"github.com/trysuperdrop/crypto/hkdf"
 
 	"github.com/trysuperdrop/kryptology/internal"
 )

@@ -17,7 +17,7 @@ import (
 	"math/big"
 
 	bls12377 "github.com/consensys/gnark-crypto/ecc/bls12-377"
-	"golang.org/x/crypto/sha3"
+	"github.com/trysuperdrop/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/pkg/core"
 )

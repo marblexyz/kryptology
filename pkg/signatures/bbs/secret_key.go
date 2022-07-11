@@ -13,8 +13,8 @@ import (
 	"fmt"
 	"io"
 
-	"golang.org/x/crypto/hkdf"
-	"golang.org/x/crypto/sha3"
+	"github.com/trysuperdrop/crypto/hkdf"
+	"github.com/trysuperdrop/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )

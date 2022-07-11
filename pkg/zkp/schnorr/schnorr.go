@@ -15,7 +15,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/pkg/errors"
-	"golang.org/x/crypto/sha3"
+	"github.com/trysuperdrop/crypto/sha3"
 
 	"github.com/trysuperdrop/kryptology/pkg/core/curves"
 )
