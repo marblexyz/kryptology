@@ -38,7 +38,6 @@ func encodeDkgRound1Output(commitment [32]byte, version uint) (*protocol.Message
 	if version != protocol.Version1 {
 		return nil, errors.New("only version 1 is supported")
 	}
-	registerTypes()
 	buf := bytes.NewBuffer([]byte{})
 	enc := gob.NewEncoder(buf)
 	if err := enc.Encode(&commitment); err != nil {
@@ -265,7 +264,6 @@ func EncodeAliceDkgOutput(result *dkg.AliceOutput, version uint) (*protocol.Mess
 	if version != protocol.Version1 {
 		return nil, errors.New("only version 1 is supported")
 	}
-	registerTypes()
 	buf := bytes.NewBuffer([]byte{})
 	enc := gob.NewEncoder(buf)
 	if err := enc.Encode(result); err != nil {
@@ -279,7 +277,6 @@ func DecodeAliceDkgResult(m *protocol.Message) (*dkg.AliceOutput, error) {
 	if m.Version != protocol.Version1 {
 		return nil, errors.New("only version 1 is supported")
 	}
-	registerTypes()
 	buf := bytes.NewBuffer(m.Payloads[payloadKey])
 	dec := gob.NewDecoder(buf)
 	decoded := new(dkg.AliceOutput)
@@ -294,7 +291,6 @@ func EncodeBobDkgOutput(result *dkg.BobOutput, version uint) (*protocol.Message,
 	if version != protocol.Version1 {
 		return nil, errors.New("only version 1 is supported")
 	}
-	registerTypes()
 	buf := bytes.NewBuffer([]byte{})
 	enc := gob.NewEncoder(buf)
 	if err := enc.Encode(result); err != nil {
@@ -447,4 +443,8 @@ func ConvertBobDkgOutputToV1(params *v0.Params, dkgResult []byte) (*protocol.Mes
 	}
 
 	return EncodeBobDkgOutput(dkgConvertedResult, protocol.Version1)
+}
+
+func init() {
+	registerTypes()
 }

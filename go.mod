@@ -11,7 +11,7 @@ require (
 	github.com/consensys/gnark-crypto v0.5.3
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
-	github.com/trysuperdrop/crypto v0.0.0-20220711063155-06d92624802f
+	github.com/trysuperdrop/crypto v0.0.0-20220715202915-ce9dd5c12152
 	github.com/trysuperdrop/merlin v0.1.2-0.20220629233021-ee686cbf6191
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	golang.org/x/tools v0.1.5

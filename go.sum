@@ -69,6 +69,8 @@ github.com/trysuperdrop/crypto v0.0.0-20220710221838-d816f66d9e06 h1:7eLqGAWZkyg
 github.com/trysuperdrop/crypto v0.0.0-20220710221838-d816f66d9e06/go.mod h1:lvpb0uml5OPiWiCOnw2BkPVCtWFaDoQpDWlBqcSlXII=
 github.com/trysuperdrop/crypto v0.0.0-20220711063155-06d92624802f h1:RSktrr0UqQndGBS/9oovbUVaA3KZxbEEMd5la006kIQ=
 github.com/trysuperdrop/crypto v0.0.0-20220711063155-06d92624802f/go.mod h1:lvpb0uml5OPiWiCOnw2BkPVCtWFaDoQpDWlBqcSlXII=
+github.com/trysuperdrop/crypto v0.0.0-20220715202915-ce9dd5c12152 h1:EjIqyMJulh6rFo8vnF/6ECEzX4y8o6/cFMRF5ETfsxE=
+github.com/trysuperdrop/crypto v0.0.0-20220715202915-ce9dd5c12152/go.mod h1:lvpb0uml5OPiWiCOnw2BkPVCtWFaDoQpDWlBqcSlXII=
 github.com/trysuperdrop/merlin v0.1.2-0.20220629233021-ee686cbf6191 h1:Ulk7OqFipPPOdMpLJVPF043HdeMjngHrxyyylksWCic=
 github.com/trysuperdrop/merlin v0.1.2-0.20220629233021-ee686cbf6191/go.mod h1:nV4WiLTT41WecXA8zez93TugWYcjPBJSgBV2+tI/2AU=
 github.com/vmihailenco/msgpack/v5 v5.3.5 h1:5gO0H1iULLWGhs2H5tbAHIZTV8/cYafcFOr9znI5mJU=

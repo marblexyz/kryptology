@@ -166,7 +166,6 @@ func (s *Alice) Equals(cmp *Alice) bool {
 }
 
 func (s *Alice) MarshalBinary() ([]byte, error) {
-	registerTypes()
 	buf := bytes.Buffer{}
 	enc := gob.NewEncoder(&buf)
 	if err := enc.Encode(
@@ -186,7 +185,6 @@ func (s *Alice) MarshalBinary() ([]byte, error) {
 }
 
 func (s *Alice) UnmarshalBinary(data []byte) error {
-	registerTypes()
 	//Use default gob decoder
 	reader := bytes.NewReader(data)
 	dec := gob.NewDecoder(reader)
@@ -400,4 +398,8 @@ func (bob *Bob) Output() *BobOutput {
 		SecretKeyShare: bob.secretKeyShare,
 		SeedOtResult:   bob.sender.Output,
 	}
+}
+
+func init() {
+	registerTypes()
 }
