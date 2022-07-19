@@ -320,12 +320,45 @@ func (a *AliceSign) UnmarshalBinary(data []byte, message []byte) error {
 // NewBobSign creates a new protocol that can compute a signature as Bob.
 // Requires dkg state that was produced at the end of DKG.Output().
 func NewBobSign(
-	curve *curves.Curve, hash hash.Hash, message []byte, dkgResultMessage *protocol.Message, version uint,
+	curve *curves.Curve, hash hash.Hash, message []byte,
+	dkgResultMessage *protocol.Message, version uint,
 ) (*BobSign, error) {
 	dkgResult, err := DecodeBobDkgResult(dkgResultMessage)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
+	b := &BobSign{Bob: sign.NewBob(curve, hash, dkgResult)}
+	b.steps = []func(message *protocol.Message) (*protocol.Message, error){
+		func(input *protocol.Message) (*protocol.Message, error) {
+			commitment, err := decodeSignRound2Input(input)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			round2Output, err := b.Round2Initialize(commitment)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			return encodeSignRound2Output(round2Output, version)
+		},
+		func(input *protocol.Message) (*protocol.Message, error) {
+			round4Input, err := decodeSignRound4Input(input)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+
+			if err = b.Round4Final(message, round4Input); err != nil {
+				return nil, errors.WithStack(err)
+			}
+			return nil, nil
+		},
+	}
+	return b, nil
+}
+
+func NewBobSignWithResult(
+	curve *curves.Curve, hash hash.Hash, message []byte,
+	dkgResult *dkg.BobOutput, version uint,
+) (*BobSign, error) {
 	b := &BobSign{Bob: sign.NewBob(curve, hash, dkgResult)}
 	b.steps = []func(message *protocol.Message) (*protocol.Message, error){
 		func(input *protocol.Message) (*protocol.Message, error) {
