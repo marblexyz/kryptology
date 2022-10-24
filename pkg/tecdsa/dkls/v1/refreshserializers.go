@@ -6,11 +6,11 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/core/protocol"
-	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/refresh"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/protocol"
+	"github.com/marblexyz/kryptology/pkg/ot/base/simplest"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/refresh"
 )
 
 func newRefreshProtocolMessage(payload []byte, round string, version uint) *protocol.Message {

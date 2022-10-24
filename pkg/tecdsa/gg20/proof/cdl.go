@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"math/big"
 
-	mod "github.com/trysuperdrop/kryptology/pkg/core"
+	mod "github.com/marblexyz/kryptology/pkg/core"
 )
 
 const ell = 128

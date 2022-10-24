@@ -3,7 +3,7 @@ package native
 import (
 	"hash"
 
-	"github.com/trysuperdrop/crypto/sha3"
+	"github.com/marblexyz/crypto/sha3"
 )
 
 // OversizeDstSalt is the salt used to hash a dst over MaxDstLen

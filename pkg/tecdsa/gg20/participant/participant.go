@@ -13,12 +13,12 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/paillier"
-	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/paillier"
+	"github.com/marblexyz/kryptology/pkg/sharing/v1"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/gg20/dealer"
 )
 
 // Participant is a tECDSA player that receives information from a trusted dealer

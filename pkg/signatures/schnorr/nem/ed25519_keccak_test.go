@@ -12,7 +12,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/trysuperdrop/crypto/sha3"
+	"github.com/marblexyz/crypto/sha3"
 )
 
 type KeyPair struct {

@@ -9,8 +9,8 @@ package mina
 import (
 	"fmt"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fp"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fq"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/pasta/fp"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/pasta/fq"
 )
 
 // Signature is a Mina compatible signature either for payment or delegation

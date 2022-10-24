@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core"
-	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/pkg/sharing/v1"
 )
 
 // Round1Bcast are the values that are broadcast to all other participants

@@ -14,8 +14,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	v1 "github.com/trysuperdrop/kryptology/pkg/sharing/v1"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	v1 "github.com/marblexyz/kryptology/pkg/sharing/v1"
 )
 
 const expectedSeedHex = "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60"

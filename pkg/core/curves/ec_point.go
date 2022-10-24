@@ -14,8 +14,8 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core"
 )
 
 var curveNameToId = map[string]byte{

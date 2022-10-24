@@ -11,8 +11,8 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/bls12381"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/bls12381"
 )
 
 var bls12381g2Initonce sync.Once

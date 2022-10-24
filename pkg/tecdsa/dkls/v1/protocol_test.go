@@ -18,13 +18,13 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
-	"github.com/trysuperdrop/crypto/sha3"
+	"github.com/marblexyz/crypto/sha3"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/core/protocol"
-	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
-	v0 "github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v0"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/protocol"
+	"github.com/marblexyz/kryptology/pkg/ot/extension/kos"
+	v0 "github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v0"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/dkg"
 )
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.

@@ -26,9 +26,9 @@ import (
 	"strconv"
 
 	"filippo.io/edwards25519"
-	"github.com/trysuperdrop/crypto/sha3"
+	"github.com/marblexyz/crypto/sha3"
 
-	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/marblexyz/kryptology/internal"
 )
 
 const (

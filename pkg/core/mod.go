@@ -16,7 +16,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/marblexyz/kryptology/internal"
 )
 
 var (

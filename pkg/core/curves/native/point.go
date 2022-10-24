@@ -8,9 +8,9 @@ import (
 	"io"
 	"math/big"
 
+	"github.com/marblexyz/crypto/blake2b"
+	"github.com/marblexyz/crypto/sha3"
 	"github.com/pkg/errors"
-	"github.com/trysuperdrop/crypto/blake2b"
-	"github.com/trysuperdrop/crypto/sha3"
 )
 
 // EllipticPointHashType is to indicate which expand operation is used

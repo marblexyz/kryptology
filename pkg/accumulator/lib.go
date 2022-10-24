@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // dad constructs two polynomials - dA(x) and dD(x)

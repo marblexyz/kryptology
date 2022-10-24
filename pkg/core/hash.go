@@ -16,9 +16,9 @@ import (
 	"math/big"
 
 	"github.com/btcsuite/btcd/btcec"
-	"github.com/trysuperdrop/crypto/hkdf"
+	"github.com/marblexyz/crypto/hkdf"
 
-	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/marblexyz/kryptology/internal"
 )
 
 type HashField struct {
@@ -126,7 +126,7 @@ func ExpandMessageXmd(f func() hash.Hash, msg, DST []byte, lenInBytes int) ([]by
 	// step 1
 	ell := int(math.Ceil(float64(lenInBytes) / float64(f().Size())))
 
-	//step 2
+	// step 2
 	if ell > 255 {
 		return nil, fmt.Errorf("ell > 255")
 	}

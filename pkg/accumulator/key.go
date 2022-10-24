@@ -12,7 +12,7 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // SecretKey is the secret alpha only held by the accumulator manager.

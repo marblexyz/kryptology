@@ -11,13 +11,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/trysuperdrop/crypto/sha3"
+	"github.com/marblexyz/crypto/sha3"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/refresh"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/sign"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/ot/extension/kos"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/refresh"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/sign"
 )
 
 func performDKG(t *testing.T, curve *curves.Curve) (*dkg.Alice, *dkg.Bob) {

@@ -11,8 +11,8 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/trysuperdrop/kryptology/pkg/core"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/proof"
+	"github.com/marblexyz/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/gg20/proof"
 )
 
 // Round3Bcast represents the value to be broadcast to all players

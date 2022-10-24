@@ -11,8 +11,8 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // CipherText represents verifiably encrypted ciphertext

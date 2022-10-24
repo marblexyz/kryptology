@@ -10,9 +10,9 @@ package frost
 import (
 	"fmt"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/dkg/frost"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/dkg/frost"
 )
 
 // Signer is a tSchnorr player performing the signing operation.

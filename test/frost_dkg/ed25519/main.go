@@ -13,10 +13,10 @@ import (
 
 	"filippo.io/edwards25519"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	dkg "github.com/trysuperdrop/kryptology/pkg/dkg/frost"
-	"github.com/trysuperdrop/kryptology/pkg/sharing"
-	"github.com/trysuperdrop/kryptology/pkg/ted25519/frost"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	dkg "github.com/marblexyz/kryptology/pkg/dkg/frost"
+	"github.com/marblexyz/kryptology/pkg/sharing"
+	"github.com/marblexyz/kryptology/pkg/ted25519/frost"
 )
 
 const LIMIT = 4
@@ -207,7 +207,7 @@ func round2(
 		}
 		verificationKey = rnd2Out.VerificationKey
 		share := &sharing.ShamirShare{
-			Id: id,
+			Id:    id,
 			Value: participants[id].SkShare.Bytes(),
 		}
 		signingShares[id] = share
@@ -246,5 +246,6 @@ FLAGS:
   -h, --help						Show this help message and exit
   -n, --limit						The total number of participants
   -t, --treshold					The minimum number of participants needed to sign
-`)
+`
+	)
 }

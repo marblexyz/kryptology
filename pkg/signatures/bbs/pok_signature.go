@@ -10,10 +10,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/trysuperdrop/merlin"
+	"github.com/marblexyz/merlin"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/signatures/common"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/signatures/common"
 )
 
 // PokSignature a.k.a. Proof of Knowledge of a Signature

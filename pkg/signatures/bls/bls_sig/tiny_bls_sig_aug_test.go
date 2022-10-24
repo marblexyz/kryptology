@@ -9,7 +9,7 @@ package bls_sig
 import (
 	"testing"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/bls12381"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/bls12381"
 )
 
 func generateAugSignatureG1(sk *SecretKey, msg []byte, t *testing.T) *SignatureVt {

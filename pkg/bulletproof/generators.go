@@ -7,10 +7,10 @@
 package bulletproof
 
 import (
+	"github.com/marblexyz/crypto/sha3"
 	"github.com/pkg/errors"
-	"github.com/trysuperdrop/crypto/sha3"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // generators contains a list of points to be used as generators for bulletproofs

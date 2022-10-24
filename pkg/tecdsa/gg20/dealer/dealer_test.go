@@ -14,9 +14,9 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	tt "github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	v1 "github.com/trysuperdrop/kryptology/pkg/sharing/v1"
+	tt "github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	v1 "github.com/marblexyz/kryptology/pkg/sharing/v1"
 )
 
 type proofParamsTest struct {

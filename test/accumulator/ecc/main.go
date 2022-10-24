@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/trysuperdrop/kryptology/pkg/accumulator"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/accumulator"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 func main() {

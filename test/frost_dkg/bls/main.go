@@ -10,10 +10,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	dkg "github.com/trysuperdrop/kryptology/pkg/dkg/frost"
-	"github.com/trysuperdrop/kryptology/pkg/sharing"
-	bls "github.com/trysuperdrop/kryptology/pkg/signatures/bls/bls_sig"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	dkg "github.com/marblexyz/kryptology/pkg/dkg/frost"
+	"github.com/marblexyz/kryptology/pkg/sharing"
+	bls "github.com/marblexyz/kryptology/pkg/signatures/bls/bls_sig"
 )
 
 const LIMIT = 4
@@ -176,5 +176,6 @@ FLAGS:
   -h, --help						Show this help message and exit
   -n, --limit						The total number of participants
   -t, --treshold					The minimum number of participants needed to sign
-`)
+`,
+	)
 }

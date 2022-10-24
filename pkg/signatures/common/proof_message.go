@@ -9,7 +9,7 @@ package common
 import (
 	"io"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // ProofMessage classifies how a message is presented in a proof

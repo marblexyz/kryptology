@@ -14,8 +14,8 @@
 // Limitation: currently we only support batch OTs that are multiples of 8.
 //
 // Ideal functionalities:
-//  - We have used ZKP Schnorr for the F^{R_{DL}}_{ZK}
-//  - We have used HMAC for realizing the Random Oracle Hash function, the key for HMAC is received as input to the protocol.
+//   - We have used ZKP Schnorr for the F^{R_{DL}}_{ZK}
+//   - We have used HMAC for realizing the Random Oracle Hash function, the key for HMAC is received as input to the protocol.
 package simplest
 
 import (
@@ -24,11 +24,11 @@ import (
 	"crypto/subtle"
 	"encoding/gob"
 	"fmt"
+	"github.com/marblexyz/crypto/sha3"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/zkp/schnorr"
+	"github.com/marblexyz/merlin"
 	"github.com/pkg/errors"
-	"github.com/trysuperdrop/crypto/sha3"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
-	"github.com/trysuperdrop/merlin"
 	"reflect"
 )
 
@@ -216,7 +216,7 @@ func (receiver *Receiver) UnmarshalBinary(data []byte) error {
 	var reader *bytes.Reader
 	var dec *gob.Decoder
 
-	//Use default gob decoder
+	// Use default gob decoder
 	reader = bytes.NewReader(data)
 	dec = gob.NewDecoder(reader)
 	unmarshalData := map[string][]byte{}
@@ -523,10 +523,13 @@ func (sender *Sender) Round5Verify(challengeResponses []OtChallengeResponse) ([]
 // Round6Verify is the _last_ part of the "Verification" phase of OT; see p. 16 of https://eprint.iacr.org/2018/499.pdf.
 // See step 8 of page 16 of the paper.
 // Abort if H(Rho^w) != the one it calculated itself or
-//       if Xi != H(H(Rho^0)) XOR H(H(Rho^1))
+//
+//	if Xi != H(H(Rho^0)) XOR H(H(Rho^1))
+//
 // In other words,
-//       if opening_w != H(decryption key)  or
-//       if challenge != H(opening 0) XOR H(opening 0)
+//
+//	if opening_w != H(decryption key)  or
+//	if challenge != H(opening 0) XOR H(opening 0)
 func (receiver *Receiver) Round6Verify(challengeOpenings []ChallengeOpening) error {
 	for i := 0; i < receiver.batchSize; i++ {
 		hashedDecryptionKey := sha3.Sum256(receiver.Output.OneTimePadDecryptionKey[i][:])

@@ -7,7 +7,7 @@
 package v1
 
 import (
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 type polynomial struct {

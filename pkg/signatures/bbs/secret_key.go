@@ -13,10 +13,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/trysuperdrop/crypto/hkdf"
-	"github.com/trysuperdrop/crypto/sha3"
+	"github.com/marblexyz/crypto/hkdf"
+	"github.com/marblexyz/crypto/sha3"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // SecretKey is a BBS+ signing key

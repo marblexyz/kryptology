@@ -9,8 +9,8 @@ package frost
 import (
 	"fmt"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // Round3Bcast contains the output of FROST signature, i.e., it contains FROST signature (z,c) and the
@@ -140,12 +140,12 @@ func Verify(
 	z := signature.Z
 	c := signature.C
 
-	//R' = z*G - c*vk
+	// R' = z*G - c*vk
 	zG := curve.ScalarBaseMult(z)
 	cvk := vk.Mul(c.Neg())
 	tempR := zG.Add(cvk)
 
-	//c' = H(m, R')
+	// c' = H(m, R')
 	tempC, err := challengeDeriver.DeriveChallenge(msg, vk, tempR)
 	if err != nil {
 		return false, err

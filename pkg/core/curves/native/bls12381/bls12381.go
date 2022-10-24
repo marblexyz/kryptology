@@ -3,7 +3,7 @@ package bls12381
 import (
 	"math/bits"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native"
 )
 
 var fqModulusBytes = [native.FieldBytes]byte{

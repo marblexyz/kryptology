@@ -11,7 +11,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fq"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/pasta/fq"
 )
 
 func TestNewKeys(t *testing.T) {

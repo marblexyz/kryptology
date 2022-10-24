@@ -15,11 +15,11 @@ import (
 	"io"
 
 	"github.com/btcsuite/btcutil/base58"
-	"github.com/trysuperdrop/crypto/blake2b"
+	"github.com/marblexyz/crypto/blake2b"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fp"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fq"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/pasta/fp"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/pasta/fq"
 )
 
 const version = 0xcb

@@ -12,9 +12,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	crypto "github.com/trysuperdrop/kryptology/pkg/core"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/internal"
+	crypto "github.com/marblexyz/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // [spec] 10.2 and ProvePSF, VerifyPSF fig.15

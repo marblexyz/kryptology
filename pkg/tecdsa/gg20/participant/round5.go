@@ -9,9 +9,9 @@ package participant
 import (
 	"fmt"
 
-	"github.com/trysuperdrop/kryptology/pkg/core"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/proof"
+	"github.com/marblexyz/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/gg20/proof"
 )
 
 // Round5Bcast are the values to be broadcast to the other players at the conclusion
@@ -107,7 +107,7 @@ func (signer *Signer) SignRound5(witnesses map[uint32]*Round4Bcast) (*Round5Bcas
 
 	if signer.state.keyGenType.IsTrustedDealer() {
 		// 10. TrustedDealer - Compute π^{kCONSIST}_i = ProvePDL(g, q, R, pk_i, N~, h1, h2, k_i, \overline{R_i}, c_i, r_i)
-		pdlParams.DealerParams = signer.state.keyGenType.GetProofParams(0) //note ID is ignored for trusted dealer
+		pdlParams.DealerParams = signer.state.keyGenType.GetProofParams(0) // note ID is ignored for trusted dealer
 		bcast.Proof, err = pdlParams.Prove()
 		if err != nil {
 			return nil, nil, err

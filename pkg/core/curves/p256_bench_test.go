@@ -16,7 +16,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/pkg/core"
 )
 
 func BenchmarkP256(b *testing.B) {

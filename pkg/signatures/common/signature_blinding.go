@@ -7,7 +7,7 @@
 package common
 
 import (
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // SignatureBlinding is a value used for computing blind signatures

@@ -13,13 +13,13 @@ import (
 	"crypto/subtle"
 	"fmt"
 
-	"github.com/trysuperdrop/crypto/hkdf"
+	"github.com/marblexyz/crypto/hkdf"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/bls12381"
-	"github.com/trysuperdrop/kryptology/pkg/sharing"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/bls12381"
+	"github.com/marblexyz/kryptology/pkg/sharing"
 )
 
 // Secret key in Fr

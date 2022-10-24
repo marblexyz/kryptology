@@ -8,9 +8,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/trysuperdrop/crypto/sha3"
+	"github.com/marblexyz/crypto/sha3"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 func TestZKPOverMultipleCurves(t *testing.T) {
@@ -22,7 +22,7 @@ func TestZKPOverMultipleCurves(t *testing.T) {
 	curveInstances := []*curves.Curve{
 		curves.K256(),
 		// TODO: the code fails on the following curves. Investigate if this is expected.
-		//curves.P256(),
+		// curves.P256(),
 		// curves.PALLAS(),
 		// curves.BLS12377G1(),
 		// curves.BLS12377G2(),

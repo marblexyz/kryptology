@@ -15,11 +15,11 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	"github.com/marblexyz/crypto/sha3"
 	"github.com/pkg/errors"
-	"github.com/trysuperdrop/crypto/sha3"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/ot/base/simplest"
 )
 
 const (

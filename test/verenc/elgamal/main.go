@@ -12,9 +12,9 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
-	"github.com/trysuperdrop/kryptology/pkg/verenc/elgamal"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/sharing/v1"
+	"github.com/marblexyz/kryptology/pkg/verenc/elgamal"
 )
 
 func main() {

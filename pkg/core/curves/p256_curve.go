@@ -13,11 +13,11 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
-	p256n "github.com/trysuperdrop/kryptology/pkg/core/curves/native/p256"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/p256/fp"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/p256/fq"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native"
+	p256n "github.com/marblexyz/kryptology/pkg/core/curves/native/p256"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/p256/fp"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/p256/fq"
 )
 
 var oldP256InitOnce sync.Once

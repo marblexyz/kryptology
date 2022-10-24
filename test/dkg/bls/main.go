@@ -10,10 +10,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	dkg "github.com/trysuperdrop/kryptology/pkg/dkg/gennaro"
-	sharing "github.com/trysuperdrop/kryptology/pkg/sharing/v1"
-	bls "github.com/trysuperdrop/kryptology/pkg/signatures/bls/bls_sig"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	dkg "github.com/marblexyz/kryptology/pkg/dkg/gennaro"
+	sharing "github.com/marblexyz/kryptology/pkg/sharing/v1"
+	bls "github.com/marblexyz/kryptology/pkg/signatures/bls/bls_sig"
 )
 
 const LIMIT = 4

@@ -11,12 +11,12 @@ import (
 	"io"
 	"sort"
 
-	"github.com/trysuperdrop/crypto/sha3"
-	"github.com/trysuperdrop/merlin"
+	"github.com/marblexyz/crypto/sha3"
+	"github.com/marblexyz/merlin"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/signatures/common"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/signatures/common"
 )
 
 // BlindSignatureContext contains the data used for computing

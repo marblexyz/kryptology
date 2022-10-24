@@ -10,11 +10,11 @@ import (
 	crand "crypto/rand"
 	"testing"
 
+	"github.com/marblexyz/merlin"
 	"github.com/stretchr/testify/require"
-	"github.com/trysuperdrop/merlin"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/signatures/common"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/signatures/common"
 )
 
 func TestPokSignatureProofSomeMessagesRevealed(t *testing.T) {

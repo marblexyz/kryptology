@@ -16,9 +16,9 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	dkg "github.com/trysuperdrop/kryptology/pkg/dkg/frost"
-	"github.com/trysuperdrop/kryptology/pkg/sharing"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	dkg "github.com/marblexyz/kryptology/pkg/dkg/frost"
+	"github.com/marblexyz/kryptology/pkg/sharing"
 )
 
 const LIMIT = 4

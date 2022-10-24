@@ -16,10 +16,10 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/trysuperdrop/crypto/blake2b"
+	"github.com/marblexyz/crypto/blake2b"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fp"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fq"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/pasta/fp"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/pasta/fq"
 )
 
 var b = new(fp.Fp).SetUint64(5)
@@ -1074,7 +1074,7 @@ func sumOfProductsPippengerPallas(points []*Ep, scalars []*big.Int) *Ep {
 // in "Avoiding inversions" [WB2019, section 4.3].
 func isoMap(p *Ep) *Ep {
 	var z [4]*fp.Fp
-	z[0] = new(fp.Fp).Square(p.z)    //z^2
+	z[0] = new(fp.Fp).Square(p.z)    // z^2
 	z[1] = new(fp.Fp).Mul(z[0], p.z) // z^3
 	z[2] = new(fp.Fp).Square(z[0])   // z^4
 	z[3] = new(fp.Fp).Square(z[1])   // z^6
@@ -1126,17 +1126,17 @@ func isoMap(p *Ep) *Ep {
 }
 
 func mapSswu(u *fp.Fp) *Ep {
-	//c1 := new(fp.Fp).Neg(isoa)
-	//c1.Invert(c1)
-	//c1.Mul(isob, c1)
+	// c1 := new(fp.Fp).Neg(isoa)
+	// c1.Invert(c1)
+	// c1.Mul(isob, c1)
 	c1 := &fp.Fp{
 		0x1ee770ce078456ec,
 		0x48cfd64c2ce76be0,
 		0x43d5774c0ab79e2f,
 		0x23368d2bdce28cf3,
 	}
-	//c2 := new(fp.Fp).Neg(z)
-	//c2.Invert(c2)
+	// c2 := new(fp.Fp).Neg(z)
+	// c2.Invert(c2)
 	c2 := &fp.Fp{
 		0x03df915f89d89d8a,
 		0x8f1e8db09ef82653,

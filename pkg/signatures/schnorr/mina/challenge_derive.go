@@ -9,7 +9,7 @@ package mina
 import (
 	"fmt"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 type MinaTSchnorrHandler struct{}

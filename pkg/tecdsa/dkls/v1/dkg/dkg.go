@@ -14,11 +14,11 @@ import (
 	"crypto/rand"
 	"encoding/gob"
 	"github.com/pkg/errors"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
-	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
-	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
-	"github.com/trysuperdrop/merlin"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/ot/base/simplest"
+	"github.com/marblexyz/kryptology/pkg/ot/extension/kos"
+	"github.com/marblexyz/kryptology/pkg/zkp/schnorr"
+	"github.com/marblexyz/merlin"
 )
 
 func registerTypes() {
@@ -185,7 +185,7 @@ func (s *Alice) MarshalBinary() ([]byte, error) {
 }
 
 func (s *Alice) UnmarshalBinary(data []byte) error {
-	//Use default gob decoder
+	// Use default gob decoder
 	reader := bytes.NewReader(data)
 	dec := gob.NewDecoder(reader)
 

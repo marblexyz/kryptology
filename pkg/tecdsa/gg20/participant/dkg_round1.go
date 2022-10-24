@@ -10,11 +10,11 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core"
-	"github.com/trysuperdrop/kryptology/pkg/paillier"
-	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/proof"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/pkg/paillier"
+	"github.com/marblexyz/kryptology/pkg/sharing/v1"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/gg20/proof"
 )
 
 // DkgRound1Bcast contains values to be broadcast to all players after the completion of DKG round 1

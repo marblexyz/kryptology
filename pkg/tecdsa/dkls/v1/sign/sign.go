@@ -19,14 +19,14 @@ import (
 	"math/big"
 
 	"github.com/pkg/errors"
-	"github.com/trysuperdrop/crypto/sha3"
-	"github.com/trysuperdrop/merlin"
+	"github.com/marblexyz/crypto/sha3"
+	"github.com/marblexyz/merlin"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
-	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
-	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/ot/base/simplest"
+	"github.com/marblexyz/kryptology/pkg/ot/extension/kos"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/marblexyz/kryptology/pkg/zkp/schnorr"
 )
 
 const multiplicationCount = 2
@@ -145,7 +145,7 @@ func (s *Alice) MarshalBinary() ([]byte, error) {
 }
 
 func (s *Alice) UnmarshalBinary(data []byte) error {
-	//Use default gob decoder
+	// Use default gob decoder
 	reader := bytes.NewReader(data)
 	dec := gob.NewDecoder(reader)
 

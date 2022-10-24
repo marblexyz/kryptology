@@ -15,7 +15,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	bls "github.com/trysuperdrop/kryptology/pkg/signatures/bls/bls_sig"
+	bls "github.com/marblexyz/kryptology/pkg/signatures/bls/bls_sig"
 )
 
 type signOp struct {

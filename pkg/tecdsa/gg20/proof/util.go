@@ -9,8 +9,8 @@ package proof
 import (
 	"math/big"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	core "github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/internal"
+	core "github.com/marblexyz/kryptology/pkg/core"
 )
 
 // inc computes the incremented commitment in the extension ring:

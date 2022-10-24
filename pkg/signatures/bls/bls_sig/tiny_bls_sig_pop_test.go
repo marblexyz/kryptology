@@ -12,7 +12,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/bls12381"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/bls12381"
 )
 
 const numAggregateG1 = 10
@@ -349,7 +349,7 @@ func TestAggregateVerifyG1OneMsg(t *testing.T) {
 }
 
 func TestVerifyG1Mutability(t *testing.T) {
-	//verify should not change any inputs
+	// verify should not change any inputs
 	ikm := make([]byte, 32)
 	ikm_copy := make([]byte, 32)
 	readRand(ikm, t)

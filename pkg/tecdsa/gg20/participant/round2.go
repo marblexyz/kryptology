@@ -10,9 +10,9 @@ import (
 	"encoding/json"
 	"math/big"
 
-	"github.com/trysuperdrop/kryptology/pkg/core"
-	"github.com/trysuperdrop/kryptology/pkg/paillier"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/proof"
+	"github.com/marblexyz/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/pkg/paillier"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/gg20/proof"
 )
 
 // P2PSend is all the values that need to be sent to each player

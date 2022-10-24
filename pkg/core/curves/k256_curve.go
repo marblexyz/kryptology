@@ -15,11 +15,11 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
-	secp256k1 "github.com/trysuperdrop/kryptology/pkg/core/curves/native/k256"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/k256/fp"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/k256/fq"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native"
+	secp256k1 "github.com/marblexyz/kryptology/pkg/core/curves/native/k256"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/k256/fp"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/k256/fq"
 )
 
 var oldK256Initonce sync.Once

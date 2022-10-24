@@ -10,8 +10,8 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/sharing/v1"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/sharing/v1"
 )
 
 // PublicKeyFromBytes converts byte array into PublicKey byte array
@@ -119,7 +119,7 @@ func generateSharableKey() (PublicKey, []byte, error) {
 // GenerateSharedKey generates a random key, splits it, and returns the public key, shares, and VSS commitments.
 func GenerateSharedKey(config *ShareConfiguration) (PublicKey, []*KeyShare, Commitments, error) {
 	pub, priv, err := generateSharableKey()
-	//pub, priv, err := ed25519.GenerateKey(nil)
+	// pub, priv, err := ed25519.GenerateKey(nil)
 	if err != nil {
 		return nil, nil, nil, err
 	}

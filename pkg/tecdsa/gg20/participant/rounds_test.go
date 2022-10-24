@@ -16,12 +16,12 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/stretchr/testify/require"
 
-	tt "github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/paillier"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/proof"
+	tt "github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/paillier"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/gg20/dealer"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/gg20/proof"
 )
 
 var (

@@ -7,13 +7,13 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/core/protocol"
-	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
-	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
-	v0 "github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v0"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
-	"github.com/trysuperdrop/kryptology/pkg/zkp/schnorr"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/protocol"
+	"github.com/marblexyz/kryptology/pkg/ot/base/simplest"
+	"github.com/marblexyz/kryptology/pkg/ot/extension/kos"
+	v0 "github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v0"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/marblexyz/kryptology/pkg/zkp/schnorr"
 )
 
 const payloadKey = "direct"

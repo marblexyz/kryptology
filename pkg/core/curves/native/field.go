@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/trysuperdrop/kryptology/internal"
+	"github.com/marblexyz/kryptology/internal"
 )
 
 // FieldLimbs is the number of limbs needed to represent this field

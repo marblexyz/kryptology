@@ -7,7 +7,7 @@
 package v1
 
 import (
-	kryptology "github.com/trysuperdrop/kryptology/pkg/core/curves"
+	kryptology "github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // ShareVerifier is used to verify secret shares from Feldman or Pedersen VSS

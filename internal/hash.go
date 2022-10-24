@@ -11,7 +11,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"github.com/trysuperdrop/crypto/hkdf"
+	"github.com/marblexyz/crypto/hkdf"
 )
 
 // Hash computes the HKDF over many values

@@ -11,9 +11,9 @@ import (
 	"crypto/sha256"
 	"io"
 
-	"github.com/trysuperdrop/crypto/hkdf"
+	"github.com/marblexyz/crypto/hkdf"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // NonceShare represents a share of a generated nonce.

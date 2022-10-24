@@ -10,7 +10,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native"
 )
 
 var p256FqInitonce sync.Once

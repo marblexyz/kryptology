@@ -1,4 +1,4 @@
-module github.com/trysuperdrop/kryptology
+module github.com/marblexyz/kryptology
 
 go 1.17
 
@@ -9,10 +9,10 @@ require (
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/bwesterb/go-ristretto v1.2.0
 	github.com/consensys/gnark-crypto v0.5.3
+	github.com/marblexyz/crypto v0.0.0-20221024195113-4490e07ec91c
+	github.com/marblexyz/merlin v0.1.2-0.20221024200236-6e1c6b4f04b5
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
-	github.com/trysuperdrop/crypto v0.0.0-20220715202915-ce9dd5c12152
-	github.com/trysuperdrop/merlin v0.1.2-0.20220629233021-ee686cbf6191
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	golang.org/x/tools v0.1.5
 )

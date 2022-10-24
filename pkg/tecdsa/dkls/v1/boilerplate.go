@@ -6,11 +6,11 @@ import (
 	"github.com/pkg/errors"
 	"hash"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/core/protocol"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dkg"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/refresh"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/sign"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/protocol"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/refresh"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/sign"
 )
 
 // AliceDkg DKLS DKG implementation that satisfies the protocol iterator interface.

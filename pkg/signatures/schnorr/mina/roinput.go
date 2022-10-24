@@ -7,8 +7,8 @@
 package mina
 
 import (
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fp"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native/pasta/fq"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/pasta/fp"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native/pasta/fq"
 )
 
 // Handles the packing of bits and fields according to Mina spec

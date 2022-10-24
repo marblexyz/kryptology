@@ -10,11 +10,11 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	dkg "github.com/trysuperdrop/kryptology/pkg/dkg/frost"
-	"github.com/trysuperdrop/kryptology/pkg/sharing"
-	"github.com/trysuperdrop/kryptology/pkg/signatures/schnorr/mina"
-	"github.com/trysuperdrop/kryptology/pkg/ted25519/frost"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	dkg "github.com/marblexyz/kryptology/pkg/dkg/frost"
+	"github.com/marblexyz/kryptology/pkg/sharing"
+	"github.com/marblexyz/kryptology/pkg/signatures/schnorr/mina"
+	"github.com/marblexyz/kryptology/pkg/ted25519/frost"
 )
 
 const LIMIT = 4

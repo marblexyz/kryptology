@@ -12,14 +12,14 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/marblexyz/crypto/sha3"
+	"github.com/marblexyz/merlin"
 	"github.com/pkg/errors"
-	"github.com/trysuperdrop/crypto/sha3"
-	"github.com/trysuperdrop/merlin"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/ot/base/simplest"
-	"github.com/trysuperdrop/kryptology/pkg/ot/extension/kos"
+	"github.com/marblexyz/kryptology/internal"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/ot/base/simplest"
+	"github.com/marblexyz/kryptology/pkg/ot/extension/kos"
 )
 
 // This implements the Multiplication protocol of DKLs, protocol 5. https://eprint.iacr.org/2018/499.pdf

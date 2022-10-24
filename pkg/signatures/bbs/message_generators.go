@@ -9,7 +9,7 @@ package bbs
 import (
 	"errors"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // MessageGenerators are used to sign a vector of commitments for

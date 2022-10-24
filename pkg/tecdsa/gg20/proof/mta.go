@@ -13,10 +13,10 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/trysuperdrop/kryptology/pkg/core"
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/paillier"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/gg20/dealer"
+	"github.com/marblexyz/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/paillier"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/gg20/dealer"
 )
 
 // ResponseProofParams encapsulates the values over which a range proof (2) is computed.
@@ -575,11 +575,11 @@ func genProof2(pp proof2Params, rp *randProof2Params, wc bool) (*Range2Proof, er
 	// calls MtAResponse    (γi,g, q, pkj,nTilde, h1, h2, cj) or
 	// calls MtAResponse_wc (wi,g, q, pkj,nTilde, h1, h2, cj, Wi)
 	// receives MtAResponse (SmallB, g, q, Pk, nTilde, h1, h2, C1)
-	//1. Compute cb = PaillierMultiply(SmallB, C1 )
-	//2. Choose β′ ←$ ZN
-	//3. Compute (cβ,rβ) = PaillierEncryptAndReturnRandomness(Pk,β′)
-	//4. Compute C2 = PaillierAdd(cb , cβ )
-	//5. Compute β = −β′ mod q
+	// 1. Compute cb = PaillierMultiply(SmallB, C1 )
+	// 2. Choose β′ ←$ ZN
+	// 3. Compute (cβ,rβ) = PaillierEncryptAndReturnRandomness(Pk,β′)
+	// 4. Compute C2 = PaillierAdd(cb , cβ )
+	// 5. Compute β = −β′ mod q
 	// calls    MtAProveRange2    (g, q, Pk, nTilde, h1, h2, SmallB, β ,rβ,C1, C2)
 	// receives MtAProveRange2    (g, q, Pk, nTilde, h1, h2, x, y, r, C1, C2)
 	// receives MtAProveRange2_wc (g, q, Pk, nTilde, h1, h2, x, y, r, C1, C2, X)

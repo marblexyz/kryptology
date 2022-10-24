@@ -7,7 +7,7 @@
 package common
 
 import (
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // Nonce is used for zero-knowledge proofs to prevent replay attacks

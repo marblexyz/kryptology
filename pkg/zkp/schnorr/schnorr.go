@@ -14,10 +14,10 @@ import (
 	"crypto/subtle"
 	"encoding/gob"
 	"fmt"
+	"github.com/marblexyz/crypto/sha3"
 	"github.com/pkg/errors"
-	"github.com/trysuperdrop/crypto/sha3"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 type Commitment = []byte

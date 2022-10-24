@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves/native"
+	"github.com/marblexyz/kryptology/pkg/core/curves/native"
 )
 
 type Fq [native.FieldLimbs]uint64

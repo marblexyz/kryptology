@@ -15,7 +15,7 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 // Alice struct encoding Alice's state during one execution of the overall signing algorithm.

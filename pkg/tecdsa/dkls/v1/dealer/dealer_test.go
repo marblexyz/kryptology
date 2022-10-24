@@ -4,11 +4,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/trysuperdrop/crypto/sha3"
+	"github.com/marblexyz/crypto/sha3"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/dealer"
-	"github.com/trysuperdrop/kryptology/pkg/tecdsa/dkls/v1/sign"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/dealer"
+	"github.com/marblexyz/kryptology/pkg/tecdsa/dkls/v1/sign"
 )
 
 func Test_DealerCanGenerateKeysThatSign(t *testing.T) {

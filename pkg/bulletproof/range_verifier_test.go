@@ -4,10 +4,10 @@ import (
 	crand "crypto/rand"
 	"testing"
 
+	"github.com/marblexyz/merlin"
 	"github.com/stretchr/testify/require"
-	"github.com/trysuperdrop/merlin"
 
-	"github.com/trysuperdrop/kryptology/pkg/core/curves"
+	"github.com/marblexyz/kryptology/pkg/core/curves"
 )
 
 func TestRangeVerifyHappyPath(t *testing.T) {

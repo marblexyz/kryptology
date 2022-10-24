@@ -12,8 +12,8 @@ import (
 
 	"git.sr.ht/~sircmpwn/go-bare"
 
-	"github.com/trysuperdrop/kryptology/internal"
-	mod "github.com/trysuperdrop/kryptology/pkg/core"
+	"github.com/marblexyz/kryptology/internal"
+	mod "github.com/marblexyz/kryptology/pkg/core"
 )
 
 // ProofVerEnc is a proof of verifiable encryption for a discrete log

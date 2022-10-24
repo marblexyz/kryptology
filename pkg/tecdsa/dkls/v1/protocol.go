@@ -5,7 +5,7 @@ package v1
 import (
 	"bytes"
 	"encoding/gob"
-	"github.com/trysuperdrop/kryptology/pkg/core/protocol"
+	"github.com/marblexyz/kryptology/pkg/core/protocol"
 )
 
 // Basic protocol interface implementation that calls the next step func in a pre-defined list
