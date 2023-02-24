@@ -9,7 +9,6 @@ require (
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/bwesterb/go-ristretto v1.2.0
 	github.com/consensys/gnark-crypto v0.5.3
-	github.com/marblexyz/crypto v0.0.0-20221024195113-4490e07ec91c
 	github.com/marblexyz/merlin v0.1.2-0.20221024200236-6e1c6b4f04b5
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
@@ -20,11 +19,12 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
+	github.com/marblexyz/crypto v0.0.0-20230224170523-2e5819c2ca95 // indirect
 	github.com/mimoo/StrobeGo v0.0.0-20181016162300-f8f6d4d2b643 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
-	golang.org/x/sys v0.0.0-20220708085239-5a0f0661e09d // indirect
+	golang.org/x/crypto v0.6.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
